@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/indika/ROS_WS/src/see3cam/src/xunit/xunit_lib_tara.cpp
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+unistd.h
+-
+fcntl.h
+-
+linux/input.h
+-
+linux/hidraw.h
+-
+xunit_lib_tara.h
+/home/indika/ROS_WS/src/see3cam/src/xunit/xunit_lib_tara.h
+
+/home/indika/ROS_WS/src/see3cam/src/xunit/xunit_lib_tara.h
+stdbool.h
+-
+libudev.h
+-
+pthread.h
+-
+

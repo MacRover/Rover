@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package>
+  <name>uvc_camera</name>
+  <version>0.2.0</version>
+  <description>
+     A collection of node(let)s that stream images from USB cameras (UVC)
+     and provide CameraInfo messages to consumers. Includes a
+     two-camera node that provides rough synchronization for stereo vision.
+     Supports the See3CAM extensions for selecting the trigger mode.
+     Uses the base driver from Morgan Quigley's uvc_cam package.
+  </description>
+
+  <maintainer email="dgossow@gmail.com">David Gossow</maintainer>
+  <author email="dgossow@gmail.com">David Gossow</author>
+  
+  <license>GPLv2</license>
+
+  <url type="website">http://ros.org/wiki/see3cam</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>camera_info_manager</build_depend>
+  <build_depend>image_transport</build_depend>
+  <build_depend>nodelet</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>camera_info_manager</run_depend>
+  <run_depend>image_transport</run_depend>
+  <run_depend>nodelet</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+
+  <export>
+    <nodelet plugin="${prefix}/nodelet_uvc_camera.xml"/>
+  </export>
+</package>

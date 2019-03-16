@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC   -shared -Wl,-soname,libxunit.so -o /home/indika/ROS_WS/devel/lib/libxunit.so CMakeFiles/xunit.dir/src/xunit/xunit_lib.c.o CMakeFiles/xunit.dir/src/xunit/xunit_lib_cug.c.o -ludev 

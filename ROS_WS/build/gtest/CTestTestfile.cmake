@@ -1,7 +1,7 @@
 # CMake generated Testfile for 
-# Source directory: /usr/src/gmock
-# Build directory: /home/indika/ROS_WS/build/gtest
+# Source directory: /usr/src/googletest
+# Build directory: /home/veerash/Rover/ROS_WS/build/gtest
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
-subdirs(gtest)
+subdirs("googlemock")

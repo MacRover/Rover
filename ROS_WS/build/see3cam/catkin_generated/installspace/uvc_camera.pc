@@ -1,8 +1,0 @@
-prefix=/home/indika/ROS_WS/install
-
-Name: uvc_camera
-Description: Description of uvc_camera
-Version: 0.2.0
-Cflags: -I/home/indika/ROS_WS/install/include
-Libs: -L/home/indika/ROS_WS/install/lib -lnodelet_uvc_camera
-Requires: roscpp nodelet sensor_msgs

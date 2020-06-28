@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "".split(';') if "" != "" else []
 PROJECT_CATKIN_DEPENDS = "".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
 PROJECT_NAME = "ydlidar"
-PROJECT_SPACE_DIR = "/home/indika/ROS_WS/install"
+PROJECT_SPACE_DIR = "/home/veerash/Rover/ROS_WS/install"
 PROJECT_VERSION = "1.3.1"

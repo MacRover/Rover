@@ -1,2 +1,2 @@
-see3cam:ydlidar-master
--DCATKIN_DEVEL_PREFIX=/home/indika/ROS_WS/devel -DCMAKE_INSTALL_PREFIX=/home/indika/ROS_WS/install -G Unix Makefiles
+ydlidar-master
+-DCATKIN_DEVEL_PREFIX=/home/veerash/Rover/ROS_WS/devel -DCMAKE_INSTALL_PREFIX=/home/veerash/Rover/ROS_WS/install -G Unix Makefiles

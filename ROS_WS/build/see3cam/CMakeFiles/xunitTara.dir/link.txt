@@ -1,1 +1,0 @@
-/usr/bin/c++  -fPIC   -shared -Wl,-soname,libxunitTara.so -o /home/indika/ROS_WS/devel/lib/libxunitTara.so CMakeFiles/xunitTara.dir/src/xunit/xunit_lib_tara.cpp.o -ludev 

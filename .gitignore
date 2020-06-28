@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+#Catkin_build not needed
+./ROS_WS/build

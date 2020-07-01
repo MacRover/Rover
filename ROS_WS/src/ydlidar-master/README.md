@@ -19,16 +19,16 @@ How to run YDLIDAR ros package
 There're two ways to run YDLIDAR ros package
 
 1. Run YDLIDAR node and view in the rviz
-------------------------------------------------------------
-roslaunch ydlidar lidar_view.launch
+
+        roslaunch ydlidar lidar_view.launch
 
 You should see YDLIDAR's scan result in the rviz.
 
 2. Run YDLIDAR node and view using test application
-------------------------------------------------------------
-roslaunch ydlidar lidar.launch
 
-rosrun ydlidar ydlidar_client
+        roslaunch ydlidar lidar.launch
+
+        rosrun ydlidar ydlidar_client
 
 You should see YDLIDAR's scan result in the console
 

@@ -1,0 +1,13 @@
+material aruco_marker
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ../textures/5x5_1000_520.svg
+			}
+		}
+	}
+}

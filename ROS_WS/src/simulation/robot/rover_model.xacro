@@ -1,0 +1,161 @@
+<?xml version='1.0'?>
+
+<robot name="rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- <xacro:include filename="$(find simulation)/robot/rover.gazebo" /> -->
+  <!-- <origin rpy="0 0 1.5707" xyz="0 0 0"/> -->
+  <link name='chassis'>
+    <pose>0 0 0.1 0 0 0</pose>
+    <!-- <origin rpy="0 0 1.5707" xyz="0 0 0.1"/> -->
+
+    <collision name='collision'>
+      <!-- <origin rpy="0.0 0 0" xyz="-0.25 0.18 -0.04"/> -->
+      <geometry>
+        <box size="0.8 1.68 0.5"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <slip1>1.0</slip1>
+            <slip2>1.0</slip2>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
+
+    <visual name='chassis_visual'>
+      <!-- <pose>-0.25 0.18 -0.04 0 0 0</pose> -->
+      <origin rpy="0 0 1.5707" xyz="-0.25 0.18 -0.04"/>
+      <geometry>
+        <mesh filename="package://simulation/robot/rover_without_arm.dae"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name='kinect_link'>
+    <!-- <pose>0 0.25 0 0 0 0</pose> -->
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.8 1.68 0.5"/>
+        </geometry>
+    </collision>
+    <visual name="left_wheel_visual">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://simulation/robot/kinect.dae"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="left_wheel">
+    <!-- <origin xyz="0.5 0.145 -0.31" rpy="0 1.5707 0"/> -->
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </collision>
+    <visual name="left_wheel_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="front_left_wheel">
+    <origin xyz="0.5 -0.468 -0.38" rpy="0 1.5707 0"/>
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </collision>
+    <visual name="left_wheel_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="right_wheel">
+    <!-- <origin xyz="-0.44 0.145 -0.31" rpy="0 1.5707 0"/> -->
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </collision>
+    <visual name="right_wheel_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <link name="front_right_wheel">
+    <origin xyz="-0.44 -0.468 -0.38" rpy="0 1.5707 0"/>
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </collision>
+    <visual name="right_wheel_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+
+  <joint type="continuous" name="left_wheel_hinge">
+    <origin xyz="-0.205 0.94 -0.41" rpy="0 1.5707 1.5707"/>
+    <child link="left_wheel"/>
+    <parent link="chassis"/>
+    <axis xyz="0 0 1" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint type="continuous" name="front_left_wheel_hinge">
+    <origin xyz="0.39 0.94 -0.38" rpy="0 1.5707 1.5707"/>
+    <child link="front_left_wheel"/>
+    <parent link="chassis"/>
+    <axis xyz="0 0 1" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint type="continuous" name="front_right_wheel_hinge">
+    <origin xyz="0.39 -0.03 -0.38" rpy="0 1.5707 1.5707"/>
+    <child link="front_right_wheel"/>
+    <parent link="chassis"/>
+    <axis xyz="0 0 1" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint type="continuous" name="right_wheel_hinge">
+    <origin xyz="-0.205 -0.03 -0.41" rpy="0 1.5707 1.5707"/>
+    <child link="right_wheel"/>
+    <parent link="chassis"/>
+    <axis xyz="0 0 1" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="kinect_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0.193 0.451 0.027" rpy="0 0 0"/>
+    <parent link="chassis"/>
+    <child link="kinect_link"/>
+  </joint>
+
+</robot>

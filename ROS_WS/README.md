@@ -5,4 +5,4 @@ The command for it is:
 
             source ROS_WS/devel/setup.bash
             
-You can add this command to your basrc if you don't want to do it everytime you open terminal.
+You can add this command to your bashrc if you don't want to do it everytime you open terminal.

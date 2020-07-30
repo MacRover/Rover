@@ -32,6 +32,6 @@
 *.app
 
 #Catkin_build not needed
-./ROS_WS/build
-./ROS_WS/devel
+./ROS_WS/build/
+./ROS_WS/devel/
 

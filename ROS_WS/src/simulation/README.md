@@ -3,6 +3,7 @@ Launch ARM simulation with:
     roslaunch simulation test_world.launch model:=arm
 
 If you want to control the arm, then you have to run the joint_state_controller under control package. This create the controllers for the joints, which will take in angle commands.
+
 The command for it is:
 ---------------------------------------
     roslaunch control arm_controller.launch

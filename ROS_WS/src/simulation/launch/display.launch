@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="model" default="$(find simulation)/robot/rover.xacro"/>
+  <arg name="model" default="$(find simulation)/robot/arm.xacro"/>
   <arg name="gui" default="true" />
   <arg name="rvizconfig" default="$(find simulation)/rviz/urdf.rviz" />
 

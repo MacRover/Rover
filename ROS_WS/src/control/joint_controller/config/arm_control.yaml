@@ -1,0 +1,35 @@
+arm:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+  
+  # Position Controllers ---------------------------------------
+  base_hinge_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: base_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  lower_hinge_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lower_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  upper_hinge_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: upper_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  forearm_hinge_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: forearm_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  wrist_hinge_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: wrist_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  claw_right_hinge_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: claw_right_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  claw_left_hinge_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: claw_left_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}

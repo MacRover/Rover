@@ -1,0 +1,5 @@
+Instead of starting to make the arm using the stl files of the actual model, it is better to make a sample model using simple
+such as rectangles, cylinders, etc. Use the sample model to work on the joints This way you dont have to load complicated meshes which can be slow.
+
+Install ros controllers
+

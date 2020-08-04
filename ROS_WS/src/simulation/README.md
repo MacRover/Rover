@@ -2,13 +2,13 @@ Launch ARM simulation with:
 =======================================
 1. Launch the world with the arm model first
 
-    roslaunch simulation test_world.launch model:=arm
+      roslaunch simulation test_world.launch model:=arm
 
 2. If you want to control the arm, then you have to run the joint_state_controller under control package. This create the controllers for the joints, which will take in angle commands.
 
 The command for it is:
 
-    roslaunch control arm_controller.launch
+      roslaunch control arm_controller.launch
 
 If it complains about missing effort_controller, you might need to install the proper ros controller packages.(ros-melodic-ros-controllers)
 

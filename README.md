@@ -33,9 +33,9 @@
     * https://hub.docker.com/editions/community/docker-ce-desktop-windows
     * Stable version recommended
     * Make sure docker is set to "Use the WSL 2 based engine" 
-        ![use WSL2 image](https://raw.githubusercontent.com/MacRover/Rover/master/assets/images/docker_use_wsl2.png)
+        ![use WSL2 image](https://github.com/MacRover/Rover/raw/master/assets/images/docker_use_wsl2.png)
     * Make sure that integration with your Ubuntu distro is enabled 
-        ![wsl2 docker integration image](https://raw.githubusercontent.com/MacRover/Rover/master/assets/images/enable_docker_in_wsl.png)
+        ![wsl2 docker integration image](https://github.com/MacRover/Rover/raw/master/assets/images/enable_docker_in_wsl.png)
 3. Install an X server for Windows
     * Recommended to install VcXsrv https://sourceforge.net/projects/vcxsrv/ as it is actively developed and open-source
     * This runs on your base Windows OS
@@ -64,13 +64,13 @@
     
         Select `Multiple Windows` and set display number to `-1`. Click next.
 
-        ![xlaunch 1st prompt](https://raw.githubusercontent.com/MacRover/Rover/master/assets/images/xlaunch_prompt_1.png)
+        ![xlaunch 1st prompt](https://github.com/MacRover/Rover/raw/master/assets/images/xlaunch_prompt_1.png)
 
         Select `Start no client`. Click next.
 
         **Uncheck** `Native OpenGL` and **check** `Disable access control`. Click next.
 
-        ![xlaunch prompt 2](https://raw.githubusercontent.com/MacRover/Rover/master/assets/images/xlaunch_prompt_2.png)
+        ![xlaunch prompt 2](https://github.com/MacRover/Rover/raw/master/assets/images/xlaunch_prompt_2.png)
 
         Save the configuration file somewhere you can remember. Next time you can just open this and skip the config options. Click finish.
 
@@ -111,13 +111,13 @@
     * Download and install the [Remote Development Extension Pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack)
     * Open the `Remote Explorer` pane. Select `Containers` in the dropdown and open the macrover/rover container. If it's not already running, VSCode will start the container. 
     
-        ![open containers vscode](https://raw.githubusercontent.com/MacRover/Rover/master/assets/images/vscode_container_select.png)
+        ![open containers vscode](https://github.com/MacRover/Rover/raw/master/assets/images/vscode_container_select.png)
     
         From here you can open `/root/Rover` or `/root/Rover/ROS_WS`.
     
     * If you open the latter (`/root/Rover/ROS_WS`), you are in the catkin workspace. This means the [VSCode ROS extension](https://marketplace.visualstudio.com/items?itemName=ms-iot.vscode-ros) will automatically detect your version.
 
-        ![ros on vscode](https://raw.githubusercontent.com/MacRover/Rover/master/assets/images/vscode_ros_extension.png)
+        ![ros on vscode](https://github.com/MacRover/Rover/raw/master/assets/images/vscode_ros_extension.png)
 
 ## Linux Install
 

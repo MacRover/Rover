@@ -21,9 +21,9 @@ This may take a while the first time you run it.
 
 ### 4. Start the macrover/rover docker container
 
-    ```
-    docker run -it macrover/rover
-    ```
+```
+docker run -it macrover/rover
+```
 
 You may also want to set up X11 forwarding in order to work with RVIZ, gazebo, rqt, etc. I've set this up with WSL but haven't done it on native linux yet so I'll update this later
 
@@ -125,4 +125,136 @@ You may also want to set up X11 forwarding in order to work with RVIZ, gazebo, r
 
 ## Linux Install
 
-This section will be completed in more detail when I actually install ROS on Linux (GNU/Linux for all the Stallmans out there). For now check out the [ROS installation instructions](http://wiki.ros.org/melodic/Installation/Ubuntu) on the ROS wiki.
+### Docker & Nvidia Hardware acceleration
+
+This set of instructions applies only if running on linux with and nvidia gpu. This install assumes you have the most recent nvidia GPU drivers (v440+)
+
+#### 1. Install docker
+
+* https://docs.docker.com/engine/install/ubuntu/
+
+* Install prerequisites 
+  ```
+  sudo apt update
+  ```
+  ```
+  sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+  ```
+* Add gpg key and verify
+  ```
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  ```
+  ```
+  sudo apt-key fingerprint 0EBFCD88
+  ```
+* Add docker repository
+  ```
+  sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu$(lsb_release -cs)stable"
+  ```
+* Install docker engine
+  ```
+  sudo apt update
+  ```
+  ```
+  sudo apt install docker-ce docker-ce-cli containerd.io
+  ```
+* Check that docker install works
+  ```
+  sudo docker run hello-world
+  ```
+  Note: you may experience a permissions error here. This means you must add your current user to the `docker` group. To do this, do the following:
+  ```
+  sudo usermod -aG docker $USER
+  ```
+  And then reload the groups to register the changes:
+  ```
+  newgrp docker
+  ```
+  Try running the hello-world image again and it should work.
+
+#### 2. Install nvidia cuda support
+* Follow the deb (network) instructions found here https://developer.nvidia.com/cuda-downloads
+
+* For ***Ubuntu 20.04***, the installation commands are: 
+  ```
+  $ wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+  $ sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+  $ sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
+  $ sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
+  $ sudo apt update
+  $ sudo apt -y install cuda
+  ```
+* Please check the website for your specific install commands
+#### 3. Install nvidia-docker2
+
+* Add nvidia repos
+  ```
+  curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+  ```
+  ```
+  distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+  ```
+  ```
+  curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+  ```
+  ```
+  sudo apt update
+  ```
+* Install nvidia-docker2
+  ```
+  sudo apt install nvidia-docker2
+  ```
+* Restart docker daemon
+  ```
+  sudo systemctl restart docker
+  ```
+* Verify that nvidia-docker2 works
+  ```
+  docker run --gpus all nvidia/cuda:10.2 nvidia-smi
+  ```
+  If your installed CUDA release is not 10.2, check the verison using the following command:
+  ```
+  nvcc --version
+  ```
+  and replace `nvidia/cuda:10.2` with your installed release.
+
+#### 4. Clone the Rover repo and build the docker container
+* Clone the current repo
+  ```
+  git clone https://github.com/MacRover/Rover.git
+  ```
+* cd into the repo and build the dockerfile
+  ```
+  cd Rover
+  ```
+  ```
+  docker build -t macrover/rover .
+  ```
+#### 5. Start the container
+* There is a special script to start the docker container with X11 forwarding
+  ```
+  chmod +x start_nvidia_docker.bash
+  ```
+  ```
+  ./start_nvidia_docker.bash
+  ```
+* Test that the X11 forwarding works. In a new terminal pane type:
+  ```
+  docker exec -it macrover /bin/bash
+  ```
+  ```
+  rviz
+  ```
+  Rviz should open. If it fails shut down the container, run 
+  ```
+  sudo rm -rf /tmp/.docker.xauth
+  ```
+  and then run the start script again.
+* ***NOTE*** THE INSTALL SCRIPT DELETES THE CONTAINER EACH TIME IT IS TURNED OFF!! 
+
+  This means that **shutting down the container without commiting changes will delete all progress** you have done inside the container!
+
+  To **disable** this feature, remove the `--rm` flag from line 25 of `start_nvidia_docker.bash`.
+
+### Native Linux install
+Check out the [ROS installation instructions](http://wiki.ros.org/melodic/Installation/Ubuntu) on the ROS wiki.

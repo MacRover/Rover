@@ -24,11 +24,9 @@ Launch Stereo simulation with:
 
        roslaunch simulation test_world.launch
 
-2. The stereo_outdoor.launch launches the rtabmap node for mapping, and the stereo_image_proc for image rectification. Various ros packages need to be installed (rtabmap, stereo_image_proc).
+2. The stereo_outdoor.launch launches the rtabmap node for mapping, and the stereo_image_proc for image rectification. Various ros packages need to be installed (rtabmap, stereo_image_proc). The command is:
 
-The command for it is:
-
-    roslaunch simulation stereo_outdoor.launch
+       roslaunch simulation stereo_outdoor.launch
 
 3. Then drive the rover around with:
 

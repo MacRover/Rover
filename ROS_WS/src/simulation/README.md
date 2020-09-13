@@ -1,21 +1,20 @@
 Launch ARM simulation with:
-=======================================
-1. Launch the world with the arm model first
+========================================================================
 
-      roslaunch simulation test_world.launch model:=arm
+1. Launch the world with the arm model first:
+                        
+       roslaunch simulation test_world.launch model:=arm
 
-2. If you want to control the arm, then you have to run the joint_state_controller under control package. This create the controllers for the joints, which will take in angle commands.
+2. If you want to control the arm, then you have to run the joint_state_controller under control package. This create the controllers for the joints, which will take in angle commands. The command for it is:
 
-The command for it is:
-
-      roslaunch control arm_controller.launch
+       roslaunch control arm_controller.launch
 
 If it complains about missing effort_controller, you might need to install the proper ros controller packages.(ros-melodic-ros-controllers)
 
 3. Finally to control the ARM, launch the python script under ROS_WS/src/control/src which takes in keyboard input to send commands to the joint_state_controller.
 
 Launch Rover simulation with:
-=======================================
+============================================================================
     roslaunch simulation test_world.launch
 
 

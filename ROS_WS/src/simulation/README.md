@@ -22,18 +22,18 @@ Launch Stereo simulation with:
 =======================================
 1. Launch the world with the rover model first
 
-      roslaunch simulation test_world.launch
+    roslaunch simulation test_world.launch
 
 2. The stereo_outdoor.launch launches the rtabmap node for mapping, and the stereo_image_proc for image rectification. Various ros packages need to be installed (rtabmap, stereo_image_proc).
 
 The command for it is:
 
-      roslaunch simulation stereo_outdoor.launch
+    roslaunch simulation stereo_outdoor.launch
 
 3. Then drive the rover around with:
 
 
-      rosrun control drive_control.py
+    rosrun control drive_control.py
 
 Going through the tutorial given on the gazebo website is helpful if you want to learn gazebo simulation in detail.
 

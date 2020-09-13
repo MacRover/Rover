@@ -32,6 +32,10 @@ Launch Stereo simulation with:
 
        rosrun control drive_control.py
 
+
+Starting up with Gazebo simulations
+==========================================================
+
 Going through the tutorial given on the gazebo website is helpful if you want to learn gazebo simulation in detail.
 
 The models are to be defined using URDF. You will also include some extra elements(ie: Inertial) from Gazebo so that you can simulate it properly in Gazebo. Because plain xml for URDF is inconvenient, xacro macro is used.

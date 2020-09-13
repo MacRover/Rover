@@ -7,7 +7,7 @@ arm:
   # Position Controllers ---------------------------------------
   base_hinge_position_controller:
     type: effort_controllers/JointPositionController
-    joint: base_hinge
+    joint: base_arm_hinge
     pid: {p: 100.0, i: 0.01, d: 10.0}
   lower_hinge_position_controller:
     type: effort_controllers/JointPositionController

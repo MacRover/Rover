@@ -19,6 +19,23 @@ Launch Rover simulation with:
     roslaunch simulation test_world.launch
 
 
+Launch Stereo simulation with:
+=======================================
+1. Launch the world with the rover model first
+
+      roslaunch simulation test_world.launch
+
+2. The stereo_outdoor.launch launches the rtabmap node for mapping, and the stereo_image_proc for image rectification. Various ros packages need to be installed (rtabmap, stereo_image_proc).
+
+The command for it is:
+
+      roslaunch simulation stereo_outdoor.launch
+
+3. Then drive the rover around with:
+
+
+      rosrun control drive_control.py
+
 Going through the tutorial given on the gazebo website is helpful if you want to learn gazebo simulation in detail.
 
 The models are to be defined using URDF. You will also include some extra elements(ie: Inertial) from Gazebo so that you can simulate it properly in Gazebo. Because plain xml for URDF is inconvenient, xacro macro is used.
@@ -31,8 +48,7 @@ To attach different components(links) to each other, you use joints and these jo
 
 Before you orient and position objects, just try to make sure you orient all components facing the X axis. This is a huge mistake I made where I thought orientation relative to axis didn't matter. The rover will work properly in simulations, but when you check the odometry data, you will see that the odometry direction are all wrong. This is because it is assumed the forward direction is oriented towards the positive X direction.
 
-So to build models, you can try making them using Gazebo, but I highly recommend using RVIZ. Starting up Gazebo and running it takes a lot of 
-processing power thus taking more time compared to RVIZ. RVIZ also allows you to measure distances, which you can use in you model to see where you position something.
+So to build models, you can try making them using Gazebo, but I highly recommend using RVIZ. Starting up Gazebo and running it takes a lot of processing power thus taking more time compared to RVIZ. RVIZ also allows you to measure distances, which you can use in you model to see where you position something.
 
 Gazebo is connected to ROS using Gazebo plugins, there are components that will create topics and either subscribe and publish to them. For example the rover is using the Skid steering plugin, which allows you to move the wheels using cmd_vel messages, and it also publishes odometry data. The various plugins can be found on the Gazebo website.
 

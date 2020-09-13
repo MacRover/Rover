@@ -1,0 +1,13 @@
+<!-- This launch file is used to rotate the camera orientation, because by default the message in the camera frame has weird orientation -->
+<launch>
+  <!-- Rotate the camera frame. -->
+  <arg name="pi/2" value="1.5707963267948966" />
+  <arg name="optical_rotate" value="0 0 0 -$(arg pi/2) 0 -$(arg pi/2)" />
+  <node pkg="tf" type="static_transform_publisher" name="camera_base_link"
+        args="$(arg optical_rotate) chassis left_camera_frame 100" />  
+    
+  <!-- Use direclty "stereo_camera" namespace instead of remappping each message. -->
+  <!-- <group ns="/stereo_camera" >   
+    <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc"/>
+  </group> -->
+</launch>

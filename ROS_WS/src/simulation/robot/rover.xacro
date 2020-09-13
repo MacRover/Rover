@@ -3,6 +3,7 @@
 <robot name="rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find simulation)/robot/rover.gazebo" />
+  <!-- <xacro:include filename="$(find simulation)/robot/arm.xacro" /> -->
   <origin rpy="0 0 1.5707" xyz="0 0 0"/>
   <link name='chassis'>
     <pose>0 0 0.1 0 0 0</pose>
@@ -26,9 +27,9 @@
 
     <visual name='chassis_visual'>
       <!-- <pose>-0.25 0.18 -0.04 0 0 0</pose> -->
-      <origin rpy="0 0 1.5707" xyz="-0.25 -0.27 -0.04"/>
+      <origin rpy="0 0 0" xyz="0 0 -0.04"/>
       <geometry>
-        <mesh filename="package://simulation/robot/rover_without_arm.dae"/>
+        <mesh filename="package://simulation/robot/chassis_with_wheels.dae"/>
       </geometry>
     </visual>
     <inertial>
@@ -41,7 +42,12 @@
       />
     </inertial>
   </link>
-
+  <!-- <joint type="continuous" name="base_arm_hinge">
+    <origin xyz="0.3372 0 0.0637" rpy="0 0 0"/>
+    <axis xyz="0 0 1" />
+    <child link="base"/>
+    <parent link="chassis"/>
+  </joint> -->
   <!-- Kinect Link -->
   <link name='kinect_link'>
     <!-- <pose>0 0.25 0 0 0 0</pose> -->
@@ -65,15 +71,74 @@
   </link>
   <joint name="kinect_joint" type="fixed">
     <axis xyz="0 1 0" />
-    <origin xyz="0.183 0 0.027" rpy="0 0 0"/>
+    <origin xyz="0.5 0 -0.09" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="kinect_link"/>
   </joint>
 
 
+  <!-- Camera -->
+  <link name="camera_link1">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="0.05 0.05 0.05"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="camera_joint1" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0.45 0.1 0.4" rpy="0 0 0"/>
+    <parent link="chassis"/>
+    <child link="camera_link1"/>
+  </joint>
+
+    <!-- Camera -->
+  <link name="camera_link2">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="0.05 0.05 0.05"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="camera_joint2" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0.45 -0.1 0.4" rpy="0 0 0"/>
+    <parent link="chassis"/>
+    <child link="camera_link2"/>
+  </joint>
 
   <!-- Hokuyo Laser -->
-  <link name="hokuyo_link">
+  <!-- <link name="hokuyo_link">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -100,7 +165,57 @@
     <origin xyz="0.2 0 0.14" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="hokuyo_link"/>
-  </joint>
+  </joint> -->
+
+  <!-- IMU sensor -->
+  <!-- <link name="imu_link">
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>   
+    <visual>
+        <geometry>
+            <box size = "0.1 0.1 0.1"/> 
+        </geometry>
+    </visual>
+    <collision>         
+        <geometry>
+            <box size = "0.1 0.1 0.1"/> 
+        </geometry>
+    </collision>     
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0.0 0 0.027" rpy="0 0 0"/>
+    <parent link="chassis"/>
+    <child link="imu_link"/>
+  </joint> -->
+
+  <!-- GPS sensor -->
+  <!-- <link name="gps_link">
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>   
+    <visual>
+        <geometry>
+            <box size = "0.001 0.001 0.001"/> 
+        </geometry>
+    </visual>
+    <collision>         
+        <geometry>
+            <box size = "0.001 0.001 0.001"/> 
+        </geometry>
+    </collision>     
+  </link>
+  <joint name="gps_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="-0.1 0 0.027" rpy="0 0 0"/>
+    <parent link="chassis"/>
+    <child link="gps_link"/>
+  </joint> -->
 
 
   <link name="left_wheel">
@@ -205,7 +320,7 @@
 
 
   <joint type="continuous" name="left_wheel_hinge">
-    <origin xyz="-0.205 0.49 -0.41" rpy="0 1.5707 1.5707"/>
+    <origin xyz="0.045 0.49 -0.41" rpy="0 1.5707 1.5707"/>
     <child link="left_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 0 1" rpy="0 0 0"/>
@@ -214,7 +329,7 @@
   </joint>
 
   <joint type="continuous" name="front_left_wheel_hinge">
-    <origin xyz="0.39 0.49 -0.38" rpy="0 1.5707 1.5707"/>
+    <origin xyz="0.64 0.49 -0.38" rpy="0 1.5707 1.5707"/>
     <child link="front_left_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 0 1" rpy="0 0 0"/>
@@ -223,7 +338,7 @@
   </joint>
 
   <joint type="continuous" name="front_right_wheel_hinge">
-    <origin xyz="0.39 -0.48 -0.38" rpy="0 1.5707 1.5707"/>
+    <origin xyz="0.64 -0.48 -0.38" rpy="0 1.5707 1.5707"/>
     <child link="front_right_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 0 1" rpy="0 0 0"/>
@@ -232,7 +347,7 @@
   </joint>
 
   <joint type="continuous" name="right_wheel_hinge">
-    <origin xyz="-0.205 -0.48 -0.41" rpy="0 1.5707 1.5707"/>
+    <origin xyz="0.045 -0.48 -0.41" rpy="0 1.5707 1.5707"/>
     <child link="right_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 0 1" rpy="0 0 0"/>

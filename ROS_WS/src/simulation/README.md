@@ -38,7 +38,7 @@ Launch Stereo simulation with:
 
        roslaunch control xbox_controller.launch
 
-   Use RT to accelerate, LT to brake/reverse and left joystick to steer.
+   Use RT to accelerate, LT to brake/reverse and left joystick to steer. If you're running in docker, the controller must be ported in before when running the docker image.
        
    Otherwise use the keyboard to drive the rover around with:
 

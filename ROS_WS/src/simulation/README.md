@@ -34,9 +34,13 @@ Launch Stereo simulation with:
 
        roslaunch simulation stereo_outdoor.launch
 
-3. Then drive the rover around with:
+3. If a controller is connected, drive the rover around with:
 
-       rosrun control drive_control.py
+       roslaunch control xbox_controller.launch
+       
+   Otherwise use the keyboard to drive the rover around with:
+
+       rosrun control keyboard_drive_control.py
 
 
 Starting up with Gazebo simulations

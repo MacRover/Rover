@@ -228,17 +228,17 @@ This set of instructions applies only if running on linux with and nvidia gpu. T
   cd Rover
   ```
   ```
-  docker build -t macrover/rover .
+  docker build -f docker/nvidia/Dockerfile -t macrover/rover:nvidia .
   ```
 #### 5. Start the container
 * There is a special script to start the docker container with X11 forwarding
   ```
-  chmod +x start_nvidia_docker.bash
+  chmod +x docker/nvidia/start_nvidia_docker.bash
   ```
   ```
-  ./start_nvidia_docker.bash
+  docker/nvidia/start_nvidia_docker.bash
   ```
-* Test that the X11 forwarding works. In a new terminal pane type:
+* To test that the X11 forwarding works. In a new terminal pane type:
   ```
   docker exec -it macrover /bin/bash
   ```
@@ -254,7 +254,7 @@ This set of instructions applies only if running on linux with and nvidia gpu. T
 
   This means that **shutting down the container without commiting changes will delete all progress** you have done inside the container!
 
-  To **disable** this feature, remove the `--rm` flag from line 25 of `start_nvidia_docker.bash`.
+  To **disable** this "feature", remove the `--rm` flag and the `--name` flag from `start_nvidia_docker.bash`.
 
 ### Native Linux install
 Check out the [ROS installation instructions](http://wiki.ros.org/melodic/Installation/Ubuntu) on the ROS wiki.

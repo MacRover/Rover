@@ -22,6 +22,8 @@ ls -FAlh $XAUTH
 echo ""
 echo "Running docker..."
 
+# Include --device="/dev/input/js0" flag to forward a game controller
+
 docker run -it --rm \
     --name=macrover \
     --env="DISPLAY=$DISPLAY" \
@@ -31,7 +33,6 @@ docker run -it --rm \
     --volume="$XAUTH:$XAUTH" \
     --env="NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics" \
     --env="NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}" \
-    --device="/dev/input/js0" \
     --runtime=nvidia \
     macrover/rover:nvidia
 

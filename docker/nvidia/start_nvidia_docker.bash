@@ -31,7 +31,8 @@ docker run -it --rm \
     --volume="$XAUTH:$XAUTH" \
     --env="NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics" \
     --env="NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}" \
+    --device="/dev/input/js0" \
     --runtime=nvidia \
-    macrover/rover
+    macrover/rover:nvidia
 
 echo "Done."

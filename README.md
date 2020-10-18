@@ -14,7 +14,7 @@ git clone https://github.com/MacRover/Rover.git
 ### 3. Build the docker file within the cloned directory
 
 ```
-docker build -t macrover/rover .
+docker build -f docker/wsl/Dockerfile -t macrover/rover:wsl .
 ```
 
 This may take a while the first time you run it.
@@ -22,7 +22,7 @@ This may take a while the first time you run it.
 ### 4. Start the macrover/rover docker container
 
 ```
-docker run -it macrover/rover
+docker/wsl/start_wsl_docker.bash
 ```
 
 You may also want to set up X11 forwarding in order to work with RVIZ, gazebo, rqt, etc. I've set this up with WSL but haven't done it on native linux yet so I'll update this later

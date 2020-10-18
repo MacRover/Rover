@@ -96,14 +96,14 @@ You may also want to set up X11 forwarding in order to work with RVIZ, gazebo, r
 * Inside the git repo (where you should already be), type:
 
   ```
-  docker build -t macrover/rover .
+  docker build -f docker/wsl/Dockerfile -t macrover/rover:wsl .
   ```
   If you run into issues where the docker command is not found, make sure docker is running and that you've set up integration with your Ubuntu distro. If all else fails, try rebooting and see if it works. Just make sure to start up the X11 server (using the saved config file from before), start up docker, and `cd` into the cloned `Rover` git repository again when the computer completes the reboot.
 	
     Now you're ready to start the docker container. Type the following into your Ubuntu terminal window:
 
   ```
-  docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" macrover/rover
+  docker/wsl/start_wsl_docker.bash
   ```
 
   The extra flags here allow the X11 server running on Windows to interact with the docker container. To start the container in the background, replace the `-it` flag with `-d`.

@@ -94,3 +94,6 @@ CATKIN_IGNORE
 
 # Local History for Visual Studio Code
 .history/
+
+# Packages copied into docker containers
+*.deb

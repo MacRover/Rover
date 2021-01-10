@@ -14,7 +14,7 @@ git clone https://github.com/MacRover/Rover.git
 ### 3. Build the docker file within the cloned directory
 
 ```
-docker build -t macrover/rover .
+docker build -f docker/wsl/Dockerfile -t macrover/rover:wsl .
 ```
 
 This may take a while the first time you run it.
@@ -22,7 +22,7 @@ This may take a while the first time you run it.
 ### 4. Start the macrover/rover docker container
 
 ```
-docker run -it macrover/rover
+docker/wsl/start_wsl_docker.bash
 ```
 
 You may also want to set up X11 forwarding in order to work with RVIZ, gazebo, rqt, etc. I've set this up with WSL but haven't done it on native linux yet so I'll update this later
@@ -96,14 +96,14 @@ You may also want to set up X11 forwarding in order to work with RVIZ, gazebo, r
 * Inside the git repo (where you should already be), type:
 
   ```
-  docker build -t macrover/rover .
+  docker build -f docker/wsl/Dockerfile -t macrover/rover:wsl .
   ```
   If you run into issues where the docker command is not found, make sure docker is running and that you've set up integration with your Ubuntu distro. If all else fails, try rebooting and see if it works. Just make sure to start up the X11 server (using the saved config file from before), start up docker, and `cd` into the cloned `Rover` git repository again when the computer completes the reboot.
 	
     Now you're ready to start the docker container. Type the following into your Ubuntu terminal window:
 
   ```
-  docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" macrover/rover
+  docker/wsl/start_wsl_docker.bash
   ```
 
   The extra flags here allow the X11 server running on Windows to interact with the docker container. To start the container in the background, replace the `-it` flag with `-d`.
@@ -228,17 +228,17 @@ This set of instructions applies only if running on linux with and nvidia gpu. T
   cd Rover
   ```
   ```
-  docker build -t macrover/rover .
+  docker build -f docker/nvidia/Dockerfile -t macrover/rover:nvidia .
   ```
 #### 5. Start the container
 * There is a special script to start the docker container with X11 forwarding
   ```
-  chmod +x start_nvidia_docker.bash
+  chmod +x docker/nvidia/start_nvidia_docker.bash
   ```
   ```
-  ./start_nvidia_docker.bash
+  docker/nvidia/start_nvidia_docker.bash
   ```
-* Test that the X11 forwarding works. In a new terminal pane type:
+* To test that the X11 forwarding works. In a new terminal pane type:
   ```
   docker exec -it macrover /bin/bash
   ```
@@ -254,7 +254,7 @@ This set of instructions applies only if running on linux with and nvidia gpu. T
 
   This means that **shutting down the container without commiting changes will delete all progress** you have done inside the container!
 
-  To **disable** this feature, remove the `--rm` flag from line 25 of `start_nvidia_docker.bash`.
+  To **disable** this "feature", remove the `--rm` flag and the `--name` flag from `start_nvidia_docker.bash`.
 
 ### Native Linux install
 Check out the [ROS installation instructions](http://wiki.ros.org/melodic/Installation/Ubuntu) on the ROS wiki.

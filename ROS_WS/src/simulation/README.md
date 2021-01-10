@@ -2,8 +2,14 @@ Launch ARM simulation with:
 ========================================================================
 
 1. Launch the world with the arm model first:
+    
+    Arm only:
                         
        roslaunch simulation test_world.launch model:=arm
+    
+   Arm with rover:
+ 
+       roslaunch simulation test_world.launch model:=rover_with_arm
 
 2. If you want to control the arm, then you have to run the joint_state_controller under control package. This create the controllers for the joints, which will take in angle commands. The command for it is:
 
@@ -28,9 +34,15 @@ Launch Stereo simulation with:
 
        roslaunch simulation stereo_outdoor.launch
 
-3. Then drive the rover around with:
+3. If a controller is connected, drive the rover around with:
 
-       rosrun control drive_control.py
+       roslaunch control xbox_controller.launch
+
+   Use RT to accelerate, LT to brake/reverse and left joystick to steer. If you're running in docker, the controller must be ported in before when running the docker image.
+       
+   Otherwise use the keyboard to drive the rover around with:
+
+       rosrun control keyboard_drive_control.py
 
 
 Starting up with Gazebo simulations

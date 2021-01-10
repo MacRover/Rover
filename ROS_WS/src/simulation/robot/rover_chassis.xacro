@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+
+<robot name="rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- <xacro:include filename="$(find simulation)/robot/rover_drive.gazebo" /> -->
+  <!-- <xacro:include filename="$(find simulation)/robot/arm.xacro" /> -->
+  <!-- <origin rpy="0 0 1.5707" xyz="0 0 0"/> -->
+  <link name='chassis'>
+    <pose>0 0 0.1 0 0 0</pose>
+
+    <collision name='collision'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.9 0.58 0.2"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <slip1>1.0</slip1>
+            <slip2>1.0</slip2>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
+
+    <visual name='chassis_visual'>
+      <!-- <pose>-0.25 0.18 -0.04 0 0 0</pose> -->
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://simulation/robot/chassis_only.dae"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="20.0"/>
+      <origin xyz="0 0 0" rpy=" 0 0 0"/>
+      <inertia
+          ixx="0.627" ixy="0" ixz="0"
+          iyy="1.72" iyz="0"
+          izz="1.91"
+      />
+    </inertial>
+  </link>
+</robot>

@@ -11,10 +11,9 @@
 
   <env name="GAZEBO_MODEL_PATH" value="$(find simulation)/models:$(optenv GAZEBO_MODEL_PATH)" />
 
-
   
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find simulation)/worlds/marker.world"/>
+    <arg name="world_name" value="$(arg world)"/>
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="gui" value="$(arg gui)"/>
@@ -24,6 +23,7 @@
 
   
   <param name="robot_description" command="$(find xacro)/xacro.py '$(find simulation)/robot/$(arg model).xacro'"/>
+  
 
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" output="screen"
    args="-urdf -param robot_description -model $(arg model)" />

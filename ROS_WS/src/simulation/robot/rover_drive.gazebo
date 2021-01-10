@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<robot>
+  <!-- <gazebo>
+    <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+      <updateRate>100.0</updateRate>
+      <leftFrontJoint>front_left_wheel_hinge</leftFrontJoint>
+      <rightFrontJoint>front_right_wheel_hinge</rightFrontJoint>
+      <leftRearJoint>back_left_wheel_hinge</leftRearJoint>
+      <rightRearJoint>back_right_wheel_hinge</rightRearJoint>
+      <wheelSeparation>0.7</wheelSeparation>
+      <wheelDiameter>0.1</wheelDiameter>
+      <robotBaseFrame>chassis</robotBaseFrame>
+      <torque>20</torque>
+      <topicName>cmd_vel</topicName>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <broadcastTF>true</broadcastTF>
+      <legacyMode>false</legacyMode>
+    </plugin>
+  </gazebo> -->
+  <gazebo>
+    <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive6.so">
+      <updateRate>100.0</updateRate>
+      <leftFrontJoint>front_left_wheel_hinge</leftFrontJoint>
+      <rightFrontJoint>front_right_wheel_hinge</rightFrontJoint>
+      <leftMidJoint>middle_left_wheel_hinge</leftMidJoint>
+      <rightMidJoint>middle_right_wheel_hinge</rightMidJoint>
+      <leftRearJoint>back_left_wheel_hinge</leftRearJoint>
+      <rightRearJoint>back_right_wheel_hinge</rightRearJoint>
+      <wheelSeparation>0.7</wheelSeparation>
+      <wheelDiameter>0.1</wheelDiameter>
+      <robotBaseFrame>chassis</robotBaseFrame>
+      <torque>20</torque>
+      <topicName>cmd_vel</topicName>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <broadcastTF>true</broadcastTF>
+      <legacyMode>false</legacyMode>
+    </plugin>
+  </gazebo>
+
+</robot>

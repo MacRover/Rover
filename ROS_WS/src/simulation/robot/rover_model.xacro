@@ -34,6 +34,15 @@
     </visual>
   </link>
 
+  <link name='base_footprint'><link/>
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="0 0 0.51" rpy="0 0 0"/>
+    <parent link="base_footprint"/>
+    <child link="chassis"/>
+  </joint>
+
+
+
   <link name='kinect_link'>
     <!-- <pose>0 0.25 0 0 0 0</pose> -->
     <collision name="collision">

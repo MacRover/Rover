@@ -121,6 +121,6 @@
    </group>
   
    <!-- Visualisation RVIZ --> 
-   <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz" args="-d $(find simulation)/launch/config/stereo_outdoor.rviz"/>
+   <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz" args="-d $(find simulation)/config/stereo_outdoor.rviz"/>
 
 </launch>

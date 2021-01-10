@@ -15,6 +15,11 @@
     <include>
       <uri>model://sun</uri>
     </include>
-
+		<!-- <scene>
+			<sky>
+				<clouds>
+				</clouds>
+			</sky>
+		</scene> -->
   </world>
 </sdf>

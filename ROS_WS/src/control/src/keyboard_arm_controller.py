@@ -21,13 +21,13 @@ button_delay = 0.2
 def move():
     rospy.init_node("keyboard_arm_controller", anonymous=True)
 
-    base_hinge_position_publisher = rospy.Publisher('/arm/base_hinge_position_controller/command', Float64, queue_size=10)
-    lower_hinge_position_publisher = rospy.Publisher('/arm/lower_hinge_position_controller/command', Float64, queue_size=10)
-    upper_hinge_position_publisher = rospy.Publisher('/arm/upper_hinge_position_controller/command', Float64, queue_size=10)
-    forearm_hinge_position_publisher = rospy.Publisher('/arm/forearm_hinge_position_controller/command', Float64, queue_size=10)
-    wrist_hinge_position_publisher = rospy.Publisher('/arm/wrist_hinge_position_controller/command', Float64, queue_size=10)
-    claw_right_hinge_position_publisher = rospy.Publisher('/arm/claw_right_hinge_position_controller/command', Float64, queue_size=10)
-    claw_left_hinge_position_publisher = rospy.Publisher('/arm/claw_left_hinge_position_controller/command', Float64, queue_size=10)
+    base_hinge_position_publisher = rospy.Publisher('/base_hinge_position_controller/command', Float64, queue_size=10)
+    lower_hinge_position_publisher = rospy.Publisher('/lower_hinge_position_controller/command', Float64, queue_size=10)
+    upper_hinge_position_publisher = rospy.Publisher('/upper_hinge_position_controller/command', Float64, queue_size=10)
+    forearm_hinge_position_publisher = rospy.Publisher('/forearm_hinge_position_controller/command', Float64, queue_size=10)
+    wrist_hinge_position_publisher = rospy.Publisher('/wrist_hinge_position_controller/command', Float64, queue_size=10)
+    claw_right_hinge_position_publisher = rospy.Publisher('/claw_right_hinge_position_controller/command', Float64, queue_size=10)
+    claw_left_hinge_position_publisher = rospy.Publisher('/claw_left_hinge_position_controller/command', Float64, queue_size=10)
 
     angle_base_hinge = Float64()
     angle_lower_hinge = Float64()

@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: simulation
+    relative_path: robot/rover_with_arm.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/rover_with_arm.srdf
+  CONFIG:
+    author_name: veerash palanichamy
+    author_email: veerashp05@gmail.com
+    generated_timestamp: 1609473147

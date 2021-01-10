@@ -1,0 +1,54 @@
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50
+
+arm_position_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - base_arm_hinge
+    - lower_hinge
+    - upper_hinge
+    - forearm_hinge
+    - wrist_hinge
+
+  constraints:
+    goal_time: 0.5                   # Override default
+    stopped_velocity_tolerance: 0.02 # Override default
+    base_forearm_joint:
+      trajectory: 1.0               # Not enforced if unspecified
+      goal: 0.5                     # Not enforced if unspecified
+    forearm_0_1_joint:
+      trajectory: 1.0               # Not enforced if unspecified
+      goal: 0.5                     # Not enforced if unspecified
+    forearm_arm_joint:
+      trajectory: 1.0               # Not enforced if unspecified
+      goal: 0.5                     # Not enforced if unspecified
+    arm_0_1_joint:
+      trajectory: 1.0               # Not enforced if unspecified
+      goal: 0.5                     # Not enforced if unspecified
+    arm_gripper_joint:
+      trajectory: 1.0               # Not enforced if unspecified
+      goal: 0.5                     # Not enforced if unspecified
+
+  gains:
+    base_arm_hinge: {p: 100.0, i: 0.01, d: 10}
+    lower_hinge: {p: 100.0, i: 0.01, d: 10}
+    upper_hinge: {p: 100.0, i: 0.01, d: 10}
+    forearm_hinge: {p: 100.0, i: 0.01, d: 1}
+    wrist_hinge: {p: 100.0, i: 0.01, d: 1}
+    # base_forearm_joint: {p: 10, i: 1, d: 0.001}
+    # forearm_0_1_joint: {p: 10,  i: 1, d: 0.1}
+    # forearm_arm_joint: {p: 10, i: 1, d: 0.001}
+    # arm_0_1_joint: {p: 10,  i: 1, d: 0.001}
+    # arm_gripper_joint: {p: 10,  i: 1, d: 0.001}
+claw_position_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - claw_right_hinge
+    - claw_left_hinge
+  constraints:
+    goal_time: 0.5                   # Override default
+    stopped_velocity_tolerance: 0.02 # Override default
+  gains:
+    claw_right_hinge: {p: 10,  i: 1, d: 0.001}
+    claw_left_hinge: {p: 10,  i: 1, d: 0.001}

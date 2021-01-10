@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="rover_with_arm">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="rover_arm">
+        <joint name="base_arm_hinge" />
+        <joint name="lower_hinge" />
+        <joint name="upper_hinge" />
+        <joint name="forearm_hinge" />
+        <joint name="wrist_hinge" />
+    </group>
+    <group name="rover_claw">
+        <joint name="claw_left_hinge" />
+        <joint name="claw_right_hinge" />
+    </group>
+    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
+    <group_state name="closed" group="rover_claw">
+        <joint name="claw_left_hinge" value="0.96" />
+        <joint name="claw_right_hinge" value="0.96" />
+    </group_state>
+    <group_state name="open" group="rover_claw">
+        <joint name="claw_left_hinge" value="1.45" />
+        <joint name="claw_right_hinge" value="1.45" />
+    </group_state>
+    <group_state name="grab" group="rover_arm">
+        <joint name="base_arm_hinge" value="0" />
+        <joint name="forearm_hinge" value="-1.53" />
+        <joint name="lower_hinge" value="1.54" />
+        <joint name="upper_hinge" value="1.45" />
+        <joint name="wrist_hinge" value="0" />
+    </group_state>
+    <group_state name="up" group="rover_arm">
+        <joint name="base_arm_hinge" value="0" />
+        <joint name="forearm_hinge" value="-1.53" />
+        <joint name="lower_hinge" value="1.37" />
+        <joint name="upper_hinge" value="1.45" />
+        <joint name="wrist_hinge" value="0" />
+    </group_state>
+    <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+    <end_effector name="claw" parent_link="claw_base" group="rover_claw" parent_group="rover_arm" />
+    <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
+    <virtual_joint name="world_to_chassis" type="floating" parent_frame="world" child_link="chassis" />
+    <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
+    <passive_joint name="left_wheel_hinge" />
+    <passive_joint name="right_wheel_hinge" />
+    <passive_joint name="front_left_wheel_hinge" />
+    <passive_joint name="front_right_wheel_hinge" />
+    <passive_joint name="world_to_chassis" />
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="base" link2="camera_link1" reason="Never" />
+    <disable_collisions link1="base" link2="camera_link2" reason="Never" />
+    <disable_collisions link1="base" link2="chassis" reason="Adjacent" />
+    <disable_collisions link1="base" link2="forearm" reason="Never" />
+    <disable_collisions link1="base" link2="front_left_wheel" reason="Never" />
+    <disable_collisions link1="base" link2="front_right_wheel" reason="Never" />
+    <disable_collisions link1="base" link2="kinect_link" reason="Never" />
+    <disable_collisions link1="base" link2="left_wheel" reason="Never" />
+    <disable_collisions link1="base" link2="right_wheel" reason="Never" />
+    <disable_collisions link1="base" link2="upper_arm" reason="Adjacent" />
+    <disable_collisions link1="base" link2="wrist" reason="Never" />
+    <disable_collisions link1="camera_link1" link2="camera_link2" reason="Never" />
+    <disable_collisions link1="camera_link1" link2="chassis" reason="Adjacent" />
+    <disable_collisions link1="camera_link1" link2="front_left_wheel" reason="Never" />
+    <disable_collisions link1="camera_link1" link2="front_right_wheel" reason="Never" />
+    <disable_collisions link1="camera_link1" link2="kinect_link" reason="Never" />
+    <disable_collisions link1="camera_link1" link2="left_wheel" reason="Never" />
+    <disable_collisions link1="camera_link1" link2="right_wheel" reason="Never" />
+    <disable_collisions link1="camera_link2" link2="chassis" reason="Adjacent" />
+    <disable_collisions link1="camera_link2" link2="front_left_wheel" reason="Never" />
+    <disable_collisions link1="camera_link2" link2="front_right_wheel" reason="Never" />
+    <disable_collisions link1="camera_link2" link2="kinect_link" reason="Never" />
+    <disable_collisions link1="camera_link2" link2="left_wheel" reason="Never" />
+    <disable_collisions link1="camera_link2" link2="right_wheel" reason="Never" />
+    <disable_collisions link1="chassis" link2="front_left_wheel" reason="Adjacent" />
+    <disable_collisions link1="chassis" link2="front_right_wheel" reason="Adjacent" />
+    <disable_collisions link1="chassis" link2="kinect_link" reason="Adjacent" />
+    <disable_collisions link1="chassis" link2="left_wheel" reason="Adjacent" />
+    <disable_collisions link1="chassis" link2="right_wheel" reason="Adjacent" />
+    <disable_collisions link1="claw_base" link2="claw_left" reason="Adjacent" />
+    <disable_collisions link1="claw_base" link2="claw_right" reason="Adjacent" />
+    <disable_collisions link1="claw_base" link2="forearm" reason="Never" />
+    <disable_collisions link1="claw_base" link2="wrist" reason="Adjacent" />
+    <disable_collisions link1="claw_left" link2="claw_right" reason="Default" />
+    <disable_collisions link1="claw_left" link2="forearm" reason="Never" />
+    <disable_collisions link1="claw_left" link2="wrist" reason="Never" />
+    <disable_collisions link1="claw_right" link2="forearm" reason="Never" />
+    <disable_collisions link1="claw_right" link2="wrist" reason="Never" />
+    <disable_collisions link1="forearm" link2="upper_arm" reason="Adjacent" />
+    <disable_collisions link1="forearm" link2="wrist" reason="Adjacent" />
+    <disable_collisions link1="front_left_wheel" link2="front_right_wheel" reason="Never" />
+    <disable_collisions link1="front_left_wheel" link2="kinect_link" reason="Never" />
+    <disable_collisions link1="front_left_wheel" link2="left_wheel" reason="Never" />
+    <disable_collisions link1="front_left_wheel" link2="right_wheel" reason="Never" />
+    <disable_collisions link1="front_left_wheel" link2="upper_arm" reason="Never" />
+    <disable_collisions link1="front_right_wheel" link2="kinect_link" reason="Never" />
+    <disable_collisions link1="front_right_wheel" link2="left_wheel" reason="Never" />
+    <disable_collisions link1="front_right_wheel" link2="right_wheel" reason="Never" />
+    <disable_collisions link1="front_right_wheel" link2="upper_arm" reason="Never" />
+    <disable_collisions link1="kinect_link" link2="left_wheel" reason="Never" />
+    <disable_collisions link1="kinect_link" link2="right_wheel" reason="Never" />
+    <disable_collisions link1="left_wheel" link2="right_wheel" reason="Never" />
+    <disable_collisions link1="left_wheel" link2="upper_arm" reason="Never" />
+    <disable_collisions link1="right_wheel" link2="upper_arm" reason="Never" />
+</robot>

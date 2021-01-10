@@ -2,17 +2,16 @@
 
 <robot name="rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find simulation)/robot/rover.gazebo" />
+  <xacro:include filename="$(find simulation)/robot/rover_drive.gazebo" />
   <!-- <xacro:include filename="$(find simulation)/robot/arm.xacro" /> -->
-  <origin rpy="0 0 1.5707" xyz="0 0 0"/>
+  <!-- <origin rpy="0 0 1.5707" xyz="0 0 0"/> -->
   <link name='chassis'>
     <pose>0 0 0.1 0 0 0</pose>
 
     <collision name='collision'>
-      <!-- <origin rpy="0 0 1.5707" xyz="-0.4 0 -0.1"/> -->
-      <origin rpy="0 0 1.5707" xyz="-0.4 0 -0.1"/> 
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <box size="0.7 1.0 0.3"/>
+        <box size="0.9 0.58 0.2"/>
       </geometry>
       <surface>
         <friction>
@@ -28,21 +27,168 @@
 
     <visual name='chassis_visual'>
       <!-- <pose>-0.25 0.18 -0.04 0 0 0</pose> -->
-      <origin rpy="0 0 0" xyz="0 0 -0.04"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://simulation/robot/chassis_with_wheels.dae"/>
+        <mesh filename="package://simulation/robot/chassis_only.dae"/>
       </geometry>
     </visual>
     <inertial>
       <mass value="20.0"/>
-      <origin xyz="0 0 -0.1" rpy=" 0 0 1.5707"/>
-      <inertia
+      <origin xyz="0.15 0 0" rpy=" 0 0 0"/>
+      <!-- <inertia
           ixx="1.0" ixy="0" ixz="0"
           iyy="1.0" iyz="0"
-          izz="0.5"
-      />
+          izz="1.0"
+      /> -->
+      <inertia
+          ixx="0.627" ixy="0" ixz="0"
+          iyy="1.72" iyz="0"
+          izz="1.91"/>
     </inertial>
   </link>
+  
+  <link name='upper_right_suspension'>
+    <pose>0 0 0 0 0 0 </pose>
+
+    <collision name='collision'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://simulation/robot/upper_sus.dae"/>
+      </geometry>>
+    </collision>
+
+    <visual name='visual'>
+      <!-- <pose>-0.25 0.18 -0.04 0 0 0</pose> -->
+      <!-- <origin rpy="0 0 0" xyz="0 0 -0.04"/> -->
+      <geometry>
+        <mesh filename="package://simulation/robot/upper_sus.dae"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0.05 0 0" rpy=" 0 0 0"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="upper_right_sus_joint" type="revolute">
+    <origin xyz="0.1212 -0.3702 -0.05" rpy="0 0 3.14"/>
+    <limit upper="0.57" lower="-0.57" velocity="0.5" effort="0.5"/>
+    <axis xyz="0 1 0" />
+    <parent link="chassis"/>
+    <child link="upper_right_suspension"/>
+  </joint>
+
+  <link name='upper_left_suspension'>
+    <pose>0 0 0 0 0 0</pose>
+
+    <collision name='collision'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://simulation/robot/upper_sus.dae"/>
+      </geometry>>
+    </collision>
+
+    <visual name='visual'>
+      <!-- <pose>-0.25 0.18 -0.04 0 0 0</pose> -->
+      <!-- <origin rpy="0 0 0" xyz="0 0 -0.04"/> -->
+      <geometry>
+        <mesh filename="package://simulation/robot/upper_sus.dae"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0" rpy=" 0 0 0"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="upper_left_sus_joint" type="revolute">
+    <origin xyz="0.1212 0.3102 -0.05" rpy="0 0 3.14"/>
+    <limit upper="0.57" lower="-0.57" velocity="0.5" effort="0.5"/>
+    <axis xyz="0 1 0" />
+    <parent link="chassis"/>
+    <child link="upper_left_suspension"/>
+  </joint>
+
+
+  <link name='lower_right_suspension'>
+    <pose>0 0 0 0 0 0</pose>
+
+    <collision name='collision'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://simulation/robot/lower_sus.dae"/>
+      </geometry>>
+    </collision>
+
+    <visual name='visual'>
+      <!-- <pose>-0.25 0.18 -0.04 0 0 0</pose> -->
+      <!-- <origin rpy="0 0 0" xyz="0 0 -0.04"/> -->
+      <geometry>
+        <mesh filename="package://simulation/robot/lower_sus.dae"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0" rpy=" 0 0 0"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="lower_right_sus_joint" type="revolute">
+    <origin xyz="-0.3864 -0.01 -0.1035" rpy="0 0 0"/>
+    <axis xyz="0 1 0" />
+    <limit upper="0.57" lower="-0.57" velocity="0.5" effort="0.5"/>
+    <dynamics friction="0.9"/>
+    <parent link="upper_right_suspension"/>
+    <child link="lower_right_suspension"/>
+  </joint>
+
+  <link name='lower_left_suspension'>
+    <pose>0 0 0 0 0 0</pose>
+
+    <collision name='collision'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://simulation/robot/lower_sus.dae"/>
+      </geometry>>
+    </collision>
+
+    <visual name='visual'>
+      <!-- <pose>-0.25 0.18 -0.04 0 0 0</pose> -->
+      <!-- <origin rpy="0 0 0" xyz="0 0 -0.04"/> -->
+      <geometry>
+        <mesh filename="package://simulation/robot/lower_sus.dae"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0" rpy=" 0 0 0"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="lower_left_sus_joint" type="revolute">
+    <origin xyz="-0.3864 -0.01 -0.1035" rpy="0 0 0"/>
+    <limit upper="0.57" lower="-0.57" velocity="0.5" effort="0.5"/>
+    <axis xyz="0 1 0" />
+    <parent link="upper_left_suspension"/>
+    <child link="lower_left_suspension"/>
+  </joint>
+
 
   <!-- <link name='base_footprint'></link>
   <joint name="base_footprint_joint" type="fixed">
@@ -58,8 +204,7 @@
     <parent link="chassis"/>
   </joint> -->
   <!-- Kinect Link -->
-  <link name='kinect_link'>
-    <!-- <pose>0 0.25 0 0 0 0</pose> -->
+  <!-- <link name='kinect_link'>
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="0.1"/>
@@ -83,11 +228,11 @@
     <origin xyz="0.5 0 -0.09" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="kinect_link"/>
-  </joint>
+  </joint> -->
 
 
   <!-- Camera -->
-  <link name="camera_link1">
+  <!-- <link name="camera_link1">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -114,10 +259,10 @@
     <origin xyz="0.45 0.1 0.4" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="camera_link1"/>
-  </joint>
+  </joint> -->
 
     <!-- Camera -->
-  <link name="camera_link2">
+  <!-- <link name="camera_link2">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -144,7 +289,7 @@
     <origin xyz="0.45 -0.1 0.4" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="camera_link2"/>
-  </joint>
+  </joint> -->
 
   <!-- Hokuyo Laser -->
   <!-- <link name="hokuyo_link">
@@ -202,7 +347,7 @@
   </joint> -->
 
   <!-- GPS sensor -->
-  <link name="gps_link">
+  <!-- <link name="gps_link">
     <inertial>
       <mass value="1e-5" />
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -224,10 +369,10 @@
     <origin xyz="-0.1 0 0.027" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="gps_link"/>
-  </joint>
+  </joint> -->
 
 
-  <link name="left_wheel">
+  <link name="middle_left_wheel">
     <!-- <origin xyz="0.5 0.145 -0.31" rpy="0 1.5707 0"/> -->
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -277,8 +422,56 @@
     </inertial>
   </link>
 
-  <link name="right_wheel">
+  <link name="middle_right_wheel">
     <!-- <origin xyz="-0.44 0.145 -0.31" rpy="0 1.5707 0"/> -->
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </collision>
+    <visual name="visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="5"/>
+      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <link name="back_left_wheel">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </collision>
+    <visual name="visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="5"/>
+      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <link name="back_right_wheel">
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -328,37 +521,54 @@
   </link>
 
 
-  <joint type="continuous" name="left_wheel_hinge">
-    <origin xyz="0.045 0.49 -0.41" rpy="0 1.5707 1.5707"/>
-    <child link="left_wheel"/>
-    <parent link="chassis"/>
+  <joint type="continuous" name="middle_left_wheel_hinge">
+    <origin xyz="0.3 -0.09 -0.1593" rpy="0 -1.5707 1.5707"/>
+    <child link="middle_left_wheel"/>
+    <parent link="lower_left_suspension"/>
+    <axis xyz="0 0 1" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint type="continuous" name="back_left_wheel_hinge">
+    <origin xyz="-0.3 -0.09 -0.1593" rpy="0 -1.5707 1.5707"/>
+    <child link="front_left_wheel"/>
+    <parent link="lower_left_suspension"/>
     <axis xyz="0 0 1" rpy="0 0 0"/>
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
   <joint type="continuous" name="front_left_wheel_hinge">
-    <origin xyz="0.64 0.49 -0.38" rpy="0 1.5707 1.5707"/>
-    <child link="front_left_wheel"/>
-    <parent link="chassis"/>
+    <origin xyz="0.5136 -0.101 -0.237" rpy="0 -1.5707 1.5707"/>
+    <child link="back_left_wheel"/>
+    <parent link="upper_left_suspension"/>
     <axis xyz="0 0 1" rpy="0 0 0"/>
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
   <joint type="continuous" name="front_right_wheel_hinge">
-    <origin xyz="0.64 -0.48 -0.38" rpy="0 1.5707 1.5707"/>
-    <child link="front_right_wheel"/>
-    <parent link="chassis"/>
+    <origin xyz="0.5136 0.051 -0.237" rpy="0 -1.5707 1.5707"/>
+    <child link="back_right_wheel"/>
+    <parent link="upper_right_suspension"/>
     <axis xyz="0 0 1" rpy="0 0 0"/>
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
-  <joint type="continuous" name="right_wheel_hinge">
-    <origin xyz="0.045 -0.48 -0.41" rpy="0 1.5707 1.5707"/>
-    <child link="right_wheel"/>
-    <parent link="chassis"/>
+  <joint type="continuous" name="middle_right_wheel_hinge">
+    <origin xyz="0.3 0.05 -0.1593" rpy="0 -1.5707 1.5707"/>
+    <child link="middle_right_wheel"/>
+    <parent link="lower_right_suspension"/>
+    <axis xyz="0 0 1" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+  <joint type="continuous" name="back_right_wheel_hinge">
+    <origin xyz="-0.3 0.05 -0.1593" rpy="0 -1.5707 1.5707"/>
+    <child link="front_right_wheel"/>
+    <parent link="lower_right_suspension"/>
     <axis xyz="0 0 1" rpy="0 0 0"/>
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>

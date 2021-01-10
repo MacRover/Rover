@@ -48,7 +48,7 @@
         </image>
         <clip>
           <near>0.02</near>
-          <far>5</far>
+          <far>7</far>
         </clip>
         <noise>
           <type>gaussian</type>
@@ -66,7 +66,7 @@
         </image>
         <clip>
           <near>0.02</near>
-          <far>5</far>
+          <far>7</far>
         </clip>
         <noise>
           <type>gaussian</type>
@@ -256,7 +256,7 @@
       </plugin>
     </sensor>
   </gazebo> -->
-  <gazebo reference="imu_link">
+  <!-- <gazebo reference="imu_link">
     <sensor name="imu_sensor" type="imu">
       <always_on>true</always_on>
       <update_rate>100</update_rate>
@@ -274,17 +274,19 @@
       </plugin>
       <pose>0 0 0 0 0 0</pose>
     </sensor>
-  </gazebo>
-  <!-- <gazebo>
+  </gazebo> -->
+  <gazebo>
     <plugin filename="libhector_gazebo_ros_gps.so" name="gps_plugin">
       <alwaysOn>1</alwaysOn>
       <bodyName>gps_link</bodyName>
       <topicName>fix</topicName>
       <velocityTopicName>fix_velocity</velocityTopicName>
       <drift>0 0 0</drift>
-      <gaussianNoise>3.0 3.0 3.0</gaussianNoise>
+      <gaussianNoise>0 0 0</gaussianNoise>
       <velocityDrift>0 0 0</velocityDrift>
-      <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
+      <referenceLatitude>0.0</referenceLatitude>
+      <referenceLongitude>0.0</referenceLongitude>
+      <velocityGaussianNoise>0.001 0.001 0.001</velocityGaussianNoise>
     </plugin>
-  </gazebo> -->
+  </gazebo>
 </robot>

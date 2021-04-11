@@ -1,0 +1,18 @@
+# Publish all joint states -----------------------------------
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50  
+
+# Position Controllers ---------------------------------------
+left_wheel_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: left_wheel_hinge
+front_left_wheel_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: front_left_wheel_hinge
+right_wheel_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: right_wheel_hinge
+front_right_wheel_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: front_right_wheel_hinge

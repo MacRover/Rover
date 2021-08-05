@@ -10,6 +10,9 @@ You can add this command to your bashrc if you don't want to do it everytime you
 
 Ros packages that have to be installed:
 
-move_base
-rtabmap_ros
-stereo_image_proc
+- move_base
+- rtabmap_ros
+- stereo_image_proc
+- robot_state_publisher
+- ros_control
+- ros_controllers

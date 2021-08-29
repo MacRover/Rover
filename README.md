@@ -23,7 +23,7 @@ catkin_make
 - Recommended distro is Ubuntu 18.04 LTS or 20.04 LTS
 - Set up a new user
 - You may also want to install Windows Terminal for an improved terminal prompt UI https://www.microsoft.com/en-ca/p/windows-terminal/9n0dx20hk701
-- **Make sure** you're setting up WSL 2 and not just WSL 1. WSL 2 requires a few extra steps to configure. Docker won't work properly if you use WSL 1.
+- **Make sure** you're setting up WSL 2 and not just WSL 1. WSL 2 requires a few extra steps to configure.
 
 ### 2. Install an X server for Windows
 

@@ -1,3 +1,4 @@
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
 
 help: ## Show all Makefile targets
@@ -7,7 +8,7 @@ init: ## setup
 ifneq ($(wildcard $(current_dir)/build),)
 		catkin_make
 else
-		catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3 -DBOOST_ROOT=/opt/boost1.69 -DBoost_NO_SYSTEM_PATHS=TRUE
+		catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python2 -DBOOST_ROOT=/opt/boost1.69 -DBoost_NO_SYSTEM_PATHS=TRUE
 endif
 
 clean: ## cleanup

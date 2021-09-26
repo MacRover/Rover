@@ -1,0 +1,430 @@
+<?xml version='1.0'?>
+
+<robot name="arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="mass_base" value="2" />
+  <xacro:property name="mass_upper_arm" value="5" />
+  <xacro:property name="mass_forearm" value="2" />
+  <xacro:property name="mass_wrist" value="2" />
+  <xacro:property name="mass_claw_base" value="0.5" />
+  <xacro:property name="mass_claw" value="1" />
+
+  <xacro:include filename="$(find simulation)/robot/arm.gazebo" />
+  <!-- <origin rpy="0 0 1.5707" xyz="0 0 0"/> -->
+  <link name="world"/>
+  <!-- <link name='arm_base_link'>
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link> -->
+  <link name='base'>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0.047" rpy=" 0 0 0"/>
+      <inertia
+        ixx="${mass_base / 12.0 * (0.0785*0.0785 + 0.0953*0.0953)}" ixy="0.0" ixz="0.0"
+        iyy="${mass_base / 12.0 * (0.0953*0.0953 + 0.0785*0.0785)}" iyz="0.0"
+        izz="${mass_base / 12.0 * (0.0785*0.0785 + 0.0785*0.0785)}"/>
+    </inertial>
+
+    <collision name='collision'>
+      <!-- <origin rpy="0.0 0 0" xyz="0 0 0.0477"/> -->
+      <geometry>
+        <!-- <box size="0.0422 0.0785 0.0953"/> -->
+        <mesh filename="package://simulation/robot/arm_parts/base.dae"/>
+      </geometry>
+    </collision>
+
+    <visual name='visual'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <!-- <box size="0.0422 0.0785 0.0953"/> -->
+        <mesh filename="package://simulation/robot/arm_parts/base.dae"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint type="revolute" name="base_arm_hinge">
+    <limit upper="3.14" lower="-3.14" velocity="5" effort="10000"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1" />
+    <child link="base"/>
+    <parent link="world"/>
+  </joint>
+  <!-- <joint type="fixed" name="world_to_base_joint">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <child link="arm_base_link"/>
+    <parent link="world"/>
+  </joint> -->
+
+  <link name='upper_arm'>
+    <collision name='collision'>
+      <!-- <origin rpy="0 0 0" xyz="0 0 0.253"/> -->
+      <origin rpy="0 0 0" xyz="0 0 -0.0216"/>
+      <geometry>
+        <!-- <box size="0.0432 0.0594 0.507"/> -->
+        <mesh filename="package://simulation/robot/arm_parts/upper_arm.dae"/>
+      </geometry>
+    </collision>
+
+    <visual name='visual'>
+      <origin rpy="0 0 0" xyz="0 0 -0.0216"/>
+      <geometry>
+        <!-- <box size="0.0432 0.0594 0.507"/> -->
+        <mesh filename="package://simulation/robot/arm_parts/upper_arm.dae"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="${mass_upper_arm}"/>
+      <origin xyz="0 0 0.253" rpy=" 0 0 0"/>
+      <inertia
+          ixx="${mass_upper_arm / 12.0 * (0.0594*0.0594 + 0.507*0.507)}" ixy="0" ixz="0"
+          iyy="${mass_upper_arm / 12.0 * (0.507*0.507 + 0.0594*0.0594)}" iyz="0"
+          izz="${mass_upper_arm / 12.0 * (0.0594*0.0594 + 0.0594*0.0594)}"
+      />
+    </inertial>
+  </link>
+
+  <link name='forearm'>
+    <collision name='collision'>
+      <origin rpy="0 0 0" xyz="0 0 0.118"/>
+      <geometry>
+        <box size="0.0424 0.0785 0.237"/>
+      </geometry>
+    </collision>
+
+    <visual name='visual'>
+      <origin rpy="0 0 0" xyz="0 0 -0.0216"/>
+      <geometry>
+        <!-- <box size="0.0424 0.0785 0.237"/> -->
+        <mesh filename="package://simulation/robot/arm_parts/forearm.dae"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="${mass_forearm}"/>
+      <origin xyz="0 0 0.118" rpy=" 0 0 0"/>
+      <inertia
+        ixx="${mass_forearm / 12.0 * (0.0785*0.0785 + 0.237*0.237)}" ixy="0.0" ixz="0.0"
+        iyy="${mass_forearm / 12.0 * (0.237*0.237 + 0.0785*0.0785)}" iyz="0.0"
+        izz="${mass_forearm / 12.0 * (0.0785*0.0785 + 0.0785*0.0785)}"/>
+    </inertial>
+  </link>
+
+  <link name='wrist'>
+    <collision name='collision'>
+      <origin rpy="0 0 0" xyz="0 0 0.0217"/>
+      <geometry>
+        <box size="0.0432 0.0595 0.0865"/>
+      </geometry>
+    </collision>
+
+    <visual name='visual'>
+      <origin rpy="0 0 0" xyz="0 0 -0.0064"/>
+      <geometry>
+        <!-- <box size="0.0432 0.0595 0.0865"/> -->
+        <mesh filename="package://simulation/robot/arm_parts/wrist.dae"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="${mass_wrist}"/>
+      <origin xyz="0 0 0.0217" rpy=" 0 0 0"/>
+      <inertia
+        ixx="${mass_wrist / 12.0 * (0.0595*0.0595 + 0.0865*0.0865)}" ixy="0.0" ixz="0.0"
+        iyy="${mass_wrist / 12.0 * (0.0865*0.0865 + 0.0595*0.0595)}" iyz="0.0"
+        izz="${mass_wrist / 12.0 * (0.0595*0.0595 + 0.0595*0.0595)}"/>
+    </inertial>
+  </link>
+
+  <link name='claw_base'>
+    <collision name='collision'>
+      <origin rpy="0 0 0" xyz="0 0 0.05"/>
+      <geometry>
+        <box size="0.0064 0.1045 0.1"/>
+      </geometry>
+    </collision>
+
+    <visual name='visual'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <!-- <box size="0.0424 0.0785 0.237"/> -->
+        <mesh filename="package://simulation/robot/arm_parts/claw_base.dae"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="${mass_claw_base}"/>
+      <origin xyz="0 0 0.05" rpy=" 0 0 0"/>
+      <inertia
+        ixx="${mass_claw_base / 12.0 * (0.1045*0.1045 + 0.1*0.1)}" ixy="0.0" ixz="0.0"
+        iyy="${mass_claw_base / 12.0 * (0.1*0.1 + 0.1045*0.1045)}" iyz="0.0"
+        izz="${mass_claw_base / 12.0 * (0.1045*0.1045 + 0.1045*0.1045)}"/>
+    </inertial>
+  </link>
+  <gazebo reference="claw_base">
+    <implicitSpringDamper>1</implicitSpringDamper>
+    <mu1>100000</mu1>
+    <mu2>100000</mu2>
+    <kp>100000000.0</kp>
+    <kd>1.0</kd>
+  </gazebo>  
+
+  <link name='claw_right'>
+    <collision name='collision'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://simulation/robot/arm_parts/claw.dae"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>1.4</mu>
+            <mu2>1.4</mu2>
+          </ode>
+        </friction>
+      </surface>
+      <contact>
+        <ode>
+          <mu>1.4</mu>
+          <mu2>1.4</mu2>
+          <min_depth>0.003</min_depth>
+          <max_vel>0</max_vel>
+        </ode>
+      </contact>
+    </collision>
+
+    <visual name='visual'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <!-- <box size="0.0424 0.0785 0.237"/> -->
+        <mesh filename="package://simulation/robot/arm_parts/claw.dae"/>
+      </geometry> 
+    </visual>
+    <!-- <inertial>
+      <mass value="${mass_claw}"/>
+      <origin xyz="0.000025 0.019708 0.040881" rpy="0 0 0"/>
+      <inertia
+        ixx="${mass_claw / 0.00000743 * (61.941238*1.0e-10)}" ixy="0.0" ixz="0.0"
+        iyy="${mass_claw / 0.00000743 * (46.885822*1.0e-10)}" iyz="${mass_claw / 0.0000743 * (-23.824060*1.0e-10)}" izz="${mass_claw / 0.0000743 * (15.744728*1.0e-10)}"/>
+    </inertial> -->
+    <inertial>
+        <mass value="0.018491" />
+        <origin xyz="0.0 0.0 0.0" />
+        <inertia ixx = "0.000009" ixy = "-0.000001" ixz = "0.000000"
+                  iyx = "-0.000001" iyy = "0.000001" iyz = "0.000000"
+                  izx = "0.000000" izy = "0.000000" izz = "0.000010" />
+    </inertial>
+  </link>
+
+  <link name='claw_left'>
+    <collision name='collision'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://simulation/robot/arm_parts/claw.dae"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>1.4</mu>
+            <mu2>1.4</mu2>
+          </ode>
+        </friction>
+      </surface>
+      <contact>
+        <ode>
+          <mu>1.4</mu>
+          <mu2>1.4</mu2>
+          <min_depth>0.003</min_depth>
+          <max_vel>0</max_vel>
+        </ode>
+      </contact>
+    </collision>
+
+    <visual name='visual'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <!-- <box size="0.0424 0.0785 0.237"/> -->
+        <mesh filename="package://simulation/robot/arm_parts/claw.dae"/>
+      </geometry>
+    </visual>
+    <!-- <inertial>
+      <mass value="${mass_claw}"/>
+      <origin xyz="0 0.015 0.04" rpy="2.5 0 0"/>
+      <inertia
+        ixx="${mass_claw / 12.0 * (0.02*0.02 + 0.1*0.1)}" ixy="0.0" ixz="0.0"
+        iyy="${mass_claw / 12.0 * (0.1*0.1 + 0.02*0.02)}" iyz="0.0"
+        izz="${mass_claw / 12.0 * (0.02*0.02 + 0.02*0.02)}"/>
+    </inertial> -->
+    <inertial>
+        <mass value="0.018491" />
+        <origin xyz="0.0 0.0 0.0" />
+        <inertia ixx = "0.000009" ixy = "-0.000001" ixz = "0.000000"
+                  iyx = "-0.000001" iyy = "0.000001" iyz = "0.000000"
+                  izx = "0.000000" izy = "0.000000" izz = "0.000010" />
+    </inertial>
+  </link>
+  <gazebo reference="claw_left">
+    <implicitSpringDamper>1</implicitSpringDamper>
+    <mu1>100000</mu1>
+    <mu2>100000</mu2>
+    <kp>100000000.0</kp>
+    <kd>1.0</kd>
+  </gazebo>   
+  <gazebo reference="claw_right">
+    <implicitSpringDamper>1</implicitSpringDamper>
+    <mu1>100000</mu1>
+    <mu2>100000</mu2>
+    <kp>100000000.0</kp>
+    <kd>1.0</kd>
+  </gazebo>  
+
+
+  <joint type="revolute" name="lower_hinge">
+    <limit upper="3.14" lower="-3.14" velocity="5" effort="10000"/>
+    <origin xyz="0 0 0.074"/>
+    <axis xyz="0 1 0" />
+    <child link="upper_arm"/>
+    <parent link="base"/>
+  </joint>
+
+  <joint type="revolute" name="upper_hinge">
+    <limit upper="3.0" lower="-3.0" velocity="5" effort="10000"/>
+    <origin xyz="0 0.0 0.507"/>
+    <axis xyz="0 1 0" />
+    <child link="forearm"/>
+    <parent link="upper_arm"/>
+  </joint>
+
+  <joint type="revolute" name="forearm_hinge">
+    <limit upper="1.57" lower="-1.57" velocity="5" effort="10000"/>
+    <origin xyz="0 0.0 0.237"/>
+    <axis xyz="0 1 0" />
+    <child link="wrist"/>
+    <parent link="forearm"/>
+  </joint>
+
+  <joint type="revolute" name="wrist_hinge">
+    <limit upper="6.28" lower="-6.28" velocity="1" effort="0.5"/>
+    <origin xyz="0 0.0 0.107"/>
+    <axis xyz="0 0 1" />
+    <child link="claw_base"/>
+    <parent link="wrist"/>
+  </joint>
+
+  <joint type="revolute" name="claw_right_hinge">
+    <limit upper="1.57" lower="0" velocity="2.0" effort="1000"/>
+    <origin xyz="0 -0.04175 0.128"/>
+    <axis xyz="1 0 0" />
+    <child link="claw_right"/>
+    <parent link="claw_base"/>
+  </joint>
+
+  <joint type="revolute" name="claw_left_hinge">
+    <limit upper="1.57" lower="0" velocity="2.0" effort="1000"/>
+    <origin xyz="0 0.04175 0.128" rpy="0 0 3.14"/>
+    <axis xyz="1 0 0" />
+    <child link="claw_left"/>
+    <parent link="claw_base"/>
+  </joint>
+
+
+
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_arm_hinge">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lower_hinge">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="forearm_hinge">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor3">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran4">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wrist_hinge">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor4">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran5">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="upper_hinge">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor5">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran6">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="claw_right_hinge">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor6">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  
+  <transmission name="tran7">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="claw_left_hinge">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor7">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  
+  <!--using the grasp plugin so that the gripper can grasp things in simulation-->
+  <gazebo>
+   <plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">
+        <arm>
+           <arm_name>rover_arm</arm_name>
+           <palm_link>claw_base</palm_link>
+           <gripper_link>claw_left</gripper_link>
+           <gripper_link>claw_right</gripper_link>
+        </arm>
+       <forces_angle_tolerance>100</forces_angle_tolerance>
+       <update_rate>5</update_rate>
+       <grip_count_threshold>4</grip_count_threshold>
+       <max_grip_count>8</max_grip_count>
+       <release_tolerance>0.005</release_tolerance>
+       <disable_collisions_on_attach>false</disable_collisions_on_attach>
+       <contact_topic>__default_topic__</contact_topic>
+    </plugin>
+  </gazebo>
+</robot>

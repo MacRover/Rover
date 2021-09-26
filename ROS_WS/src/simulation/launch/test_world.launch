@@ -7,7 +7,7 @@
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
-  <arg name="model" default="rover"/>
+  <arg name="model" default="rover_sept"/>
 
   <env name="GAZEBO_MODEL_PATH" value="$(find simulation)/models:$(optenv GAZEBO_MODEL_PATH)" />
 
@@ -22,7 +22,7 @@
   </include>
 
   
-  <param name="robot_description" command="$(find xacro)/xacro.py '$(find simulation)/robot/$(arg model).xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find simulation)/robot/$(arg model).urdf'"/>
   
 
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" output="screen"

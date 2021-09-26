@@ -15,7 +15,7 @@ def handle_rover_pose(msg):
 
     t.header.stamp = rospy.Time.now()
     t.header.frame_id = "world"
-    t.child_frame_id = "chassis"
+    t.child_frame_id = "odom"
     t.transform.translation.x = msg.pose.pose.position.x
     t.transform.translation.y = msg.pose.pose.position.y
     t.transform.translation.z = 0.0

@@ -18,12 +18,12 @@ moveit_commander.roscpp_initializer.roscpp_initialize(sys.argv)
 rospy.init_node('move_group_grasp', anonymous=True)
 
 robot = moveit_commander.robot.RobotCommander()
-arm_group = moveit_commander.move_group.MoveGroupCommander("rover_arm")
+arm_group = moveit_commander.move_group.MoveGroupCommander("arm")
 
-arm_group.set_pose_reference_frame("/arm_base_link")
+# arm_group.set_pose_reference_frame("/arm_base_link")
 
-arm_group.set_goal_orientation_tolerance(0.005)
-arm_group.set_goal_position_tolerance(0.005)
+# arm_group.set_goal_orientation_tolerance(0.005)
+# arm_group.set_goal_position_tolerance(0.005)
 
 # 0.625274468212
 # -4.67942309331e-05
@@ -34,35 +34,31 @@ arm_group.set_goal_position_tolerance(0.005)
 # -0.265716655232
 # (-3.141173814561994, 1.3509663476108178, -3.1411371492746563)
 
-q = tf_conversions.transformations.quaternion_from_euler(-3.1410900381062, 1.4846899032278735, -3.141102327247691)
-pose_target = geometry_msgs.msg.Pose()
-pose_target.orientation.x = q[0]
-pose_target.orientation.y = q[1]
-pose_target.orientation.z = q[2]
-pose_target.orientation.w = q[3]
-pose_target.position.x = 0.888
-pose_target.position.y = 0
-pose_target.position.z = -0.265
-arm_group.set_pose_target(pose_target)
-plan = arm_group.go()
-print(q)
+# q = tf_conversions.transformations.quaternion_from_euler(-3.1410900381062, 1.4846899032278735, -3.141102327247691)
+# pose_target = geometry_msgs.msg.Pose()
+# pose_target.orientation.w = 1.0
+# pose_target.position.x = 0.28
+# pose_target.position.y = -0.2
+# pose_target.position.z = 0.5
+# arm_group.set_pose_target(pose_target)
+# plan = arm_group.go()
+# print(q)
 
 # q = tf_conversions.transformations.quaternion_from_euler(1.57, -1.57, 3.14)
 
-# current_pose = arm_group.get_current_pose()
-# print(arm_group.get_goal_position_tolerance())
-# print(current_pose.header.frame_id)
-# print(current_pose.pose.orientation.w)
-# print(current_pose.pose.orientation.x)
-# print(current_pose.pose.orientation.y)
-# print(current_pose.pose.orientation.z)
-# print(current_pose.pose.position.x)
-# print(current_pose.pose.position.y)
-# print(current_pose.pose.position.z)
-# print(tf_conversions.transformations.euler_from_quaternion([current_pose.pose.orientation.x, 
-#                                                             current_pose.pose.orientation.y, 
-#                                                             current_pose.pose.orientation.z, 
-#                                                             current_pose.pose.orientation.w]))
+current_pose = arm_group.get_current_pose()
+print(current_pose.header.frame_id)
+print(current_pose.pose.orientation.w)
+print(current_pose.pose.orientation.x)
+print(current_pose.pose.orientation.y)
+print(current_pose.pose.orientation.z)
+print(current_pose.pose.position.x)
+print(current_pose.pose.position.y)
+print(current_pose.pose.position.z)
+print(tf_conversions.transformations.euler_from_quaternion([current_pose.pose.orientation.x, 
+                                                            current_pose.pose.orientation.y, 
+                                                            current_pose.pose.orientation.z, 
+                                                            current_pose.pose.orientation.w]))
 rospy.sleep(5)
 moveit_commander.roscpp_initializer.roscpp_shutdown()
 

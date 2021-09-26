@@ -1,0 +1,15 @@
+controller_list:
+  - name: fake_arm_controller
+    joints:
+      - turntable_joint
+      - upper_arm_joint
+      - forearm_joint
+      - wrist_joint
+      - claw_base_joint
+  - name: fake_hand_controller
+    joints:
+      - claw_left_joint
+      - claw_right_joint
+initial:  # Define initial robot poses.
+  - group: arm
+    pose: home

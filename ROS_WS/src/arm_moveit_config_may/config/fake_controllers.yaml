@@ -1,0 +1,15 @@
+controller_list:
+  - name: fake_rover_arm_controller
+    joints:
+      - base_arm_hinge
+      - lower_hinge
+      - upper_hinge
+      - forearm_hinge
+  - name: fake_hand_controller
+    joints:
+      - wrist_hinge
+      - claw_left_hinge
+      - claw_right_hinge
+initial:  # Define initial robot poses.
+  - group: rover_arm
+    pose: home

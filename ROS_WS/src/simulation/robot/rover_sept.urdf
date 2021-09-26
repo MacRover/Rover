@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="rover_sept">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-7.6886588062189E-05 -3.7549352463021E-06 0.595583448793911"
+        rpy="0 0 0" />
+      <mass
+        value="12.7039342899442" />
+      <inertia
+        ixx="0.692252467134115"
+        ixy="-5.63451292179205E-09"
+        ixz="0.0100575847822606"
+        iyy="0.743299764038894"
+        iyz="8.67410154654538E-08"
+        izz="1.15934417655828" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="front_right_sus">
+    <inertial>
+      <origin
+        xyz="0.139626457494787 -0.03323933796304 -0.0534635870321652"
+        rpy="0 0 0" />
+      <mass
+        value="1.99138251583435" />
+      <inertia
+        ixx="0.0112611380486172"
+        ixy="2.61302926584588E-08"
+        ixz="0.00773875913692021"
+        iyy="0.027237657067576"
+        iyz="3.20841470877354E-09"
+        izz="0.0160674571690306" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/front_right_sus.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/front_right_sus.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_sus_joint"
+    type="revolute">
+    <origin
+      xyz="-0.05 -0.31387 0.44008"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_right_sus" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-0.22"
+      upper="0.45"
+      effort="10"
+      velocity="10" />
+  </joint>
+  <link
+    name="front_right_wheel">
+    <inertial>
+      <origin
+        xyz="5.9972526667007E-07 0.0774999919904723 1.03927060854381E-06"
+        rpy="0 0 0" />
+      <mass
+        value="1.34905188053121" />
+      <inertia
+        ixx="0.00419774858213161"
+        ixy="2.67208772843052E-08"
+        ixz="1.53544234650773E-08"
+        iyy="0.00747592275269746"
+        iyz="-1.5379774702474E-08"
+        izz="0.00419776491334243" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/front_right_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.501960784313725 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/front_right_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0.3823 -0.10813 -0.20698"
+      rpy="0 0 0" />
+    <parent
+      link="front_right_sus" />
+    <child
+      link="front_right_wheel" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="rear_right_sus">
+    <inertial>
+      <origin
+        xyz="0.0694292702436995 0.0223575539619391 -0.0554767615580418"
+        rpy="0 0 0" />
+      <mass
+        value="1.52083982211752" />
+      <inertia
+        ixx="0.00320038752002223"
+        ixy="1.67064090577947E-08"
+        ixz="-0.00291092997024346"
+        iyy="0.0132812519096931"
+        iyz="1.41632653543065E-08"
+        izz="0.0102301599625941" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/rear_right_sus.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/rear_right_sus.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_right_sus_joint"
+    type="revolute">
+    <origin
+      xyz="-0.19112 -0.052628 -0.10897"
+      rpy="0 0 0" />
+    <parent
+      link="front_right_sus" />
+    <child
+      link="rear_right_sus" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="0"
+      upper="0.5"
+      effort="10"
+      velocity="10" />
+  </joint>
+  <link
+    name="mid_right_wheel">
+    <inertial>
+      <origin
+        xyz="1.12605955548267E-06 0.0774999920540196 -4.14363614809066E-07"
+        rpy="0 0 0" />
+      <mass
+        value="1.3490518822002" />
+      <inertia
+        ixx="0.00419776958265061"
+        ixy="-1.0607038435768E-08"
+        ixz="-1.17203274682805E-08"
+        iyy="0.00747592273559064"
+        iyz="-2.89453796470249E-08"
+        izz="0.00419774389727313" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/mid_right_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.501960784313725 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/mid_right_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="mid_right_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0.28023 -0.055002 -0.058682"
+      rpy="0 0 0" />
+    <parent
+      link="rear_right_sus" />
+    <child
+      link="mid_right_wheel" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="rear_right_wheel">
+    <inertial>
+      <origin
+        xyz="1.15448259563333E-06 0.0775000080597553 3.26705908521019E-07"
+        rpy="0 0 0" />
+      <mass
+        value="1.34905188070644" />
+      <inertia
+        ixx="0.00419777124054956"
+        ixy="8.35007770882989E-09"
+        ixz="9.61717858794046E-09"
+        iyy="0.00747592275332749"
+        iyz="-2.96793436890126E-08"
+        izz="0.00419774225554238" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/rear_right_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.501960784313725 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/rear_right_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_right_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="-0.15583 -0.054998 -0.24019"
+      rpy="0 0 0" />
+    <parent
+      link="rear_right_sus" />
+    <child
+      link="rear_right_wheel" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="front_left_sus">
+    <inertial>
+      <origin
+        xyz="0.154642657504145 0.0284323647305548 -0.102328148548314"
+        rpy="0 0 0" />
+      <mass
+        value="1.42403447749554" />
+      <inertia
+        ixx="0.00699056322530377"
+        ixy="2.63133148939349E-08"
+        ixz="0.00459305282427453"
+        iyy="0.0157904284322379"
+        iyz="-9.18349719338934E-10"
+        izz="0.00887690921264305" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/front_left_sus.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/front_left_sus.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_sus_joint"
+    type="revolute">
+    <origin
+      xyz="-0.05 0.31487 0.44008"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_left_sus" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="0"
+      velocity="0" />
+    <mimic
+      joint="front_right_sus_joint"
+      multiplier="-1"
+      offset="0" />
+  </joint>
+  <link
+    name="front_left_wheel">
+    <inertial>
+      <origin
+        xyz="1.18533285781153E-06 -0.0775000080971626 -1.99812164869417E-07"
+        rpy="0 0 0" />
+      <mass
+        value="1.34905188056458" />
+      <inertia
+        ixx="0.00419777294206246"
+        ixy="-5.14930277931382E-09"
+        ixz="-6.33878227571808E-09"
+        iyy="0.00747592275281212"
+        iyz="-3.03979638613661E-08"
+        izz="0.00419774055352542" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/front_left_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.501960784313725 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/front_left_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0.34526 0.10813 -0.26419"
+      rpy="0 0 0" />
+    <parent
+      link="front_left_sus" />
+    <child
+      link="front_left_wheel" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="rear_left_sus">
+    <inertial>
+      <origin
+        xyz="-0.00338980046111931 -0.0222499999732845 -0.0826610515838171"
+        rpy="0 0 0" />
+      <mass
+        value="1.90548278572856" />
+      <inertia
+        ixx="0.00285673050955862"
+        ixy="5.24454317763174E-08"
+        ixz="0.000378498286107578"
+        iyy="0.0147823715837697"
+        iyz="-2.15176326837086E-09"
+        izz="0.0120709778343263" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/rear_left_sus.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/rear_left_sus.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_left_sus_joint"
+    type="revolute">
+    <origin
+      xyz="-0.2058 0.052628 -0.07776"
+      rpy="0 0 0" />
+    <parent
+      link="front_left_sus" />
+    <child
+      link="rear_left_sus" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-0.25"
+      upper="0.25"
+      effort="10"
+      velocity="10" />
+  </joint>
+  <link
+    name="mid_left_wheel">
+    <inertial>
+      <origin
+        xyz="1.19157687656149E-06 -0.0775000080478689 1.38535797028494E-07"
+        rpy="0 0 0" />
+      <mass
+        value="1.34905188034585" />
+      <inertia
+        ixx="0.00419777380464596"
+        ixy="3.60334845198442E-09"
+        ixz="3.40208888887428E-09"
+        iyy="0.00747592275210144"
+        iyz="-3.06199109041981E-08"
+        izz="0.00419773969022813" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/mid_left_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.501960784313725 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/mid_left_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="mid_left_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0.22933 0.055498 -0.1714"
+      rpy="0 0 0" />
+    <parent
+      link="rear_left_sus" />
+    <child
+      link="mid_left_wheel" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="rear_left_wheel">
+    <inertial>
+      <origin
+        xyz="-1.0841439295195E-06 -0.0774999919570801 -5.13619061393022E-07"
+        rpy="0 0 0" />
+      <mass
+        value="1.34905188036255" />
+      <inertia
+        ixx="0.0041977672858723"
+        ixy="-1.31615077266798E-08"
+        ixz="1.38349916316566E-08"
+        iyy="0.0074759227413913"
+        iyz="2.78800372696282E-08"
+        izz="0.00419774619903427" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/rear_left_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.501960784313725 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover_sept/meshes/rear_left_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_left_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="-0.2426 0.055002 -0.15205"
+      rpy="0 0 0" />
+    <parent
+      link="rear_left_sus" />
+    <child
+      link="rear_left_wheel" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      effort="100"
+      velocity="100" />
+  </joint>
+
+  <gazebo>
+    <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive6.so">
+      <updateRate>100.0</updateRate>
+      <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
+      <rightFrontJoint>front_right_wheel_joint</rightFrontJoint>
+      <leftMidJoint>mid_left_wheel_joint</leftMidJoint>
+      <rightMidJoint>mid_right_wheel_joint</rightMidJoint>
+      <leftRearJoint>rear_left_wheel_joint</leftRearJoint>
+      <rightRearJoint>rear_right_wheel_joint</rightRearJoint>
+      <wheelSeparation>0.7</wheelSeparation>
+      <wheelDiameter>0.1</wheelDiameter>
+      <robotBaseFrame>chassis</robotBaseFrame>
+      <torque>20</torque>
+      <topicName>cmd_vel</topicName>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <broadcastTF>true</broadcastTF>
+      <legacyMode>false</legacyMode>
+    </plugin>
+  </gazebo>
+</robot>

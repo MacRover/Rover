@@ -1,0 +1,4 @@
+<launch>
+<include file="$(find control)/launch/arm_controller.launch"/>
+<include file="$(find arm_moveit_config)/launch/demo_gazebo.launch"/>
+</launch>

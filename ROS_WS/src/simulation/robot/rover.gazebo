@@ -95,7 +95,7 @@
     </sensor>
   </gazebo>
   <!-- camera -->
-  <!-- <gazebo reference="camera_link1">
+  <gazebo reference="camera_link1">
     <sensor type="camera" name="camera1">
       <update_rate>30.0</update_rate>
       <camera name="head">
@@ -133,7 +133,7 @@
         <distortionT2>0.0</distortionT2>
       </plugin>
     </sensor>
-  </gazebo> -->
+  </gazebo>
 
   <!-- camera -->
   <!-- <gazebo reference="camera_link2">
@@ -177,7 +177,7 @@
   </gazebo> -->
 
 
-  <gazebo reference="kinect_link">
+  <!-- <gazebo reference="kinect_link">
     <sensor name="camera" type="depth">
       <update_rate>20</update_rate>
       <camera>
@@ -195,8 +195,6 @@
       <plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
         <baseline>0.2</baseline>
         <alwaysOn>true</alwaysOn>
-        <!-- Keep this zero, update_rate in the parent <sensor> tag
-          will control the frame rate. -->
         <updateRate>0.0</updateRate>
         <cameraName>camera_ir</cameraName>
         <imageTopicName>/camera/color/image_raw</imageTopicName>
@@ -219,7 +217,7 @@
         <hackBaseline>0</hackBaseline>
       </plugin>
     </sensor>
-  </gazebo>
+  </gazebo> -->
   <!-- hokuyo
   <gazebo reference="hokuyo_link">
     <sensor type="ray" name="head_hokuyo_sensor">
@@ -275,7 +273,7 @@
       <pose>0 0 0 0 0 0</pose>
     </sensor>
   </gazebo> -->
-  <gazebo>
+  <!-- <gazebo>
     <plugin filename="libhector_gazebo_ros_gps.so" name="gps_plugin">
       <alwaysOn>1</alwaysOn>
       <bodyName>gps_link</bodyName>
@@ -288,5 +286,5 @@
       <referenceLongitude>0.0</referenceLongitude>
       <velocityGaussianNoise>0.001 0.001 0.001</velocityGaussianNoise>
     </plugin>
-  </gazebo>
+  </gazebo> -->
 </robot>

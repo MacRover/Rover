@@ -4,6 +4,9 @@
 
   <xacro:include filename="$(find simulation)/robot/rover.gazebo" />
   <xacro:include filename="$(find simulation)/robot/arm.xacro" />
+  <!-- <xacro:include filename="$(find simulation)/robot/sensors/_d435.urdf.xacro" /> -->
+  <xacro:include filename="$(find simulation)/robot/sensors/d435.xacro" />
+
   <origin rpy="0 0 1.5707" xyz="0 0 0"/>
   <link name='chassis'>
     <pose>0 0 0.1 0 0 0</pose>
@@ -49,9 +52,19 @@
     <child link="arm_base_link"/>
     <parent link="chassis"/>
   </joint>
+
+  <!-- Stereo camera -->
+  <!-- <xacro:sensor_d435 parent="chassis" use_nominal_extrinsics="true" add_plug="false">
+    <origin xyz="0 0 0.5" rpy="0 0 0"/>
+  </xacro:sensor_d435> -->
+  <xacro:realsense-rs200 prefix="" parent="chassis">
+      <origin xyz="-0.4 0 0.3637" rpy="0 0 0" />   
+  </xacro:realsense-rs200>
+
+
+
   <!-- Kinect Link -->
-  <link name='kinect_link'>
-    <!-- <pose>0 0.25 0 0 0 0</pose> -->
+  <!-- <link name='kinect_link'>
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="0.1"/>
@@ -75,11 +88,11 @@
     <origin xyz="0.5 0 -0.09" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="kinect_link"/>
-  </joint>
+  </joint> -->
 
 
   <!-- Camera -->
-  <link name="camera_link1">
+  <!-- <link name="camera_link1">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -106,10 +119,10 @@
     <origin xyz="0.45 0.1 0.4" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="camera_link1"/>
-  </joint>
+  </joint> -->
 
     <!-- Camera -->
-  <link name="camera_link2">
+  <!-- <link name="camera_link2">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -136,7 +149,7 @@
     <origin xyz="0.45 -0.1 0.4" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="camera_link2"/>
-  </joint>
+  </joint> -->
 
   <!-- Hokuyo Laser -->
   <!-- <link name="hokuyo_link">

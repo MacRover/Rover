@@ -1,0 +1,7 @@
+<launch>
+
+  <arg name="port" default="/dev/ttyS0" />
+
+  <node name="dmc_rosserial" type="serial_node.py" pkg="rosserial_python" args="$(arg port)"/>
+
+</launch>

@@ -65,30 +65,23 @@ void loop()
 
 void controlMotors(const geometry_msgs::Twist &cmd_vel)
 {
-    float left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
-    float right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
+    const double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
+    const double right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
 
-    int left_pulse = velToPulse(left_speed);
-    // front motors direction are reversed
-    int front_left_pulse = velToPulse(left_speed * -1);
-
-    int right_pulse = velToPulse(right_speed);
-    int front_right_pulse = velToPulse(right_speed * -1);
-
-    Timers.TimerA->setCaptureCompare(Motors.P0, front_left_pulse, MICROSEC_COMPARE_FORMAT);
-    Timers.TimerA->setCaptureCompare(Motors.P1, left_pulse, MICROSEC_COMPARE_FORMAT);
-    Timers.TimerA->setCaptureCompare(Motors.P2, left_pulse, MICROSEC_COMPARE_FORMAT);
-    Timers.TimerB->setCaptureCompare(Motors.P3, front_right_pulse, MICROSEC_COMPARE_FORMAT);
-    Timers.TimerB->setCaptureCompare(Motors.P4, right_pulse, MICROSEC_COMPARE_FORMAT);
-    Timers.TimerB->setCaptureCompare(Motors.P5, right_pulse, MICROSEC_COMPARE_FORMAT);
+    Timers.TimerA->setCaptureCompare(Motors.P0, velToPulse(left_speed, true), MICROSEC_COMPARE_FORMAT);
+    Timers.TimerA->setCaptureCompare(Motors.P1, velToPulse(left_speed), MICROSEC_COMPARE_FORMAT);
+    Timers.TimerA->setCaptureCompare(Motors.P2, velToPulse(left_speed), MICROSEC_COMPARE_FORMAT);
+    Timers.TimerB->setCaptureCompare(Motors.P3, velToPulse(right_speed, true), MICROSEC_COMPARE_FORMAT);
+    Timers.TimerB->setCaptureCompare(Motors.P4, velToPulse(right_speed), MICROSEC_COMPARE_FORMAT);
+    Timers.TimerB->setCaptureCompare(Motors.P5, velToPulse(right_speed), MICROSEC_COMPARE_FORMAT);
 }
 
 void configureHardwareTimers()
 {
     // Automatically retrieve timer instance and channel associated to pin
     // This is used to be compatible with all STM32 series automatically.
-    TIM_TypeDef *Instance1 = (TIM_TypeDef *)pinmap_peripheral(digitalPinToPinName(P0_), PinMap_PWM);
-    TIM_TypeDef *Instance2 = (TIM_TypeDef *)pinmap_peripheral(digitalPinToPinName(P3_), PinMap_PWM);
+    const TIM_TypeDef *Instance1 = (TIM_TypeDef *)pinmap_peripheral(digitalPinToPinName(P0_), PinMap_PWM);
+    const TIM_TypeDef *Instance2 = (TIM_TypeDef *)pinmap_peripheral(digitalPinToPinName(P3_), PinMap_PWM);
 
     Motors.P0 = STM_PIN_CHANNEL(pinmap_function(digitalPinToPinName(P0_), PinMap_PWM));
     Motors.P1 = STM_PIN_CHANNEL(pinmap_function(digitalPinToPinName(P1_), PinMap_PWM));
@@ -110,12 +103,12 @@ void configureHardwareTimers()
     Timers.TimerB->setMode(Motors.P5, TIMER_OUTPUT_COMPARE_PWM1, P5_);
 
     // complete signal period set to 3us
-    Timers.TimerA->setOverflow(3 * 1000, MICROSEC_FORMAT);
-    Timers.TimerB->setOverflow(3 * 1000, MICROSEC_FORMAT);
+    const uint16_t signalPeriod = 3000;
+    Timers.TimerA->setOverflow(signalPeriod, MICROSEC_FORMAT);
+    Timers.TimerB->setOverflow(signalPeriod, MICROSEC_FORMAT);
 
     // set initial pulse of 1500us (stopped)
-    int initialPulse = 1500;
-
+    const uint16_t initialPulse = 1500;
     Timers.TimerA->setCaptureCompare(Motors.P0, initialPulse, MICROSEC_COMPARE_FORMAT);
     Timers.TimerA->setCaptureCompare(Motors.P1, initialPulse, MICROSEC_COMPARE_FORMAT);
     Timers.TimerA->setCaptureCompare(Motors.P2, initialPulse, MICROSEC_COMPARE_FORMAT);
@@ -128,7 +121,12 @@ void configureHardwareTimers()
     Timers.TimerB->resume();
 }
 
-int velToPulse(float vel)
+uint16_t velToPulse(const double vel, const bool reverse = false)
 {
+    if (reverse){
+        // front motors face the opposite direction of the other motors
+        // so they must spin in the opposite direction
+        return map(vel, 4, -4, 1000, 2000);
+    }
     return map(vel, -4, 4, 1000, 2000);
 }

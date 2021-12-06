@@ -63,6 +63,17 @@ void loop()
     delay(1);
 }
 
+uint16_t velToPulse(const double vel, const bool reverse = false)
+{
+    if (reverse)
+    {
+        // front motors face the opposite direction of the other motors
+        // so they must spin in the opposite direction
+        return map(vel, 4, -4, 1000, 2000);
+    }
+    return map(vel, -4, 4, 1000, 2000);
+}
+
 void controlMotors(const geometry_msgs::Twist &cmd_vel)
 {
     const double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
@@ -80,8 +91,8 @@ void configureHardwareTimers()
 {
     // Automatically retrieve timer instance and channel associated to pin
     // This is used to be compatible with all STM32 series automatically.
-    const TIM_TypeDef *Instance1 = (TIM_TypeDef *)pinmap_peripheral(digitalPinToPinName(P0_), PinMap_PWM);
-    const TIM_TypeDef *Instance2 = (TIM_TypeDef *)pinmap_peripheral(digitalPinToPinName(P3_), PinMap_PWM);
+    TIM_TypeDef *Instance1 = (TIM_TypeDef *)pinmap_peripheral(digitalPinToPinName(P0_), PinMap_PWM);
+    TIM_TypeDef *Instance2 = (TIM_TypeDef *)pinmap_peripheral(digitalPinToPinName(P3_), PinMap_PWM);
 
     Motors.P0 = STM_PIN_CHANNEL(pinmap_function(digitalPinToPinName(P0_), PinMap_PWM));
     Motors.P1 = STM_PIN_CHANNEL(pinmap_function(digitalPinToPinName(P1_), PinMap_PWM));
@@ -119,14 +130,4 @@ void configureHardwareTimers()
     // enable timers
     Timers.TimerA->resume();
     Timers.TimerB->resume();
-}
-
-uint16_t velToPulse(const double vel, const bool reverse = false)
-{
-    if (reverse){
-        // front motors face the opposite direction of the other motors
-        // so they must spin in the opposite direction
-        return map(vel, 4, -4, 1000, 2000);
-    }
-    return map(vel, -4, 4, 1000, 2000);
 }

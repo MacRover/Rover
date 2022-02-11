@@ -75,7 +75,7 @@ uint16_t map_(const double val, const double in_min, const double in_max, const 
     {
         return (uint16_t)out_min;
     }
-    return (uint16_t)round((vel - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+    return (uint16_t)round((val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
 }
 
 uint16_t velToPulse(const double vel, const bool reverse = false)

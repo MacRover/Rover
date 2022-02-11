@@ -63,21 +63,38 @@ void loop()
     delay(1);
 }
 
+// "map" is already defined in the arduino standard library
+uint16_t map_(const double val, const double in_min, const double in_max, const double out_min, const double out_max)
+{
+    // mitigate overflows by capping output values if input is out of range
+    if (val >= in_max)
+    {
+        return (uint16_t)out_max;
+    }
+    if (val <= in_min)
+    {
+        return (uint16_t)out_min;
+    }
+    return (uint16_t)round((vel - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+}
+
 uint16_t velToPulse(const double vel, const bool reverse = false)
 {
+    const double in_min = -4.0;
+    const double in_max = 4.0;
     if (reverse)
     {
         // front motors face the opposite direction of the other motors
         // so they must spin in the opposite direction
-        return map(vel, 4, -4, 1000, 2000);
+        return map_(vel, in_min, in_max, 2000.0, 1000.0);
     }
-    return map(vel, -4, 4, 1000, 2000);
+    return map_(vel, in_min, in_max, 1000.0, 2000.0);
 }
 
 void controlMotors(const geometry_msgs::Twist &cmd_vel)
 {
-    const double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
-    const double right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
+    const double left_speed = cmd_vel.linear.x - cmd_vel.angular.z;
+    const double right_speed = cmd_vel.linear.x + cmd_vel.angular.z;
 
     Timers.TimerA->setCaptureCompare(Motors.P0, velToPulse(left_speed, true), MICROSEC_COMPARE_FORMAT);
     Timers.TimerA->setCaptureCompare(Motors.P1, velToPulse(left_speed), MICROSEC_COMPARE_FORMAT);

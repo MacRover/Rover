@@ -86,9 +86,9 @@ uint16_t velToPulse(const double vel, const bool reverse = false)
     {
         // front motors face the opposite direction of the other motors
         // so they must spin in the opposite direction
-        return map_(vel, in_min, in_max, 2000.0, 1000.0);
+        return map_(vel, in_min, in_max, 1000.0, 2000.0);
     }
-    return map_(vel, in_min, in_max, 1000.0, 2000.0);
+    return map_(vel, in_min, in_max, 2000.0, 1000.0);
 }
 
 void controlMotors(const geometry_msgs::Twist &cmd_vel)

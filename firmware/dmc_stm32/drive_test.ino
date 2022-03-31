@@ -9,12 +9,12 @@
 #define SERIAL_TX PA2
 
 // Map DMC pins to stm32 pins
-#define P0_ PA8
-#define P1_ PA9
-#define P2_ PA10
-#define P3_ PA6
-#define P4_ PA7
-#define P5_ PB0
+#define P0_ PA_8
+#define P1_ PA_9
+#define P2_ PA_10
+#define P3_ PA_6
+#define P4_ PA_7_ALT1
+#define P5_ PB_0_ALT1
 
 struct timers
 {
@@ -108,15 +108,15 @@ void configureHardwareTimers()
 {
     // Automatically retrieve timer instance and channel associated to pin
     // This is used to be compatible with all STM32 series automatically.
-    TIM_TypeDef *Instance1 = (TIM_TypeDef *)pinmap_peripheral(digitalPinToPinName(P0_), PinMap_PWM);
-    TIM_TypeDef *Instance2 = (TIM_TypeDef *)pinmap_peripheral(digitalPinToPinName(P3_), PinMap_PWM);
+    TIM_TypeDef *Instance1 = (TIM_TypeDef *)pinmap_peripheral(P0_), PinMap_PWM);
+    TIM_TypeDef *Instance2 = (TIM_TypeDef *)pinmap_peripheral(P3_), PinMap_PWM);
 
-    Motors.P0 = STM_PIN_CHANNEL(pinmap_function(digitalPinToPinName(P0_), PinMap_PWM));
-    Motors.P1 = STM_PIN_CHANNEL(pinmap_function(digitalPinToPinName(P1_), PinMap_PWM));
-    Motors.P2 = STM_PIN_CHANNEL(pinmap_function(digitalPinToPinName(P2_), PinMap_PWM));
-    Motors.P3 = STM_PIN_CHANNEL(pinmap_function(digitalPinToPinName(P3_), PinMap_PWM));
-    Motors.P4 = STM_PIN_CHANNEL(pinmap_function(digitalPinToPinName(P4_), PinMap_PWM));
-    Motors.P5 = STM_PIN_CHANNEL(pinmap_function(digitalPinToPinName(P5_), PinMap_PWM));
+    Motors.P0 = STM_PIN_CHANNEL(pinmap_function(P0_, PinMap_PWM));
+    Motors.P1 = STM_PIN_CHANNEL(pinmap_function(P1_, PinMap_PWM));
+    Motors.P2 = STM_PIN_CHANNEL(pinmap_function(P2_, PinMap_PWM));
+    Motors.P3 = STM_PIN_CHANNEL(pinmap_function(P3_, PinMap_PWM));
+    Motors.P4 = STM_PIN_CHANNEL(pinmap_function(P4_, PinMap_PWM));
+    Motors.P5 = STM_PIN_CHANNEL(pinmap_function(P5_, PinMap_PWM));
 
     // Instantiate HardwareTimer object. Thanks to 'new' instantiation, HardwareTimer is not destructed when setup() function is finished.
     Timers.TimerA = new HardwareTimer(Instance1);

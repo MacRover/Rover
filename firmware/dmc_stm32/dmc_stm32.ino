@@ -96,12 +96,12 @@ void controlMotors(const geometry_msgs::Twist &cmd_vel)
     const double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
     const double right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
 
-    Timers.TimerA->setCaptureCompare(Motors.P0, velToPulse(left_speed, true), MICROSEC_COMPARE_FORMAT);
+    Timers.TimerA->setCaptureCompare(Motors.P0, velToPulse(left_speed), MICROSEC_COMPARE_FORMAT);
     Timers.TimerA->setCaptureCompare(Motors.P1, velToPulse(left_speed), MICROSEC_COMPARE_FORMAT);
-    Timers.TimerA->setCaptureCompare(Motors.P2, velToPulse(left_speed), MICROSEC_COMPARE_FORMAT);
-    Timers.TimerB->setCaptureCompare(Motors.P3, velToPulse(right_speed, true), MICROSEC_COMPARE_FORMAT);
+    Timers.TimerA->setCaptureCompare(Motors.P2, velToPulse(left_speed, true), MICROSEC_COMPARE_FORMAT);
+    Timers.TimerB->setCaptureCompare(Motors.P3, velToPulse(right_speed), MICROSEC_COMPARE_FORMAT);
     Timers.TimerB->setCaptureCompare(Motors.P4, velToPulse(right_speed), MICROSEC_COMPARE_FORMAT);
-    Timers.TimerB->setCaptureCompare(Motors.P5, velToPulse(right_speed), MICROSEC_COMPARE_FORMAT);
+    Timers.TimerB->setCaptureCompare(Motors.P5, velToPulse(right_speed, true), MICROSEC_COMPARE_FORMAT);
 }
 
 void configureHardwareTimers()

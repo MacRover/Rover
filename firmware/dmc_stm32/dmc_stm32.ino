@@ -9,12 +9,12 @@
 #define SERIAL_TX PA2
 
 // Map DMC pins to stm32 pins
-#define P0_ PA_8
-#define P1_ PA_9
-#define P2_ PA_10
-#define P3_ PA_6
-#define P4_ PA_7_ALT1
-#define P5_ PB_0_ALT1
+#define P0_ PB_0_ALT1
+#define P1_ PA_7_ALT1
+#define P2_ PA_6
+#define P3_ PA_8
+#define P4_ PA_9
+#define P5_ PA_10
 
 struct timers
 {
@@ -93,8 +93,8 @@ uint16_t velToPulse(const double vel, const bool reverse = false)
 
 void controlMotors(const geometry_msgs::Twist &cmd_vel)
 {
-    const double left_speed = cmd_vel.linear.x - cmd_vel.angular.z;
-    const double right_speed = cmd_vel.linear.x + cmd_vel.angular.z;
+    const double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
+    const double right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
 
     Timers.TimerA->setCaptureCompare(Motors.P0, velToPulse(left_speed, true), MICROSEC_COMPARE_FORMAT);
     Timers.TimerA->setCaptureCompare(Motors.P1, velToPulse(left_speed), MICROSEC_COMPARE_FORMAT);
@@ -108,8 +108,8 @@ void configureHardwareTimers()
 {
     // Automatically retrieve timer instance and channel associated to pin
     // This is used to be compatible with all STM32 series automatically.
-    TIM_TypeDef *Instance1 = (TIM_TypeDef *)pinmap_peripheral(P0_), PinMap_PWM);
-    TIM_TypeDef *Instance2 = (TIM_TypeDef *)pinmap_peripheral(P3_), PinMap_PWM);
+    TIM_TypeDef *Instance1 = (TIM_TypeDef *)pinmap_peripheral(P0_, PinMap_PWM);
+    TIM_TypeDef *Instance2 = (TIM_TypeDef *)pinmap_peripheral(P3_, PinMap_PWM);
 
     Motors.P0 = STM_PIN_CHANNEL(pinmap_function(P0_, PinMap_PWM));
     Motors.P1 = STM_PIN_CHANNEL(pinmap_function(P1_, PinMap_PWM));

@@ -8,10 +8,16 @@
 git clone https://github.com/MacRover/Rover.git
 ```
 
-### 2. Build the ROS environment
+### 2. Install required system dependencies
 
 ```
 cd ROS_WS
+rosdep install --from-paths src --ignore-src -r -y
+```
+
+### 3. Build the ROS environment
+
+```
 catkin_make
 ```
 
@@ -40,13 +46,23 @@ catkin_make
 
 - Check out the [ROS installation instructions](http://wiki.ros.org/melodic/Installation/Ubuntu) on the ROS wiki.
 - If you followed the detailed instructions link in step 1, you have already completed this step.
+- Please make sure to install and configure rosdep
 
-### 4. Build the ROS environment
+
+### 4. Install required system dependencies
 
 - Inside the git repo (where you should already be), type:
 
   ```
   cd ROS_WS
+  rosdep install --from-paths src --ignore-src -r -y
+  ```
+
+### 5. Build the ROS environment
+
+- Inside `ROS_WS`, type:
+
+  ```
   catkin_make
   ```
 

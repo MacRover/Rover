@@ -1,8 +1,14 @@
 #include <ros.h>
 #include <geometry_msgs/Twist.h>
 #include <HardwareSerial.h>
+#include <std_msgs/UInt16.h>
 
-// define pins for stm32 UART2
+
+#include "stm32f1xx_hal_gpio_ex.h"
+#include "PinAF_STM32F1.h"
+
+
+// define pins for stm32 UART3
 #define USE_STM32_HW_SERIAL
 #define BAUD_RATE 57600
 #define SERIAL_RX PB11
@@ -27,7 +33,7 @@
 #define E3A_ PB_6
 #define E3B_ PB_7
 
-#define E4A_ PB_3_ALT1
+#define E4A_ PA_1//PB_3
 
 #define E5A_ PB_8
 #define E5B_ PB_9
@@ -71,56 +77,78 @@ encoders Encoders;
 // configure stm32 to use Serial2 hardware serial ports
 
 HardwareSerial hserial(SERIAL_RX, SERIAL_TX);
-/*
+
 class NewHardware : public ArduinoHardware
 {
 public:
     NewHardware() : ArduinoHardware(&hserial, BAUD_RATE){};
 };
 ros::NodeHandle_<NewHardware> nh;
-*/
+
 // subscribe to cmd_vel Twist topic
-void controlMotors(double left_speed, double right_speed);
-//ros::Subscriber<geometry_msgs::Twist> velocity("cmd_vel", &controlMotors);
+void controlMotors(const geometry_msgs::Twist &cmd_vel);
+ros::Subscriber<geometry_msgs::Twist> velocity("cmd_vel", &controlMotors);
+
+std_msgs::UInt16 pushedVal;
+ros::Publisher encoderPub("enc_pub", &pushedVal);
+
 
 uint32_t pulseCount = 0;
 void channelACallback(void){
   pulseCount++;
-  Serial.println(pulseCount);
 
 }
 
 
-void channel0Callback(void){Serial.print("Encoder 0 "); Serial.println(pulseCount++);}
-void channel1Callback(void){Serial.print("Encoder 1 "); Serial.println(pulseCount++);}
-void channel2Callback(void){Serial.print("Encoder 2 "); Serial.println(pulseCount++);}
-void channel3Callback(void){Serial.print("Encoder 3 "); Serial.println(pulseCount++);}
-void channel4Callback(void){Serial.print("Encoder 4 "); Serial.println(pulseCount++);}
-void channel5Callback(void){Serial.print("Encoder 5 "); Serial.println(pulseCount++);}
+void channel0Callback(void){pulseCount++;}
+void channel1Callback(void){pulseCount++;}
+void channel2Callback(void){pulseCount++;}
+void channel3Callback(void){pulseCount++;}
+void channel4Callback(void){pulseCount++;}
+void channel5Callback(void){pulseCount++;}
 
-void channel0BCallback(void){Serial.print("Encoder 0B "); Serial.println(pulseCount++);}
-void channel2BCallback(void){Serial.print("Encoder 2B "); Serial.println(pulseCount++);}
-void channel3BCallback(void){Serial.print("Encoder 3B "); Serial.println(pulseCount++);}
-void channel5BCallback(void){Serial.print("Encoder 5B "); Serial.println(pulseCount++);}
-
+void channel0BCallback(void){pulseCount++;}
+void channel2BCallback(void){pulseCount++;}
+void channel3BCallback(void){pulseCount++;}
+void channel5BCallback(void){pulseCount++;}
 
 void rolloverCallback(void){
+  pushedVal.data = pulseCount;
+  encoderPub.publish(&pushedVal);
   pulseCount = 0;
-  delay(50);
+  delay(1);
 }
 
+
+void configureHardwareTimers();
 void setup()
 {
+    //pinF1_DisconnectDebug(PB_3);
+    //pinF1_DisconnectDebug(PA_14);
+    __HAL_RCC_AFIO_CLK_ENABLE();
+    //__HAL_AFIO_REMAP_SWJ_NOJTAG();
+    //__HAL_AFIO_REMAP_USART1_DISABLE();
+    //__HAL_AFIO_REMAP_SWJ_DISABLE(); 
+    //__HAL_AFIO_REMAP_SPI1_DISABLE();
+ 
+    //__HAL_AFIO_REMAP_TIM2_PARTIAL_2();  
     configureHardwareTimers();
-    //nh.initNode();
-    //nh.subscribe(velocity);
+    //pin_SetF1AFPin(AFIO_SWJ_NOJTAG);
+    nh.initNode();
+    nh.subscribe(velocity);
+    nh.advertise(encoderPub);
+    Serial.end();
 }
 
 void loop()
 {
     // required for rosserial
-    //nh.spinOnce();
-    controlMotors(0, 0);
+    nh.spinOnce();
+    //controlMotors(0, 0);
+    if (pulseCount > 0)
+    {
+      rolloverCallback();
+    }
     delay(1);
 }
 
@@ -152,10 +180,10 @@ uint16_t velToPulse(const double vel, const bool reverse = false)
     return map_(vel, in_min, in_max, 2000.0, 1000.0);
 }
 
-void controlMotors(double left_speed, double right_speed)
+void controlMotors(const geometry_msgs::Twist &cmd_vel)
 {
-    //const double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
-    //const double right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
+    const double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
+    const double right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
 
 
 
@@ -245,7 +273,8 @@ void configureHardwareTimers()
     Timers.Tim4->setMode(Encoders.E3B, TIMER_INPUT_CAPTURE_RISING, E3B_);
     Timers.Tim4->setMode(Encoders.E5B, TIMER_INPUT_CAPTURE_RISING, E5B_);
 
-    Timers.Tim3->attachInterrupt(rolloverCallback);
+    
+    //Timers.Tim3->attachInterrupt(rolloverCallback);
     
     Timers.Tim2->attachInterrupt(Encoders.E4A, channel4Callback);
     Timers.Tim2->attachInterrupt(Encoders.E1A, channel1Callback);
@@ -261,7 +290,9 @@ void configureHardwareTimers()
 
     Timers.Tim4->attachInterrupt(Encoders.E3B, channel3BCallback);
     Timers.Tim4->attachInterrupt(Encoders.E5B, channel5BCallback);
+        
 
+    
     // enable timers
     Timers.Tim1->resume();
     Timers.Tim2->resume();

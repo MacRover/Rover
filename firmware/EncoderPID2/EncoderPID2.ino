@@ -2,8 +2,10 @@
 #include <geometry_msgs/Twist.h>
 #include <HardwareSerial.h>
 #include <std_msgs/UInt16.h>
-#include <std_msgs/Float32MultiArray.h>
-#include <PID_v1.h>
+#include <std_msgs/Float64MultiArray.h>
+#include <std_msgs/Float64.h>
+#include <std_msgs/String.h>
+#include "PID_v1.h"
 
 #define USE_STM32_HW_SERIAL
 #define BAUD_RATE 57600
@@ -65,13 +67,13 @@ ros::NodeHandle_<NewHardware> nh;
 
 void controlMotorsRos(const geometry_msgs::Twist &cmd_vel);
 void controlMotors(double left_speed, double right_speed);
-void setParamsRos(const std_msgs::Float32MultiArray &cmd_pid);
+void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid);
 
 // subscribe to cmd_vel Twist topic
 //void controlMotors(const geometry_msgs::Twist &cmd_vel);
 ros::Subscriber<geometry_msgs::Twist> velocity("cmd_vel", &controlMotorsRos);
-ros::Subscriber<std_msgs::Float32MultiArray> pid_params("cmd_pid", &setParamsRos);
-std_msgs::UInt16 pushedVal;
+ros::Subscriber<std_msgs::Float64MultiArray> pid_params("cmd_pid", &setParamsRos);
+std_msgs::Float64 pushedVal;
 ros::Publisher encoderPub("enc_pub", &pushedVal);
 
 #endif /* USING_ROS */
@@ -81,9 +83,9 @@ typedef struct encoder
     HardwareTimer *timer;
     uint32_t channel;
     PinName pin;
-    int16_t pulseCount;
-    int16_t velocity;
-    double PIDvelocity;
+    volatile int16_t pulseCount;
+    volatile int16_t velocity;
+    volatile double PIDvelocity;
 } Encoder;
 
 typedef struct Motor
@@ -91,9 +93,9 @@ typedef struct Motor
     HardwareTimer *timer;
     uint32_t channel;
     PinName pin;
-    uint32_t pulseDuration;
-    double PIDduration;
-    double setpoint;
+    volatile uint32_t pulseDuration;
+    volatile double PIDduration;
+    volatile double setpoint;
 } Motor;
 
 HardwareTimer  *tim1, *tim2, *tim3, *tim4;
@@ -153,7 +155,7 @@ void initializeMotor(Motor * motor, HardwareTimer ** tim, PinName pin)
     motor->setpoint = 0.0;
 
     (*tim)->setMode(motor->channel, TIMER_OUTPUT_COMPARE_PWM1, pin);
-    (*tim)->setCaptureCompare(motor->channel, (uint16_t)motor->PIDduration, MICROSEC_COMPARE_FORMAT);
+    (*tim)->setCaptureCompare(motor->channel, (volatile uint16_t)motor->PIDduration, MICROSEC_COMPARE_FORMAT);
         //add pid func here?
 
 }
@@ -171,11 +173,11 @@ void updateMotorSpeed(Motor * motor)
 {
     if (motor->PIDduration >= MIN_PULSE && motor->PIDduration <= MAX_PULSE)
     {
-        (motor->timer)->setCaptureCompare(motor->channel, (uint16_t)(motor->PIDduration), MICROSEC_COMPARE_FORMAT);
+        (motor->timer)->setCaptureCompare(motor->channel, (volatile uint16_t)(motor->PIDduration), MICROSEC_COMPARE_FORMAT);
     }
 }
 
-void setSetpoint(Motor * motor, double newSetpoint)
+void setSetpoint(Motor * motor, volatile double newSetpoint)
 {
     motor->setpoint = newSetpoint;
 }
@@ -288,17 +290,17 @@ void encoder5Callback(void)
 
 void rolloverCallback(void)
 {
-    E0A.PIDvelocity = ((double)E0A.pulseCount / 1024.0) * (6000000.0 / (double) REFRESH_RATE);
+    E0A.PIDvelocity = ((volatile double)E0A.pulseCount / 1024.0) * (6000000.0 / (volatile double) REFRESH_RATE);
     E0A.pulseCount = 0;
-    E1A.PIDvelocity = ((double)E1A.pulseCount / 1024.0) * (6000000.0 / (double) REFRESH_RATE);
+    E1A.PIDvelocity = ((volatile double)E1A.pulseCount / 1024.0) * (6000000.0 / (volatile double) REFRESH_RATE);
     E1A.pulseCount = 0;
-    E2A.PIDvelocity = ((double)E2A.pulseCount / 1024.0) * (6000000.0 / (double) REFRESH_RATE);
+    E2A.PIDvelocity = ((volatile double)E2A.pulseCount / 1024.0) * (6000000.0 / (volatile double) REFRESH_RATE);
     E2A.pulseCount = 0;
-    E3A.PIDvelocity = ((double)E3A.pulseCount / 1024.0) * (6000000.0 / (double) REFRESH_RATE);
+    E3A.PIDvelocity = ((volatile double)E3A.pulseCount / 1024.0) * (6000000.0 / (volatile double) REFRESH_RATE);
     E3A.pulseCount = 0;
-    E4A.PIDvelocity = ((double)E4A.pulseCount / 1024.0) * (6000000.0 / (double) REFRESH_RATE);
+    E4A.PIDvelocity = ((volatile double)E4A.pulseCount / 1024.0) * (6000000.0 / (volatile double) REFRESH_RATE);
     E4A.pulseCount = 0;
-    E5A.PIDvelocity = ((double)E5A.pulseCount / 1024.0) * (6000000.0 / (double) REFRESH_RATE);
+    E5A.PIDvelocity = ((volatile double)E5A.pulseCount / 1024.0) * (6000000.0 / (volatile double) REFRESH_RATE);
     E5A.pulseCount = 0;
     //for (int i = 0; i < 6; i++)
     //{
@@ -347,12 +349,19 @@ void initializeAllPins()
     
 }
 
-void setParamsRos(const std_msgs::Float32MultiArray &cmd_pid)
+void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
 {
     uint8_t feedback_to_change = (uint8_t) cmd_pid.data[0];
     double kP = cmd_pid.data[1];
     double kI = cmd_pid.data[2];
     double kD = cmd_pid.data[3];
+
+    nh.loginfo("params received");
+    char log_msg[13];
+    char result[8]; // Buffer big enough for 7-character float
+    dtostrf(kI, 6, 2, result); // Leave room for too large numbers!
+    sprintf(log_msg,"kI=%s", result);
+    nh.loginfo(log_msg);
 
     if (feedback_to_change == 0)
     {
@@ -484,9 +493,9 @@ void setup()
     
 }
 
+int ctr = 0;
 void loop()
 {
-int ctr = 0;
 #ifdef USING_ROS
         nh.spinOnce();
         /*
@@ -502,7 +511,17 @@ int ctr = 0;
         ctr = 0;
         pushedVal.data = P4.PIDduration;
         encoderPub.publish(&pushedVal);
+
+        char log_msg[14];
+        char result[8]; // Buffer big enough for 7-character float
+        dtostrf(feedback4.GetKd(), 6, 2, result); // Leave room for too large numbers!
+        sprintf(log_msg,"gkD=%s", result);
+        nh.loginfo(log_msg);
        }
+
+//       if (log_msg){
+//        nh.loginfo(log_msg);
+//       }
 #else
 /*
         for (int i = 0; i < 6; i++)
@@ -527,8 +546,8 @@ int ctr = 0;
     
     feedback4.Compute();
     updateMotorSpeed(&P4);
-    feedback5.Compute();
-    updateMotorSpeed(&P5);
+    // feedback5.Compute();
+    // updateMotorSpeed(&P5);
     /*
     if (feedback0.Compute())
     {

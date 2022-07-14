@@ -11,18 +11,18 @@
   #include "WProgram.h"
 #endif
 
-#include <PID_v1.h>
+#include "PID_v1.h"
 
 /*Constructor (...)*********************************************************
  *    The parameters specified here are those for for which we can't set up
  *    reliable defaults, so we need to have the user set them.
  ***************************************************************************/
-PID::PID(double* Input, double* Output, double* Setpoint,
+PID::PID(volatile double* Input, volatile double* Output, volatile double* Setpoint,
         double Kp, double Ki, double Kd, int POn, int ControllerDirection)
 {
-    myOutput = Output;
-    myInput = Input;
-    mySetpoint = Setpoint;
+    myOutput = const_cast<double*>(Output);
+    myInput = const_cast<double*>(Input);
+    mySetpoint = const_cast<double*>(Setpoint);
     inAuto = false;
 
     PID::SetOutputLimits(1000, 2000);				//default output limit corresponds to
@@ -41,7 +41,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
  *    to use Proportional on Error without explicitly saying so
  ***************************************************************************/
 
-PID::PID(double* Input, double* Output, double* Setpoint,
+PID::PID(volatile double* Input, volatile double* Output, volatile double* Setpoint,
         double Kp, double Ki, double Kd, int ControllerDirection)
     :PID::PID(Input, Output, Setpoint, Kp, Ki, Kd, P_ON_E, ControllerDirection)
 {
@@ -222,4 +222,3 @@ double PID::GetKi(){ return  dispKi;}
 double PID::GetKd(){ return  dispKd;}
 int PID::GetMode(){ return  inAuto ? AUTOMATIC : MANUAL;}
 int PID::GetDirection(){ return controllerDirection;}
-

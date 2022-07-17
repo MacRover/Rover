@@ -15,11 +15,11 @@ public:
 #define P_ON_E 1
 
   // commonly used functions **************************************************************************
-  PID(volatile double *, volatile double *, volatile double *, // * constructor.  links the PID to the Input, Output, and
+  PID(volatile double *, volatile uint16_t *, volatile double *, // * constructor.  links the PID to the Input, Output, and
       double, double, double, int, int);                       //   Setpoint.  Initial tuning parameters are also set here.
                                                                //   (overload for specifying proportional mode)
 
-  PID(volatile double *, volatile double *, volatile double *, // * constructor.  links the PID to the Input, Output, and
+  PID(volatile double *, volatile uint16_t *, volatile double *, // * constructor.  links the PID to the Input, Output, and
       double, double, double, int);                            //   Setpoint.  Initial tuning parameters are also set here
 
   void SetMode(int Mode); // * sets PID to either Manual (0) or Auto (non-0)
@@ -29,7 +29,7 @@ public:
                                 //   calculation frequency can be set using SetMode
                                 //   SetSampleTime respectively
 
-  void SetOutputLimits(double, double); // * clamps the output to a specific range. 0-255 by default, but
+  void SetOutputLimits(uint16_t, uint16_t); // * clamps the output to a specific range. 0-255 by default, but
                                         //   it's likely the user will want to change this depending on
                                         //   the application
 
@@ -69,7 +69,8 @@ private:
   int pOn;
 
   volatile double *myInput;    // * Pointers to the Input, Output, and Setpoint variables
-  volatile double *myOutput;   //   This creates a hard link between the variables and the
+  //volatile double *myOutput;   //   This creates a hard link between the variables and the
+  volatile uint16_t *myOutput;
   volatile double *mySetpoint; //   PID, freeing the user from having to constantly tell us
                                //   what these values are.  with pointers we'll just know.
 
@@ -77,7 +78,7 @@ private:
   double outputSum, lastInput;
 
   unsigned long SampleTime;
-  double outMin, outMax;
+  uint16_t outMin, outMax;
   bool inAuto, pOnE;
 };
 #endif

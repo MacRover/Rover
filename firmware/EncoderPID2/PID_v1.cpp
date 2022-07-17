@@ -17,7 +17,7 @@
  *    The parameters specified here are those for for which we can't set up
  *    reliable defaults, so we need to have the user set them.
  ***************************************************************************/
-PID::PID(volatile double *Input, volatile double *Output, volatile double *Setpoint,
+PID::PID(volatile double *Input, volatile uint16_t *Output, volatile double *Setpoint,
          double Kp, double Ki, double Kd, int POn, int ControllerDirection)
 {
    myOutput = Output;
@@ -41,7 +41,7 @@ PID::PID(volatile double *Input, volatile double *Output, volatile double *Setpo
  *    to use Proportional on Error without explicitly saying so
  ***************************************************************************/
 
-PID::PID(volatile double *Input, volatile double *Output, volatile double *Setpoint,
+PID::PID(volatile double *Input, volatile uint16_t *Output, volatile double *Setpoint,
          double Kp, double Ki, double Kd, int ControllerDirection)
     : PID::PID(Input, Output, Setpoint, Kp, Ki, Kd, P_ON_E, ControllerDirection)
 {
@@ -53,8 +53,10 @@ PID::PID(volatile double *Input, volatile double *Output, volatile double *Setpo
  *   pid Output needs to be computed.  returns true when the output is computed,
  *   false when nothing has been done.
  **********************************************************************************/
-bool PID::Compute(double * values)
+bool PID::Compute(double *values)
 {
+   if (*myInput== *mySetpoint)
+      return false;
    if (!inAuto)
       return false;
    // unsigned long now = millis();
@@ -91,7 +93,7 @@ bool PID::Compute(double * values)
          output = outMax;
       else if (output < outMin)
          output = outMin;
-      *myOutput = output;
+      *myOutput = (uint16_t)output;
 
       values[0] = input;
       values[1] = error;
@@ -167,7 +169,7 @@ void PID::SetSampleTime(int NewSampleTime)
  *  want to clamp it from 0-125.  who knows.  at any rate, that can all be done
  *  here.
  **************************************************************************/
-void PID::SetOutputLimits(double Min, double Max)
+void PID::SetOutputLimits(uint16_t Min, uint16_t Max)
 {
    if (Min >= Max)
       return;

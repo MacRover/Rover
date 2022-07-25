@@ -5,6 +5,7 @@ import serial.tools.list_ports
 import sys, termios, tty, os, time
 
 def getBlackPillPort():
+    return "/dev/ttyTHS2"
     portList = list(serial.tools.list_ports.comports())
     for port in portList:
         if "BLACKPILL" in port[1]:

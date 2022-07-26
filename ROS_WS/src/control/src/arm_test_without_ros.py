@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Importing Libraries
 import serial
 import getch

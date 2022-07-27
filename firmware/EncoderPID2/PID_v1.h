@@ -47,6 +47,8 @@ public:
   void SetSampleTime(int);          // * sets the frequency, in Milliseconds, with which
                                     //   the PID calculation is performed.  default is 100
 
+  void UpdateOutput(void);
+
   // Display functions ****************************************************************
   double GetKp();     // These functions query the pid for interal values.
   double GetKi();     //  they were created mainly for the pid front-end,

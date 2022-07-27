@@ -147,18 +147,19 @@ void initializeMotor(Motor *motor, HardwareTimer **tim, PinName pin)
     // add pid func here?
 }
 
-// void setMotorSpeed(Motor *motor, uint32_t newPulseDuration)
-// {
-//     // char intbuf[20];
-//     // sprintf(intbuf, "%d", newPulseDuration);
-//     // nh.loginfo(intbuf);
-//     if (newPulseDuration >= MIN_PULSE && newPulseDuration <= MAX_PULSE)
-//     {
-//         // motor->PIDduration = newPulseDuration;
-//         motor->pulseDuration = newPulseDuration;
-//         (motor->timer)->setCaptureCompare(motor->channel, newPulseDuration, MICROSEC_COMPARE_FORMAT);
-//     }
-// }
+void setMotorSpeed(Motor *motor, uint16_t newPulseDuration)
+{
+    // char intbuf[20];
+    // sprintf(intbuf, "%d", newPulseDuration);
+    // nh.loginfo(intbuf);
+    if (newPulseDuration >= MIN_PULSE && newPulseDuration <= MAX_PULSE)
+    {
+        // motor->PIDduration = newPulseDuration;
+        motor->pulseDuration = (volatile uint16_t) newPulseDuration;
+        feedback4.UpdateOutput();
+        (motor->timer)->setCaptureCompare(motor->channel, newPulseDuration, MICROSEC_COMPARE_FORMAT);
+    }
+}
 
 void updateMotorSpeed(Motor *motor)
 {
@@ -216,7 +217,7 @@ void encoder4Callback(void)
 
 void rolloverCallback(void)
 {
-    E4A.PIDvelocity = ((volatile double)E4A.pulseCount / 1024.0) * (6000000.0 / (volatile double)REFRESH_RATE);
+    E4A.PIDvelocity = ((volatile double)E4A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
     E4A.pulseCount = 0;
 }
 
@@ -279,6 +280,7 @@ void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
 
 void controlMotors(double left_speed, double right_speed)
 {
+    setMotorSpeed(&P4, metersPerSecondToPulse(right_speed, 1));
     setSetpoint(&P4, right_speed);
 }
 

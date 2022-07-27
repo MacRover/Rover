@@ -53,6 +53,11 @@ PID::PID(volatile double *Input, volatile uint16_t *Output, volatile double *Set
  *   pid Output needs to be computed.  returns true when the output is computed,
  *   false when nothing has been done.
  **********************************************************************************/
+
+void PID::UpdateOutput(void)
+{
+   outputSum = *myOutput;
+}
 bool PID::Compute(double *values)
 {
    if (*myInput== *mySetpoint)

@@ -104,6 +104,8 @@ Encoder *encoders[] = {&E0A, &E1A, &E2A, &E3A, &E4A, &E5A};
 Motor *motors[] = {&P0, &P1, &P2, &P3, &P4, &P5};
 
 PID feedback4(&(E4A.PIDvelocity), &(P4.pulseDuration), &(P4.setpoint), 0, 0, 0, P_ON_E, DIRECT);
+PID feedback1(&(E1A.PIDvelocity), &(P1.pulseDuration), &(P1.setpoint), 0, 0, 0, P_ON_E, DIRECT);
+
 
 void initializeTimer(HardwareTimer **tim, PinName pin, uint32_t overflow, void (*interrupt)(void))
 {
@@ -157,6 +159,7 @@ void setMotorSpeed(Motor *motor, uint16_t newPulseDuration)
         // motor->PIDduration = newPulseDuration;
         motor->pulseDuration = (volatile uint16_t) newPulseDuration;
         feedback4.UpdateOutput();
+        feedback1.UpdateOutput();
         (motor->timer)->setCaptureCompare(motor->channel, newPulseDuration, MICROSEC_COMPARE_FORMAT);
     }
 }
@@ -166,8 +169,12 @@ void updateMotorSpeed(Motor *motor)
     (motor->timer)->setCaptureCompare(motor->channel, motor->pulseDuration, MICROSEC_COMPARE_FORMAT);
 }
 
-void setSetpoint(Motor *motor, volatile double newSetpoint)
+void setSetpoint(Motor *motor, volatile double newSetpoint, bool reverse)
 {
+    if (reverse)
+    {
+        motor->setpoint = -1.0 * newSetpoint;
+    }
     motor->setpoint = newSetpoint;
 }
 
@@ -204,7 +211,7 @@ uint16_t metersPerSecondToPulse(const double vel, const int encoderIndex)
 
 void encoder4Callback(void)
 {
-    if (GPIOA->IDR & GPIO_IDR_IDR5)
+    if ((GPIOA->IDR & GPIO_IDR_IDR5) && (GPIOA->IDR & GPIO_IDR_IDR1))
     {
         // if pin B is high, then pinB went first
         (E4A.pulseCount)--;
@@ -215,10 +222,26 @@ void encoder4Callback(void)
     }
 }
 
+void encoder1Callback(void)
+{
+    if ((GPIOA->IDR & GPIO_IDR_IDR4) && (GPIOA->IDR & GPIO_IDR_IDR2))
+    {
+        // if pin B is high, then pinB went first
+        (E1A.pulseCount)--;
+    }
+    else
+    {
+        (E1A.pulseCount)++;
+    }
+}
+
 void rolloverCallback(void)
 {
     E4A.PIDvelocity = ((volatile double)E4A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
     E4A.pulseCount = 0;
+
+    E1A.PIDvelocity = ((volatile double)E1A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E1A.pulseCount = 0;
 }
 
 void initializeAllPins()
@@ -231,6 +254,10 @@ void initializeAllPins()
     initializeEncoder(&E4A, &tim2, E4A_, encoder4Callback);
 
     initializeMotor(&P4, &tim1, P4_);
+
+    initializeEncoder(&E1A, &tim2, E1A_, encoder1Callback);
+
+    initializeMotor(&P1, &tim2, P1_);
 
     tim1->resume();
     tim2->resume();
@@ -268,6 +295,10 @@ void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
     {
         feedback4.SetTunings(kP, kI, kD);
     }
+    else if (feedback_to_change == 1)
+    {
+        feedback1.SetTunings(kP, kI, kD);
+    }
 }
 
 void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
@@ -281,7 +312,9 @@ void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
 void controlMotors(double left_speed, double right_speed)
 {
     setMotorSpeed(&P4, metersPerSecondToPulse(right_speed, 1));
-    setSetpoint(&P4, right_speed);
+    setSetpoint(&P4, right_speed, false);
+    setMotorSpeed(&P1, metersPerSecondToPulse(right_speed, 4));
+    setSetpoint(&P1, -1*right_speed, false);
 }
 
 void setup()
@@ -314,8 +347,11 @@ void setup()
     pinMode(PB9, INPUT);
 
     feedback4.SetMode(AUTOMATIC);
+    feedback4.SetOutputLimits(MIN_PULSE, MAX_PULSE);
 
-    feedback4.SetOutputLimits(1500, MAX_PULSE);
+    feedback1.SetMode(AUTOMATIC);
+    feedback1.SetOutputLimits(MIN_PULSE, MAX_PULSE);
+
 }
 
 int ctr = 0;
@@ -333,6 +369,12 @@ void loop()
     if (changed)
     {
         updateMotorSpeed(&P4);
+    }
+
+    changed = feedback1.Compute(computed);
+    if (changed)
+    {
+        updateMotorSpeed(&P1);
     }
 
     if ((ctr++) % 50000000 == 0)

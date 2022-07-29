@@ -41,7 +41,7 @@
 #define TIM_3_CH_1 E0A_
 #define TIM_4_CH_1 E3A_
 
-int16_t MIN_PULSE = 1000;
+int16_t MIN_PULSE = 1000; // blah
 int16_t MAX_PULSE = 2000;
 
 int32_t REFRESH_RATE = 50000;
@@ -100,12 +100,15 @@ HardwareTimer *tim1, *tim2, *tim3, *tim4;
 Encoder E0A, E0B, E1A, E2A, E2B, E3A, E3B, E4A, E5A, E5B;
 Motor P0, P1, P2, P3, P4, P5;
 
-Encoder *encoders[] = {&E0A, &E1A, &E2A, &E3A, &E4A, &E5A};
+Encoder encoders[] = {E0A, E1A, E2A, E3A, E4A, E5A};
 Motor *motors[] = {&P0, &P1, &P2, &P3, &P4, &P5};
 
-PID feedback4(&(E4A.PIDvelocity), &(P4.pulseDuration), &(P4.setpoint), 0, 0, 0, P_ON_E, DIRECT);
+PID feedback0(&(E0A.PIDvelocity), &(P0.pulseDuration), &(P0.setpoint), 0, 0, 0, P_ON_E, DIRECT);
 PID feedback1(&(E1A.PIDvelocity), &(P1.pulseDuration), &(P1.setpoint), 0, 0, 0, P_ON_E, DIRECT);
-
+PID feedback2(&(E2A.PIDvelocity), &(P2.pulseDuration), &(P2.setpoint), 0, 0, 0, P_ON_E, DIRECT);
+PID feedback3(&(E3A.PIDvelocity), &(P3.pulseDuration), &(P3.setpoint), 0, 0, 0, P_ON_E, DIRECT);
+PID feedback4(&(E4A.PIDvelocity), &(P4.pulseDuration), &(P4.setpoint), 0, 0, 0, P_ON_E, DIRECT);
+PID feedback5(&(E5A.PIDvelocity), &(P5.pulseDuration), &(P5.setpoint), 0, 0, 0, P_ON_E, DIRECT);
 
 void initializeTimer(HardwareTimer **tim, PinName pin, uint32_t overflow, void (*interrupt)(void))
 {
@@ -149,7 +152,7 @@ void initializeMotor(Motor *motor, HardwareTimer **tim, PinName pin)
     // add pid func here?
 }
 
-void setMotorSpeed(Motor *motor, uint16_t newPulseDuration)
+void setMotorSpeed(Motor *motor, uint16_t newPulseDuration, uint8_t feedbackIndex)
 {
     // char intbuf[20];
     // sprintf(intbuf, "%d", newPulseDuration);
@@ -158,8 +161,6 @@ void setMotorSpeed(Motor *motor, uint16_t newPulseDuration)
     {
         // motor->PIDduration = newPulseDuration;
         motor->pulseDuration = (volatile uint16_t) newPulseDuration;
-        feedback4.UpdateOutput();
-        feedback1.UpdateOutput();
         (motor->timer)->setCaptureCompare(motor->channel, newPulseDuration, MICROSEC_COMPARE_FORMAT);
     }
 }
@@ -169,12 +170,8 @@ void updateMotorSpeed(Motor *motor)
     (motor->timer)->setCaptureCompare(motor->channel, motor->pulseDuration, MICROSEC_COMPARE_FORMAT);
 }
 
-void setSetpoint(Motor *motor, volatile double newSetpoint, bool reverse)
+void setSetpoint(Motor *motor, volatile double newSetpoint)
 {
-    if (reverse)
-    {
-        motor->setpoint = -1.0 * newSetpoint;
-    }
     motor->setpoint = newSetpoint;
 }
 
@@ -209,6 +206,57 @@ uint16_t metersPerSecondToPulse(const double vel, const int encoderIndex)
     return (uint16_t)(vel * factor[encoderIndex] + offset[encoderIndex]);
 }
 
+void encoder0Callback(void) 
+{
+    if ((GPIOA->IDR & GPIO_IDR_IDR6) && (GPIOA->IDR & GPIO_IDR_IDR7)) 
+    {
+        //if pin B is high, then pinB went first
+        (E0A.pulseCount)--;
+    }
+    else
+    {
+        (E0A.pulseCount)++;   
+    }
+}
+
+void encoder1Callback(void)
+{
+    if ((GPIOA->IDR & GPIO_IDR_IDR2) && (GPIOA->IDR & GPIO_IDR_IDR4))
+    {
+        // if pin B is high, then pinB went first
+        (E1A.pulseCount)--;
+    }
+    else
+    {
+        (E1A.pulseCount)++;
+    }
+}
+
+void encoder2Callback(void) 
+{
+   if ((GPIOB->IDR & GPIO_IDR_IDR0) && (GPIOB->IDR & GPIO_IDR_IDR1)) 
+    {
+        //if pin B is high, then pinB went first
+        (E2A.pulseCount)--;
+    }
+    else
+    {
+        (E2A.pulseCount)++;   
+    }
+}
+void encoder3Callback(void) 
+{
+   if ((GPIOB->IDR & GPIO_IDR_IDR6) && (GPIOB->IDR & GPIO_IDR_IDR7)) 
+    {
+        //if pin B is high, then pinB went first
+        (E3A.pulseCount)--;
+    }
+    else
+    {
+        (E3A.pulseCount)++;   
+    }
+}
+
 void encoder4Callback(void)
 {
     if ((GPIOA->IDR & GPIO_IDR_IDR5) && (GPIOA->IDR & GPIO_IDR_IDR1))
@@ -222,26 +270,48 @@ void encoder4Callback(void)
     }
 }
 
-void encoder1Callback(void)
+void encoder5Callback(void) 
 {
-    if ((GPIOA->IDR & GPIO_IDR_IDR4) && (GPIOA->IDR & GPIO_IDR_IDR2))
+   if ((GPIOB->IDR & GPIO_IDR_IDR8) && (GPIOB->IDR & GPIO_IDR_IDR9)) 
     {
-        // if pin B is high, then pinB went first
-        (E1A.pulseCount)--;
+        //if pin B is high, then pinB went first
+        (E5A.pulseCount)--;
     }
     else
     {
-        (E1A.pulseCount)++;
+        (E5A.pulseCount)++;   
     }
 }
 
+
 void rolloverCallback(void)
 {
-    E4A.PIDvelocity = ((volatile double)E4A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
-    E4A.pulseCount = 0;
+    
+    E0A.PIDvelocity = ((volatile double)E0A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E0A.pulseCount = 0;
 
     E1A.PIDvelocity = ((volatile double)E1A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
     E1A.pulseCount = 0;
+
+    E2A.PIDvelocity = ((volatile double)E2A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E2A.pulseCount = 0;
+
+    E3A.PIDvelocity = ((volatile double)E3A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E3A.pulseCount = 0;
+
+    E4A.PIDvelocity = ((volatile double)E4A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E4A.pulseCount = 0;
+
+    E5A.PIDvelocity = ((volatile double)E5A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E5A.pulseCount = 0;
+    
+    /*
+    for (int i = 0; i < 6; i ++)
+    {
+        encoders[i].PIDvelocity = ((volatile double) encoders[i].pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+        encoders[i].pulseCount = 0;
+    }
+    */
 }
 
 void initializeAllPins()
@@ -249,20 +319,32 @@ void initializeAllPins()
     initializeTimer(&tim1, TIM_1_CH_1, TIMERS_RATE, NULL);
     initializeTimer(&tim2, TIM_2_CH_1, TIMERS_RATE, NULL);
     initializeTimer(&tim3, TIM_3_CH_1, REFRESH_RATE, rolloverCallback);
-    // initializeTimer(&tim4, TIM_4_CH_1, REFRESH_RATE, NULL);
+    initializeTimer(&tim4, TIM_4_CH_1, REFRESH_RATE, NULL);
 
-    initializeEncoder(&E4A, &tim2, E4A_, encoder4Callback);
-
-    initializeMotor(&P4, &tim1, P4_);
-
+    initializeEncoder(&E0A, &tim3, E0A_, encoder0Callback);
+    initializeEncoder(&E0B, &tim3, E0B_, NULL);
     initializeEncoder(&E1A, &tim2, E1A_, encoder1Callback);
+    initializeEncoder(&E2A, &tim3, E2A_, encoder2Callback);
+    initializeEncoder(&E2B, &tim3, E2B_, NULL);
 
+    initializeEncoder(&E3A, &tim4, E3A_, encoder3Callback);
+    initializeEncoder(&E3B, &tim4, E3B_, NULL);
+    initializeEncoder(&E4A, &tim2, E4A_, encoder4Callback);
+    initializeEncoder(&E5A, &tim4, E5A_, encoder5Callback);
+    initializeEncoder(&E5B, &tim4, E5B_, NULL);
+
+
+    initializeMotor(&P0, &tim2, P0_);
     initializeMotor(&P1, &tim2, P1_);
+    initializeMotor(&P2, &tim1, P2_);
+    initializeMotor(&P3, &tim1, P3_);
+    initializeMotor(&P4, &tim1, P4_);
+    initializeMotor(&P5, &tim1, P5_);
 
     tim1->resume();
     tim2->resume();
     tim3->resume();
-    // tim4->resume();
+    tim4->resume();
 }
 
 void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
@@ -291,13 +373,38 @@ void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
     nh.loginfo(log_msg);
     nh.loginfo("-------\n");
 
-    if (feedback_to_change == 4)
+    if (feedback_to_change == 0)
     {
-        feedback4.SetTunings(kP, kI, kD);
+        feedback0.SetTunings(kP, kI, kD);
     }
     else if (feedback_to_change == 1)
     {
         feedback1.SetTunings(kP, kI, kD);
+    }
+    else if (feedback_to_change == 2)
+    {
+        feedback2.SetTunings(kP, kI, kD);
+    }
+    else if (feedback_to_change == 3)
+    {
+        feedback3.SetTunings(kP, kI, kD);
+    }
+    else if (feedback_to_change == 4)
+    {
+        feedback4.SetTunings(kP, kI, kD);
+    }
+    else if (feedback_to_change == 5)
+    {
+        feedback5.SetTunings(kP, kI, kD);
+    }
+    else if (feedback_to_change == 6)
+    {
+        feedback0.SetTunings(kP, kI, kD);
+        feedback1.SetTunings(kP, kI, kD);
+        feedback2.SetTunings(kP, kI, kD);
+        feedback3.SetTunings(kP, kI, kD);
+        feedback4.SetTunings(kP, kI, kD);
+        feedback5.SetTunings(kP, kI, kD);
     }
 }
 
@@ -311,10 +418,32 @@ void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
 
 void controlMotors(double left_speed, double right_speed)
 {
-    setMotorSpeed(&P4, metersPerSecondToPulse(right_speed, 1));
-    setSetpoint(&P4, right_speed, false);
-    setMotorSpeed(&P1, metersPerSecondToPulse(right_speed, 4));
-    setSetpoint(&P1, -1*right_speed, false);
+
+    setMotorSpeed(&P0, metersPerSecondToPulse(right_speed, 3), 0);
+    setSetpoint(&P0, -1*right_speed);
+
+    setMotorSpeed(&P1, metersPerSecondToPulse(right_speed, 4), 1);
+    setSetpoint(&P1, -1*right_speed);
+
+    setMotorSpeed(&P2, metersPerSecondToPulse(right_speed, 5), 2);
+    setSetpoint(&P2, -1*right_speed);
+
+    setMotorSpeed(&P3, metersPerSecondToPulse(left_speed, 2), 3);
+    setSetpoint(&P3, left_speed);
+
+    setMotorSpeed(&P4, metersPerSecondToPulse(left_speed, 1), 4);
+    setSetpoint(&P4, left_speed);
+
+    setMotorSpeed(&P5, metersPerSecondToPulse(left_speed, 0), 5);
+    setSetpoint(&P5, left_speed);
+
+    feedback0.UpdateOutput();
+    feedback1.UpdateOutput();
+    feedback2.UpdateOutput();
+    feedback3.UpdateOutput();
+    feedback4.UpdateOutput();
+    feedback5.UpdateOutput();
+    
 }
 
 void setup()
@@ -346,11 +475,23 @@ void setup()
     pinMode(PB8, INPUT);
     pinMode(PB9, INPUT);
 
-    feedback4.SetMode(AUTOMATIC);
-    feedback4.SetOutputLimits(MIN_PULSE, MAX_PULSE);
+    feedback0.SetMode(AUTOMATIC);
+    feedback0.SetOutputLimits(MIN_PULSE, MAX_PULSE);
 
     feedback1.SetMode(AUTOMATIC);
     feedback1.SetOutputLimits(MIN_PULSE, MAX_PULSE);
+
+    feedback2.SetMode(AUTOMATIC);
+    feedback2.SetOutputLimits(MIN_PULSE, MAX_PULSE);
+    
+    feedback3.SetMode(AUTOMATIC);
+    feedback3.SetOutputLimits(MIN_PULSE, MAX_PULSE);
+
+    feedback4.SetMode(AUTOMATIC);
+    feedback4.SetOutputLimits(MIN_PULSE, MAX_PULSE);
+
+    feedback5.SetMode(AUTOMATIC);
+    feedback5.SetOutputLimits(MIN_PULSE, MAX_PULSE);
 
 }
 
@@ -365,16 +506,41 @@ void loop()
     encoderPub.publish(&pushedVal);
 
     double computed[4];
-    bool changed = feedback4.Compute(computed);
+
+    bool changed = feedback0.Compute(computed);
     if (changed)
     {
-        updateMotorSpeed(&P4);
+        updateMotorSpeed(&P0);
     }
 
     changed = feedback1.Compute(computed);
     if (changed)
     {
         updateMotorSpeed(&P1);
+    }
+
+    changed = feedback2.Compute(computed);
+    if (changed)
+    {
+        updateMotorSpeed(&P2);
+    }
+
+    changed = feedback3.Compute(computed);
+    if (changed)
+    {
+        updateMotorSpeed(&P3);
+    }
+
+    changed = feedback4.Compute(computed);
+    if (changed)
+    {
+        updateMotorSpeed(&P4);
+    }
+
+    changed = feedback5.Compute(computed);
+    if (changed)
+    {
+        updateMotorSpeed(&P5);
     }
 
     if ((ctr++) % 50000000 == 0)

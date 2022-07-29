@@ -60,10 +60,13 @@ void PID::UpdateOutput(void)
 }
 bool PID::Compute(double *values)
 {
-   if (*myInput== *mySetpoint)
+   if (*myInput == *mySetpoint)
+   //if (*myInput - *mySetpoint < 0.013 && *myInput - *mySetpoint > - 0.013) //velocity difference recorded is less than an encoder tick
       return false;
    if (!inAuto)
       return false;
+   //if (*mySetpoint == 0) //prevent tuning that locks wheel at zero speed
+      //return false;
    // unsigned long now = millis();
    // unsigned long timeChange = (now - lastTime);
    ++lastTime;

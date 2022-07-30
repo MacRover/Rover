@@ -89,18 +89,18 @@ void loop()
   {
   // shoulder/base
   case 'w':
-    stepDualMotors(SM0_PUL, SM0_DIR, LOW, SM5_PUL, SM5_DIR, HIGH);
+    stepDualMotors(SM0_PUL, SM0_DIR, LOW, SM1_PUL, SM1_DIR, HIGH);
     break;
   case 's':
-    stepDualMotors(SM0_PUL, SM0_DIR, HIGH, SM5_PUL, SM5_DIR, LOW);
+    stepDualMotors(SM0_PUL, SM0_DIR, HIGH, SM1_PUL, SM1_DIR, LOW);
     break;
 
   // shoulder/base
   case 'a':
-    stepDualMotors(SM0_PUL, SM0_DIR, HIGH, SM5_PUL, SM5_DIR, HIGH);
+    stepDualMotors(SM0_PUL, SM0_DIR, HIGH, SM1_PUL, SM1_DIR, HIGH);
     break;
   case 'd':
-    stepDualMotors(SM0_PUL, SM0_DIR, LOW, SM5_PUL, SM5_DIR, LOW);
+    stepDualMotors(SM0_PUL, SM0_DIR, LOW, SM1_PUL, SM1_DIR, LOW);
     break;
 
   // elbow
@@ -113,26 +113,26 @@ void loop()
 
   // wrist
   case 'f':
-    stepDualMotors(SM1_PUL, SM1_DIR, LOW, SM4_PUL, SM4_DIR, HIGH);
+    stepDualMotors(SM3_PUL, SM3_DIR, LOW, SM4_PUL, SM4_DIR, HIGH);
     break;
   case 'h':
-    stepDualMotors(SM1_PUL, SM1_DIR, HIGH, SM4_PUL, SM4_DIR, LOW);
+    stepDualMotors(SM3_PUL, SM3_DIR, HIGH, SM4_PUL, SM4_DIR, LOW);
     break;
 
   // wrist
   case 'i':
-    stepDualMotors(SM1_PUL, SM1_DIR, HIGH, SM4_PUL, SM4_DIR, HIGH);
+    stepDualMotors(SM3_PUL, SM3_DIR, HIGH, SM4_PUL, SM4_DIR, HIGH);
     break;
   case 'k':
-    stepDualMotors(SM1_PUL, SM1_DIR, LOW, SM4_PUL, SM4_DIR, LOW);
+    stepDualMotors(SM3_PUL, SM3_DIR, LOW, SM4_PUL, SM4_DIR, LOW);
     break;
 
   // claw
   case 'j':
-    stepMotor(SM3_PUL, SM3_DIR, LOW);
+    stepMotor(SM5_PUL, SM5_DIR, LOW);
     break;
   case 'l':
-    stepMotor(SM3_PUL, SM3_DIR, HIGH);
+    stepMotor(SM5_PUL, SM5_DIR, HIGH);
     break;
 
   default:

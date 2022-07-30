@@ -3,6 +3,7 @@
 #include <HardwareSerial.h>
 #include <std_msgs/UInt16.h>
 #include <std_msgs/Float64MultiArray.h>
+//#include <std_msgs/MultiArrayDimension.h>
 #include <std_msgs/Float64.h>
 #include <std_msgs/String.h>
 #include "PID_v1.h"
@@ -72,9 +73,23 @@ void controlMotors(double left_speed, double right_speed);
 ros::Subscriber<geometry_msgs::Twist> velocity("cmd_vel", &controlMotorsRos);
 ros::Subscriber<std_msgs::Float64MultiArray> pid_params("cmd_pid", &setParamsRos);
 // std_msgs::String pushedVal;
-std_msgs::Float64 pushedVal;
+std_msgs::Float64 pushedVal0;
+std_msgs::Float64 pushedVal1;
+std_msgs::Float64 pushedVal2;
+std_msgs::Float64 pushedVal3;
+std_msgs::Float64 pushedVal4;
+std_msgs::Float64 pushedVal5;
+
 // std_msgs::UInt16 pushedVal;
-ros::Publisher encoderPub("enc_pub", &pushedVal);
+ros::Publisher encoderPub0("enc_pub0", &pushedVal0);
+ros::Publisher encoderPub1("enc_pub1", &pushedVal1);
+ros::Publisher encoderPub2("enc_pub2", &pushedVal2);
+ros::Publisher encoderPub3("enc_pub3", &pushedVal3);
+ros::Publisher encoderPub4("enc_pub4", &pushedVal4);
+ros::Publisher encoderPub5("enc_pub5", &pushedVal5);
+
+
+
 
 #endif /* USING_ROS */
 
@@ -454,7 +469,22 @@ void setup()
     nh.initNode();
     nh.subscribe(velocity);
     nh.subscribe(pid_params);
-    nh.advertise(encoderPub);
+
+    //pushedVals.layout.dim = (std_msgs::MultiArrayDimension *)malloc(sizeof(std_msgs::MultiArrayDimension));
+
+    //pushedVals.layout.dim_length = 0;
+    // pushedVals.data_length = 6;
+
+    //pushedVals.data = (std_msgs::Float64*)malloc(sizeof(std_msgs::Float64)*6);
+
+
+    nh.advertise(encoderPub0);
+    nh.advertise(encoderPub1);
+    nh.advertise(encoderPub2);
+    nh.advertise(encoderPub3);
+    nh.advertise(encoderPub4);
+    nh.advertise(encoderPub5);
+
     Serial.end();
 #else
     Serial.begin();
@@ -502,8 +532,32 @@ void loop()
 #ifdef USING_ROS
     nh.spinOnce();
 
-    pushedVal.data = E4A.PIDvelocity;
-    encoderPub.publish(&pushedVal);
+    // pushedVals.data_length = 6;
+    // pushedVals.data[0] = E0A.PIDvelocity;
+    // pushedVals.data[1] = E1A.PIDvelocity;
+    // pushedVals.data[2] =  E2A.PIDvelocity;
+
+    // pushedVals.data[3] = -1*E3A.PIDvelocity;
+    // pushedVals.data[4] = -1*E4A.PIDvelocity;
+    // pushedVals.data[5] = -1*E5A.PIDvelocity;
+    // encoderPub.publish(&pushedVals);
+    if (ctr % 1000 == 0)
+    {
+    pushedVal0.data = E0A.PIDvelocity;
+    pushedVal1.data = E1A.PIDvelocity;
+    pushedVal2.data = E2A.PIDvelocity;
+    pushedVal3.data = -1* E3A.PIDvelocity;
+    pushedVal4.data = -1* E4A.PIDvelocity;
+    pushedVal5.data = -1* E5A.PIDvelocity;
+
+    encoderPub0.publish(&pushedVal0);
+    encoderPub1.publish(&pushedVal1);
+    encoderPub2.publish(&pushedVal2);
+    encoderPub3.publish(&pushedVal3);
+    encoderPub4.publish(&pushedVal4);
+    encoderPub5.publish(&pushedVal5);
+    }
+   
 
     double computed[4];
 
@@ -550,8 +604,8 @@ void loop()
         // char log_msg[50];
         // sprintf(log_msg, "b:%d a:%d", before, after);
         // nh.loginfo(log_msg);
-        // pushedVal.data = E4A.PIDvelocity;
-        // encoderPub.publish(&pushedVal);
+        //pushedVal.data = E4A.PIDvelocity;
+        //encoderPub.publish(&pushedVal);
 
         // char buffer[50];
         // char PIDvelocity[8];

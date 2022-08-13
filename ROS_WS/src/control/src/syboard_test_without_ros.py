@@ -14,7 +14,7 @@ def getBlackPillPort():
 
 if __name__ == "__main__":
 
-    blackpill = arduino = serial.Serial(port=getBlackPillPort(), baudrate=115200)
+    blackpill = arduino = serial.Serial(port=getBlackPillPort(), baudrate=115200, timeout=1)
 
     while True:
         command = input("Enter a command number: ")

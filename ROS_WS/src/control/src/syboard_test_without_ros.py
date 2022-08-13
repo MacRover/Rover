@@ -6,7 +6,7 @@ import time
 import struct
 
 def getBlackPillPort():
-    return "COM4"
+    return "/dev/ttyTHS2"
     portList = list(serial.tools.list_ports.comports())
     for port in portList:
         if "BLACKPILL" in port[1]:

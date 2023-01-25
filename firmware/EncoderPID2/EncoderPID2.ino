@@ -10,7 +10,7 @@
 
 #define USE_STM32_HW_SERIAL
 #define BAUD_RATE 57600
-#define SERIAL_RX PB11
+#define SERIAL_RX PB11 //pins being used for ROSSerial 
 #define SERIAL_TX PB10
 
 // Map DMC pins to stm32 pins
@@ -37,17 +37,24 @@
 #define E5A_ PB_8
 #define E5B_ PB_9
 
+// map timer channels to stm32 pins
 #define TIM_1_CH_1 P5_
 #define TIM_2_CH_1 P1_
 #define TIM_3_CH_1 E0A_
 #define TIM_4_CH_1 E3A_
 
-int16_t MIN_PULSE = 1000; // blah
+int16_t MIN_PULSE = 1000; // PWM Pulse Duration (microseconds)
 int16_t MAX_PULSE = 2000;
 
-int32_t REFRESH_RATE = 50000;
-int32_t TIMERS_RATE = 3000;
+int32_t REFRESH_RATE = 50000; //Value (microseconds) at which encoder timers overflow, defines how often encoder velocity is calculated
+int32_t TIMERS_RATE = 3000; //Value (microseconds) at which motor timers overflow
 
+/*
+* Chart used from linear calibration of motor power - pulse curve
+* PWM Pulse = factor * desired motor speed + offset (y = mx + b)
+* where motor speed is in m/s, PWM pulse is a value between MIN and MAX
+* This gives us a good 'first guess' to get the motor near the desired speed.
+*/
 double factor[6] = {391.46, 388.37, 380.43, -376.12, -393.07, -384.64};
 double offset[6] = {1488.6, 1502.7, 1497.1, 1499.2, 1501.5, 1502.3};
 
@@ -73,6 +80,8 @@ void controlMotors(double left_speed, double right_speed);
 ros::Subscriber<geometry_msgs::Twist> velocity("cmd_vel", &controlMotorsRos);
 ros::Subscriber<std_msgs::Float64MultiArray> pid_params("cmd_pid", &setParamsRos);
 // std_msgs::String pushedVal;
+
+//variables for publishing encoder values over ros for debugging
 std_msgs::Float64 pushedVal0;
 std_msgs::Float64 pushedVal1;
 std_msgs::Float64 pushedVal2;
@@ -98,8 +107,8 @@ typedef struct encoder
     HardwareTimer *timer;
     uint32_t channel;
     PinName pin;
-    volatile int16_t pulseCount;
-    volatile double PIDvelocity;
+    volatile int16_t pulseCount;    // number of encoder pulses detected
+    volatile double PIDvelocity;    // current encoder velocity, output of PID loop
 } Encoder;
 
 typedef struct Motor
@@ -107,17 +116,19 @@ typedef struct Motor
     HardwareTimer *timer;
     uint32_t channel;
     PinName pin;
-    volatile uint16_t pulseDuration;
-    volatile double setpoint;
+    volatile uint16_t pulseDuration;    // PWM pulse duration of motor
+    volatile double setpoint;           // desired motor velocity
 } Motor;
 
 HardwareTimer *tim1, *tim2, *tim3, *tim4;
 Encoder E0A, E0B, E1A, E2A, E2B, E3A, E3B, E4A, E5A, E5B;
 Motor P0, P1, P2, P3, P4, P5;
 
+//A encoders are initialized with timers - B encoders are merely used to identify leading/lagging
 Encoder encoders[] = {E0A, E1A, E2A, E3A, E4A, E5A};
 Motor *motors[] = {&P0, &P1, &P2, &P3, &P4, &P5};
 
+//PID struct with input variable, output variable, and desired variable
 PID feedback0(&(E0A.PIDvelocity), &(P0.pulseDuration), &(P0.setpoint), 0, 0, 0, P_ON_E, DIRECT);
 PID feedback1(&(E1A.PIDvelocity), &(P1.pulseDuration), &(P1.setpoint), 0, 0, 0, P_ON_E, DIRECT);
 PID feedback2(&(E2A.PIDvelocity), &(P2.pulseDuration), &(P2.setpoint), 0, 0, 0, P_ON_E, DIRECT);
@@ -167,6 +178,7 @@ void initializeMotor(Motor *motor, HardwareTimer **tim, PinName pin)
     // add pid func here?
 }
 
+// Manually set motor to desired speed
 void setMotorSpeed(Motor *motor, uint16_t newPulseDuration, uint8_t feedbackIndex)
 {
     // char intbuf[20];
@@ -180,11 +192,13 @@ void setMotorSpeed(Motor *motor, uint16_t newPulseDuration, uint8_t feedbackInde
     }
 }
 
+// Set motor speed based off value in motor struct
 void updateMotorSpeed(Motor *motor)
 {
     (motor->timer)->setCaptureCompare(motor->channel, motor->pulseDuration, MICROSEC_COMPARE_FORMAT);
 }
 
+// Set new desired velocity in motor struct
 void setSetpoint(Motor *motor, volatile double newSetpoint)
 {
     motor->setpoint = newSetpoint;
@@ -204,6 +218,7 @@ uint16_t map_(const double val, const double in_min, const double in_max, const 
     return (uint16_t)round((val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
 }
 
+// convert velocity between -4 and 4 to a value between 1000 and 2000
 uint16_t velocityToPulse(const double vel, const bool reverse = false)
 {
     const double control_min = -4.0;
@@ -216,10 +231,19 @@ uint16_t velocityToPulse(const double vel, const bool reverse = false)
     return map_(vel, control_min, control_max, MAX_PULSE, MIN_PULSE);
 }
 
+// use calibration graphs to convert meters per second to desired PWM pulse for specific encoder
 uint16_t metersPerSecondToPulse(const double vel, const int encoderIndex)
 {
     return (uint16_t)(vel * factor[encoderIndex] + offset[encoderIndex]);
 }
+
+/*
+* CALLBACK FUNCTIONS
+* Called when the pin tied to the encoder A channel goes high
+* If both A channel and B channel are high, encoder must be going in negative direction (as B lags A)
+* Update encoder struct pulse count
+*/
+
 
 void encoder0Callback(void) 
 {
@@ -298,7 +322,7 @@ void encoder5Callback(void)
     }
 }
 
-
+// Calculate encoder velocity and reset encoder pulse counts
 void rolloverCallback(void)
 {
     
@@ -362,6 +386,7 @@ void initializeAllPins()
     tim4->resume();
 }
 
+//Receive message from ros serial to update PID values used
 void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
 {
     uint8_t feedback_to_change = (uint8_t)cmd_pid.data[0];
@@ -431,6 +456,7 @@ void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
     controlMotors(left_speed, right_speed);
 }
 
+// set motors to target velocity and update motor setpoint
 void controlMotors(double left_speed, double right_speed)
 {
 
@@ -452,6 +478,7 @@ void controlMotors(double left_speed, double right_speed)
     setMotorSpeed(&P5, metersPerSecondToPulse(left_speed, 0), 5);
     setSetpoint(&P5, left_speed);
 
+    // Update PID with new setpoint
     feedback0.UpdateOutput();
     feedback1.UpdateOutput();
     feedback2.UpdateOutput();
@@ -485,7 +512,7 @@ void setup()
     nh.advertise(encoderPub4);
     nh.advertise(encoderPub5);
 
-    Serial.end();
+    Serial.end(); //if using ROS Serial, can't use USB Serial
 #else
     Serial.begin();
 #endif
@@ -541,6 +568,8 @@ void loop()
     // pushedVals.data[4] = -1*E4A.PIDvelocity;
     // pushedVals.data[5] = -1*E5A.PIDvelocity;
     // encoderPub.publish(&pushedVals);
+
+    // Send values over RosSerial every 1000 iterations
     if (ctr % 1000 == 0)
     {
     pushedVal0.data = E0A.PIDvelocity;
@@ -561,6 +590,7 @@ void loop()
 
     double computed[4];
 
+    // calculate new PID velocity, and update motors if new velocity differs from previous one
     bool changed = feedback0.Compute(computed);
     if (changed)
     {

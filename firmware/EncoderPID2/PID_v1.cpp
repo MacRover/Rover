@@ -70,7 +70,7 @@ bool PID::Compute(double *values)
    // unsigned long now = millis();
    // unsigned long timeChange = (now - lastTime);
    ++lastTime;
-   if (lastTime >= 10)
+   if (lastTime >= 10) //arbitrarily chosen to update once every 10 Compute calls
    {
       /*Compute all the working error variables*/
       const double input = *myInput;

@@ -3,14 +3,15 @@
 #include <HardwareSerial.h>
 #include <std_msgs/UInt16.h>
 #include <std_msgs/Float64MultiArray.h>
-//#include <std_msgs/MultiArrayDimension.h>
-#include <std_msgs/Float64.h>
+// #include <std_msgs/MultiArrayDimension.h>
+//  #include <std_msgs/Float64.h>
+#include <std_msgs/Int16.h>
 #include <std_msgs/String.h>
 #include "PID_v1.h"
 
 #define USE_STM32_HW_SERIAL
 #define BAUD_RATE 57600
-#define SERIAL_RX PB11 //pins being used for ROSSerial 
+#define SERIAL_RX PB11 // pins being used for ROSSerial
 #define SERIAL_TX PB10
 
 // Map DMC pins to stm32 pins
@@ -46,21 +47,21 @@
 int16_t MIN_PULSE = 1000; // PWM Pulse Duration (microseconds)
 int16_t MAX_PULSE = 2000;
 
-int32_t REFRESH_RATE = 50000; //Value (microseconds) at which encoder timers overflow, defines how often encoder velocity is calculated
-int32_t TIMERS_RATE = 3000; //Value (microseconds) at which motor timers overflow
+int32_t REFRESH_RATE = 50000; // Value (microseconds) at which encoder timers overflow, defines how often encoder velocity is calculated
+int32_t TIMERS_RATE = 3000;   // Value (microseconds) at which motor timers overflow
 
 /*
-* Chart used from linear calibration of motor power - pulse curve
-* PWM Pulse = factor * desired motor speed + offset (y = mx + b)
-* where motor speed is in m/s, PWM pulse is a value between MIN and MAX
-* This gives us a good 'first guess' to get the motor near the desired speed.
-*/
+ * Chart used from linear calibration of motor power - pulse curve
+ * PWM Pulse = factor * desired motor speed + offset (y = mx + b)
+ * where motor speed is in m/s, PWM pulse is a value between MIN and MAX
+ * This gives us a good 'first guess' to get the motor near the desired speed.
+ */
 double factor[6] = {391.46, 388.37, 380.43, -376.12, -393.07, -384.64};
 double offset[6] = {1488.6, 1502.7, 1497.1, 1499.2, 1501.5, 1502.3};
 
 #define USING_ROS
 #define VELOCITY_DEBUG
-//#define DISTANCE_DEBUG
+// #define DISTANCE_DEBUG
 
 #ifdef USING_ROS
 HardwareSerial hserial(SERIAL_RX, SERIAL_TX);
@@ -81,13 +82,13 @@ ros::Subscriber<geometry_msgs::Twist> velocity("cmd_vel", &controlMotorsRos);
 ros::Subscriber<std_msgs::Float64MultiArray> pid_params("cmd_pid", &setParamsRos);
 // std_msgs::String pushedVal;
 
-//variables for publishing encoder values over ros for debugging
-std_msgs::Float64 pushedVal0;
-std_msgs::Float64 pushedVal1;
-std_msgs::Float64 pushedVal2;
-std_msgs::Float64 pushedVal3;
-std_msgs::Float64 pushedVal4;
-std_msgs::Float64 pushedVal5;
+// variables for publishing encoder values over ros for debugging
+std_msgs::Int16 pushedVal0;
+std_msgs::Int16 pushedVal1;
+std_msgs::Int16 pushedVal2;
+std_msgs::Int16 pushedVal3;
+std_msgs::Int16 pushedVal4;
+std_msgs::Int16 pushedVal5;
 
 // std_msgs::UInt16 pushedVal;
 ros::Publisher encoderPub0("enc_pub0", &pushedVal0);
@@ -97,9 +98,6 @@ ros::Publisher encoderPub3("enc_pub3", &pushedVal3);
 ros::Publisher encoderPub4("enc_pub4", &pushedVal4);
 ros::Publisher encoderPub5("enc_pub5", &pushedVal5);
 
-
-
-
 #endif /* USING_ROS */
 
 typedef struct encoder
@@ -107,8 +105,8 @@ typedef struct encoder
     HardwareTimer *timer;
     uint32_t channel;
     PinName pin;
-    volatile int16_t pulseCount;    // number of encoder pulses detected
-    volatile double PIDvelocity;    // current encoder velocity, output of PID loop
+    volatile int16_t pulseCount; // number of encoder pulses detected
+    volatile double PIDvelocity; // current encoder velocity, output of PID loop
 } Encoder;
 
 typedef struct Motor
@@ -116,19 +114,19 @@ typedef struct Motor
     HardwareTimer *timer;
     uint32_t channel;
     PinName pin;
-    volatile uint16_t pulseDuration;    // PWM pulse duration of motor
-    volatile double setpoint;           // desired motor velocity
+    volatile uint16_t pulseDuration; // PWM pulse duration of motor
+    volatile double setpoint;        // desired motor velocity
 } Motor;
 
 HardwareTimer *tim1, *tim2, *tim3, *tim4;
 Encoder E0A, E0B, E1A, E2A, E2B, E3A, E3B, E4A, E5A, E5B;
 Motor P0, P1, P2, P3, P4, P5;
 
-//A encoders are initialized with timers - B encoders are merely used to identify leading/lagging
+// A encoders are initialized with timers - B encoders are merely used to identify leading/lagging
 Encoder encoders[] = {E0A, E1A, E2A, E3A, E4A, E5A};
 Motor *motors[] = {&P0, &P1, &P2, &P3, &P4, &P5};
 
-//PID struct with input variable, output variable, and desired variable
+// PID struct with input variable, output variable, and desired variable
 PID feedback0(&(E0A.PIDvelocity), &(P0.pulseDuration), &(P0.setpoint), 0, 0, 0, P_ON_E, DIRECT);
 PID feedback1(&(E1A.PIDvelocity), &(P1.pulseDuration), &(P1.setpoint), 0, 0, 0, P_ON_E, DIRECT);
 PID feedback2(&(E2A.PIDvelocity), &(P2.pulseDuration), &(P2.setpoint), 0, 0, 0, P_ON_E, DIRECT);
@@ -187,7 +185,7 @@ void setMotorSpeed(Motor *motor, uint16_t newPulseDuration, uint8_t feedbackInde
     if (newPulseDuration >= MIN_PULSE && newPulseDuration <= MAX_PULSE)
     {
         // motor->PIDduration = newPulseDuration;
-        motor->pulseDuration = (volatile uint16_t) newPulseDuration;
+        motor->pulseDuration = (volatile uint16_t)newPulseDuration;
         (motor->timer)->setCaptureCompare(motor->channel, newPulseDuration, MICROSEC_COMPARE_FORMAT);
     }
 }
@@ -238,23 +236,22 @@ uint16_t metersPerSecondToPulse(const double vel, const int encoderIndex)
 }
 
 /*
-* CALLBACK FUNCTIONS
-* Called when the pin tied to the encoder A channel goes high
-* If both A channel and B channel are high, encoder must be going in negative direction (as B lags A)
-* Update encoder struct pulse count
-*/
+ * CALLBACK FUNCTIONS
+ * Called when the pin tied to the encoder A channel goes high
+ * If both A channel and B channel are high, encoder must be going in negative direction (as B lags A)
+ * Update encoder struct pulse count
+ */
 
-
-void encoder0Callback(void) 
+void encoder0Callback(void)
 {
-    if ((GPIOA->IDR & GPIO_IDR_IDR6) && (GPIOA->IDR & GPIO_IDR_IDR7)) 
+    if ((GPIOA->IDR & GPIO_IDR_IDR6) && (GPIOA->IDR & GPIO_IDR_IDR7))
     {
-        //if pin B is high, then pinB went first
+        // if pin B is high, then pinB went first
         (E0A.pulseCount)--;
     }
     else
     {
-        (E0A.pulseCount)++;   
+        (E0A.pulseCount)++;
     }
 }
 
@@ -271,28 +268,28 @@ void encoder1Callback(void)
     }
 }
 
-void encoder2Callback(void) 
+void encoder2Callback(void)
 {
-   if ((GPIOB->IDR & GPIO_IDR_IDR0) && (GPIOB->IDR & GPIO_IDR_IDR1)) 
+    if ((GPIOB->IDR & GPIO_IDR_IDR0) && (GPIOB->IDR & GPIO_IDR_IDR1))
     {
-        //if pin B is high, then pinB went first
+        // if pin B is high, then pinB went first
         (E2A.pulseCount)--;
     }
     else
     {
-        (E2A.pulseCount)++;   
+        (E2A.pulseCount)++;
     }
 }
-void encoder3Callback(void) 
+void encoder3Callback(void)
 {
-   if ((GPIOB->IDR & GPIO_IDR_IDR6) && (GPIOB->IDR & GPIO_IDR_IDR7)) 
+    if ((GPIOB->IDR & GPIO_IDR_IDR6) && (GPIOB->IDR & GPIO_IDR_IDR7))
     {
-        //if pin B is high, then pinB went first
+        // if pin B is high, then pinB went first
         (E3A.pulseCount)--;
     }
     else
     {
-        (E3A.pulseCount)++;   
+        (E3A.pulseCount)++;
     }
 }
 
@@ -309,41 +306,41 @@ void encoder4Callback(void)
     }
 }
 
-void encoder5Callback(void) 
+void encoder5Callback(void)
 {
-   if ((GPIOB->IDR & GPIO_IDR_IDR8) && (GPIOB->IDR & GPIO_IDR_IDR9)) 
+    if ((GPIOB->IDR & GPIO_IDR_IDR8) && (GPIOB->IDR & GPIO_IDR_IDR9))
     {
-        //if pin B is high, then pinB went first
+        // if pin B is high, then pinB went first
         (E5A.pulseCount)--;
     }
     else
     {
-        (E5A.pulseCount)++;   
+        (E5A.pulseCount)++;
     }
 }
 
 // Calculate encoder velocity and reset encoder pulse counts
 void rolloverCallback(void)
 {
-    
-    E0A.PIDvelocity = ((volatile double)E0A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+
+    E0A.PIDvelocity = ((volatile double)E0A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE); // Rotations per Second
     E0A.pulseCount = 0;
 
-    E1A.PIDvelocity = ((volatile double)E1A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E1A.PIDvelocity = ((volatile double)E1A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE); // Rotations per Second
     E1A.pulseCount = 0;
 
-    E2A.PIDvelocity = ((volatile double)E2A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E2A.PIDvelocity = ((volatile double)E2A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE); // Rotations per Second
     E2A.pulseCount = 0;
 
-    E3A.PIDvelocity = ((volatile double)E3A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E3A.PIDvelocity = ((volatile double)E3A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE); // Rotations per Second
     E3A.pulseCount = 0;
 
-    E4A.PIDvelocity = ((volatile double)E4A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E4A.PIDvelocity = ((volatile double)E4A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE); // Rotations per Second
     E4A.pulseCount = 0;
 
-    E5A.PIDvelocity = ((volatile double)E5A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE) * (0.20 * 3.141592653); //Rotations per Second * Pi * Diameter
+    E5A.PIDvelocity = ((volatile double)E5A.pulseCount / 1024.0) * (1000000.0 / (volatile double)REFRESH_RATE); // Rotations per Second
     E5A.pulseCount = 0;
-    
+
     /*
     for (int i = 0; i < 6; i ++)
     {
@@ -372,7 +369,6 @@ void initializeAllPins()
     initializeEncoder(&E5A, &tim4, E5A_, encoder5Callback);
     initializeEncoder(&E5B, &tim4, E5B_, NULL);
 
-
     initializeMotor(&P0, &tim2, P0_);
     initializeMotor(&P1, &tim2, P1_);
     initializeMotor(&P2, &tim1, P2_);
@@ -386,7 +382,7 @@ void initializeAllPins()
     tim4->resume();
 }
 
-//Receive message from ros serial to update PID values used
+// Receive message from ros serial to update PID values used
 void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
 {
     uint8_t feedback_to_change = (uint8_t)cmd_pid.data[0];
@@ -461,13 +457,13 @@ void controlMotors(double left_speed, double right_speed)
 {
 
     setMotorSpeed(&P0, metersPerSecondToPulse(right_speed, 3), 0);
-    setSetpoint(&P0, -1*right_speed);
+    setSetpoint(&P0, -1 * right_speed);
 
     setMotorSpeed(&P1, metersPerSecondToPulse(right_speed, 4), 1);
-    setSetpoint(&P1, -1*right_speed);
+    setSetpoint(&P1, -1 * right_speed);
 
     setMotorSpeed(&P2, metersPerSecondToPulse(right_speed, 5), 2);
-    setSetpoint(&P2, -1*right_speed);
+    setSetpoint(&P2, -1 * right_speed);
 
     setMotorSpeed(&P3, metersPerSecondToPulse(left_speed, 2), 3);
     setSetpoint(&P3, left_speed);
@@ -485,7 +481,6 @@ void controlMotors(double left_speed, double right_speed)
     feedback3.UpdateOutput();
     feedback4.UpdateOutput();
     feedback5.UpdateOutput();
-    
 }
 
 void setup()
@@ -497,13 +492,12 @@ void setup()
     nh.subscribe(velocity);
     nh.subscribe(pid_params);
 
-    //pushedVals.layout.dim = (std_msgs::MultiArrayDimension *)malloc(sizeof(std_msgs::MultiArrayDimension));
+    // pushedVals.layout.dim = (std_msgs::MultiArrayDimension *)malloc(sizeof(std_msgs::MultiArrayDimension));
 
-    //pushedVals.layout.dim_length = 0;
-    // pushedVals.data_length = 6;
+    // pushedVals.layout.dim_length = 0;
+    //  pushedVals.data_length = 6;
 
-    //pushedVals.data = (std_msgs::Float64*)malloc(sizeof(std_msgs::Float64)*6);
-
+    // pushedVals.data = (std_msgs::Float64*)malloc(sizeof(std_msgs::Float64)*6);
 
     nh.advertise(encoderPub0);
     nh.advertise(encoderPub1);
@@ -512,7 +506,7 @@ void setup()
     nh.advertise(encoderPub4);
     nh.advertise(encoderPub5);
 
-    Serial.end(); //if using ROS Serial, can't use USB Serial
+    Serial.end(); // if using ROS Serial, can't use USB Serial
 #else
     Serial.begin();
 #endif
@@ -540,7 +534,7 @@ void setup()
 
     feedback2.SetMode(AUTOMATIC);
     feedback2.SetOutputLimits(MIN_PULSE, MAX_PULSE);
-    
+
     feedback3.SetMode(AUTOMATIC);
     feedback3.SetOutputLimits(MIN_PULSE, MAX_PULSE);
 
@@ -549,7 +543,6 @@ void setup()
 
     feedback5.SetMode(AUTOMATIC);
     feedback5.SetOutputLimits(MIN_PULSE, MAX_PULSE);
-
 }
 
 int ctr = 0;
@@ -572,21 +565,20 @@ void loop()
     // Send values over RosSerial every 1000 iterations
     if (ctr % 1000 == 0)
     {
-    pushedVal0.data = E0A.PIDvelocity;
-    pushedVal1.data = E1A.PIDvelocity;
-    pushedVal2.data = E2A.PIDvelocity;
-    pushedVal3.data = -1* E3A.PIDvelocity;
-    pushedVal4.data = -1* E4A.PIDvelocity;
-    pushedVal5.data = -1* E5A.PIDvelocity;
+        pushedVal0.data = E0A.PIDvelocity;
+        pushedVal1.data = E1A.PIDvelocity;
+        pushedVal2.data = E2A.PIDvelocity;
+        pushedVal3.data = -1 * E3A.PIDvelocity;
+        pushedVal4.data = -1 * E4A.PIDvelocity;
+        pushedVal5.data = -1 * E5A.PIDvelocity;
 
-    encoderPub0.publish(&pushedVal0);
-    encoderPub1.publish(&pushedVal1);
-    encoderPub2.publish(&pushedVal2);
-    encoderPub3.publish(&pushedVal3);
-    encoderPub4.publish(&pushedVal4);
-    encoderPub5.publish(&pushedVal5);
+        encoderPub0.publish(&pushedVal0);
+        encoderPub1.publish(&pushedVal1);
+        encoderPub2.publish(&pushedVal2);
+        encoderPub3.publish(&pushedVal3);
+        encoderPub4.publish(&pushedVal4);
+        encoderPub5.publish(&pushedVal5);
     }
-   
 
     double computed[4];
 
@@ -634,8 +626,8 @@ void loop()
         // char log_msg[50];
         // sprintf(log_msg, "b:%d a:%d", before, after);
         // nh.loginfo(log_msg);
-        //pushedVal.data = E4A.PIDvelocity;
-        //encoderPub.publish(&pushedVal);
+        // pushedVal.data = E4A.PIDvelocity;
+        // encoderPub.publish(&pushedVal);
 
         // char buffer[50];
         // char PIDvelocity[8];

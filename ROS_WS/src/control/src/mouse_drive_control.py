@@ -11,16 +11,17 @@ vel_msg = Twist()
 is_toggled = False
 size = 250
 
-max_speed_mps = 0.5
+max_speed = 0.1
 
 
 def on_move(box, event):
+	print(event.x, event.y)
 	global vel_msg, is_toggled
 	y_pos = size - event.y
 	x_pos = size - event.x
 	if abs(y_pos) <= size and abs(x_pos) <= size and is_toggled:
-		vel_msg.linear.x = max_speed_mps / size * y_pos
-		vel_msg.angular.z = max_speed_mps / size * x_pos
+		vel_msg.linear.x = max_speed / size * y_pos
+		vel_msg.angular.z = max_speed / size * x_pos
 	else:
 		vel_msg.linear.x = 0
 		vel_msg.angular.z = 0
@@ -43,10 +44,12 @@ def on_leave(box, event):
 	vel_msg.angular.z = 0
 	publisher.publish(vel_msg)
 
+
 def on_click(box, event):
 	global is_toggled
 	is_toggled = True
 	on_move(box, event)
+
 
 def on_release(box, event):
 	global is_toggled, vel_msg
@@ -58,20 +61,27 @@ def on_release(box, event):
 	vel_msg.angular.y = 0
 	vel_msg.angular.z = 0
 	publisher.publish(vel_msg)
+	
 
+def on_draw(box, event):
+	cr = box.window.cairo_create()
+	cr.set_source_rgb(1.0, 0.0, 0.0)
+	cr.rectangle(50, 50, 100, 100)
+	cr.fill()
 
 
 if __name__ == '__main__':
 	window = Gtk.Window()
-	box = Gtk.EventBox()
+	darea = Gtk.DrawingArea()
 	window.set_default_size(size * 2, size * 2)
-	box.connect('motion-notify-event', on_move)
-	box.connect('leave-notify-event', on_leave)
-	box.connect('button-press-event', on_click)
-	box.connect('button-release-event', on_release)
+	darea.connect('motion-notify-event', on_move)
+	darea.connect('leave-notify-event', on_leave)
+	darea.connect('button-press-event', on_click)
+	darea.connect('button-release-event', on_release)
+	darea.connect('expose-event', on_draw)
 
-	box.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
-	window.add(box)
+	darea.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
+	window.add(darea)
 	window.show_all()
 	print('\nClick and drag at any point in the window to move the robot, hit the x button at the top right to exit')
 	window.connect('destroy', Gtk.main_quit)

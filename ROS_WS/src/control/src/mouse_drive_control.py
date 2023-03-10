@@ -15,8 +15,16 @@ max_speed = 0.1
 
 
 def on_move(box, event):
-	print(event.x, event.y)
 	global vel_msg, is_toggled
+	box.window.invalidate_rect(None, False)
+	while Gtk.events_pending():
+		Gtk.main_iteration()
+	cr = box.window.cairo_create()
+	cr.set_source_rgb(1.0, 0.0, 0.0)
+	cr.move_to(size, size)
+	cr.line_to(event.x, event.y)
+	cr.stroke()
+
 	y_pos = size - event.y
 	x_pos = size - event.x
 	if abs(y_pos) <= size and abs(x_pos) <= size and is_toggled:
@@ -61,13 +69,6 @@ def on_release(box, event):
 	vel_msg.angular.y = 0
 	vel_msg.angular.z = 0
 	publisher.publish(vel_msg)
-	
-
-def on_draw(box, event):
-	cr = box.window.cairo_create()
-	cr.set_source_rgb(1.0, 0.0, 0.0)
-	cr.rectangle(50, 50, 100, 100)
-	cr.fill()
 
 
 if __name__ == '__main__':
@@ -78,9 +79,12 @@ if __name__ == '__main__':
 	darea.connect('leave-notify-event', on_leave)
 	darea.connect('button-press-event', on_click)
 	darea.connect('button-release-event', on_release)
-	darea.connect('expose-event', on_draw)
 
-	darea.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
+	darea.add_events(
+		Gdk.EventMask.POINTER_MOTION_MASK |
+		Gdk.EventMask.BUTTON_RELEASE_MASK |
+		Gdk.EventMask.BUTTON_PRESS_MASK
+	)
 	window.add(darea)
 	window.show_all()
 	print('\nClick and drag at any point in the window to move the robot, hit the x button at the top right to exit')

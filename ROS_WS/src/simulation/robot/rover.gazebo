@@ -277,15 +277,14 @@
   </gazebo> -->
   <gazebo>
     <plugin filename="libhector_gazebo_ros_gps.so" name="gps_plugin">
-      <alwaysOn>1</alwaysOn>
-      <bodyName>gps_link</bodyName>
-      <topicName>fix</topicName>
-      <velocityTopicName>fix_velocity</velocityTopicName>
-      <drift>0 0 0</drift>
-      <gaussianNoise>0 0 0</gaussianNoise>
-      <velocityDrift>0 0 0</velocityDrift>
-      <referenceLatitude>0.0</referenceLatitude>
-      <referenceLongitude>0.0</referenceLongitude>
+      <alwaysOn>true</alwaysOn>
+      <updaterate>1.0</updaterate>
+      <bodyName>chassis</bodyName>
+      <topicName>/fix</topicName>
+      <velocityTopicName>/fix_velocity</velocityTopicName>
+      <!-- <drift>5.0 5.0 5.0</drift> -->
+      <gaussiannoise>0.1 0.1 0.1</gaussiannoise>
+      <velocitydrift>0 0 0</velocitydrift>
       <velocityGaussianNoise>0.001 0.001 0.001</velocityGaussianNoise>
     </plugin>
   </gazebo>

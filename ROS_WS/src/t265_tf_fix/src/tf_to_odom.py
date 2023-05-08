@@ -1,10 +1,21 @@
 #!/usr/bin/python
 import rospy
+import os
+import math
 import tf
 from nav_msgs.msg import Odometry
-#import time
 
 def callback(rs_odom):
+    if(math.isnan(rs_odom.twist.twist.linear.x)):
+        print("===========================================")
+        print("=====    Detected T265 divergence     =====")
+        print("===== Attempting to restart T265 Node =====")
+        print("===========================================")
+        
+        # since respawn:=true it will try to restart by itself
+        os.system('rosnode kill NAME_OF_T265_NODE') # TODO
+        return
+
     global lx, ly, lz, ax, ay, az
     lx = rs_odom.twist.twist.linear.x
     ly = rs_odom.twist.twist.linear.y

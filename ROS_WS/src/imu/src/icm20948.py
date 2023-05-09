@@ -6,6 +6,16 @@ from sensor_msgs.msg import MagneticField,Imu
 from std_msgs.msg import Float64
 import qwiic_icm20948
 
+# helper methods
+def RawToMeterPerSecond(g):
+    return (g / 16.384) * 1000.0 * 9.80665
+
+def RawToRadsPerSecond(dps):
+    return (dps / 131.0) * 0.01745
+
+def RawToTesla(mT):
+    return (mT * 0.15)
+
 def icm20948_node():
 
     # Initialize ROS node
@@ -21,6 +31,7 @@ def icm20948_node():
     while IMU.connected == False:
         message = "The Qwiic ICM20948 device isn't connected to the system. Please check your connection"
         rospy.loginfo(message)
+        return
 
     IMU.begin()    
 
@@ -35,25 +46,28 @@ def icm20948_node():
             raw_msg.orientation.y = 0
             raw_msg.orientation.z = 0
                 
-            raw_msg.linear_acceleration.x = IMU.axRaw
-            raw_msg.linear_acceleration.y = IMU.ayRaw
-            raw_msg.linear_acceleration.z = IMU.azRaw
+            raw_msg.linear_acceleration.x = RawToMeterPerSecond(IMU.axRaw)
+            raw_msg.linear_acceleration.y = RawToMeterPerSecond(IMU.ayRaw)
+            raw_msg.linear_acceleration.z = RawToMeterPerSecond(IMU.azRaw)
                 
-            raw_msg.angular_velocity.x = IMU.gxRaw
-            raw_msg.angular_velocity.y = IMU.gyRaw
-            raw_msg.angular_velocity.z = IMU.gzRaw
+            raw_msg.angular_velocity.x = RawToRadsPerSecond(IMU.gxRaw)
+            raw_msg.angular_velocity.y = RawToRadsPerSecond(IMU.gyRaw)
+            raw_msg.angular_velocity.z = RawToRadsPerSecond(IMU.gzRaw)
                 
             raw_msg.orientation_covariance[0] = -1
             raw_msg.linear_acceleration_covariance[0] = -1
             raw_msg.angular_velocity_covariance[0] = -1
                 
             raw_pub.publish(raw_msg)
-                
+            
+
             mag_msg = MagneticField()
             mag_msg.header.stamp = rospy.Time.now()
-            mag_msg.magnetic_field.x = IMU.mxRaw
-            mag_msg.magnetic_field.y = IMU.myRaw
-            mag_msg.magnetic_field.z = IMU.mzRaw
+            
+            # switch X/Y and invert Z to convert from NED to ENU
+            mag_msg.magnetic_field.x = RawToTesla(IMU.myRaw)
+            mag_msg.magnetic_field.y = RawToTesla(IMU.mxRaw)
+            mag_msg.magnetic_field.z = RawToTesla(-IMU.mzRaw)
             mag_msg.magnetic_field_covariance[0] = -1
             mag_pub.publish(mag_msg)
 

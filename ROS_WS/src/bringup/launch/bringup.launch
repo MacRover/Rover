@@ -1,0 +1,7 @@
+<launch>
+
+    <include file="$(find bringup)/launch/display.launch"/>
+
+    <include file="$(find gps)/launch/gps_publisher.launch"/>
+
+</launch>

@@ -1,10 +1,7 @@
-#!/usr/bin/env python3
-
+#!/usr/bin/env python
 import rospy
 import time
 import sys
-import board
-import busio
 from sensor_msgs.msg import MagneticField,Imu
 from std_msgs.msg import Float64
 import qwiic_icm20948
@@ -60,7 +57,8 @@ def icm20948_node():
             mag_msg.magnetic_field_covariance[0] = -1
             mag_pub.publish(mag_msg)
 
-        rate.sleep()   
+            rospy.spin()
+            rate.sleep()   
     
     rospy.loginfo(rospy.get_caller_id() + "  icm20948 node finished")
 

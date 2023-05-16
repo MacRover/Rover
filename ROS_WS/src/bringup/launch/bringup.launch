@@ -1,7 +1,14 @@
 <launch>
 
-    <include file="$(find bringup)/launch/display.launch"/>
+  <arg name="rviz" default="false" />
+  <arg name="imu" default="true" />
+  <arg name="gps" default="true" />
 
-    <include file="$(find gps)/launch/gps_publisher.launch"/>
+    <include file="$(find bringup)/launch/display.launch">
+        <arg name="rviz" value="$(arg rviz)"/>
+    </include>
+
+    <include if="$(arg imu)" file="$(find imu)/launch/imu.launch"/>
+    <include if="$(arg gps)" file="$(find gps)/launch/gps_publisher.launch"/>
 
 </launch>

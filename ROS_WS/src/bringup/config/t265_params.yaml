@@ -5,6 +5,7 @@ serial_no: "947122110325"
 initial_reset: false
 device_type: T265
 output: screen
+respawn: true
 
 enable_fisheye1: true
 enable_fisheye2: true

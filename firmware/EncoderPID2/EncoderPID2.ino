@@ -76,6 +76,7 @@ ros::NodeHandle_<NewHardware> nh;
 void controlMotorsRos(const geometry_msgs::Twist &cmd_vel);
 void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid);
 void controlMotors(double left_speed, double right_speed);
+geometry_msgs::Twist getSpeedsTwist(double left_speed, double right_speed);
 
 ros::Subscriber<geometry_msgs::Twist> velocity("cmd_vel", &controlMotorsRos);
 ros::Subscriber<std_msgs::Float64MultiArray> pid_params("cmd_pid", &setParamsRos);
@@ -88,6 +89,7 @@ std_msgs::Float64 pushedVal2;
 std_msgs::Float64 pushedVal3;
 std_msgs::Float64 pushedVal4;
 std_msgs::Float64 pushedVal5;
+geometry_msgs::Twist pushedVal6;
 
 // std_msgs::UInt16 pushedVal;
 ros::Publisher encoderPub0("enc_pub0", &pushedVal0);
@@ -96,6 +98,8 @@ ros::Publisher encoderPub2("enc_pub2", &pushedVal2);
 ros::Publisher encoderPub3("enc_pub3", &pushedVal3);
 ros::Publisher encoderPub4("enc_pub4", &pushedVal4);
 ros::Publisher encoderPub5("enc_pub5", &pushedVal5);
+
+ros::Publisher robotSpeedPub("robot_vel",&pushedVal6);
 
 
 
@@ -456,6 +460,23 @@ void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
     controlMotors(left_speed, right_speed);
 }
 
+geometry_msgs::Twist getSpeedsTwist(double left_speed, double right_speed)
+{
+    geometry_msgs::Twist cmd_vel;
+    double b = 0.60;
+    double r = 0.1;
+  
+    double speeds = (left_speed + right_speed) / 2.0;
+    double left_angular = left_speed / r;
+    double right_angular = right_speed / r;
+    
+    cmd_vel.linear.x = speeds;
+    double a_r = (r * right_angular - speeds) * 2 / b;
+    double a_l = (-r * left_angular + speeds) * 2 / b;
+    cmd_vel.angular.z = (a_l + a_r) / 2.0;
+    return cmd_vel;
+}
+
 // set motors to target velocity and update motor setpoint
 void controlMotors(double left_speed, double right_speed)
 {
@@ -511,6 +532,7 @@ void setup()
     nh.advertise(encoderPub3);
     nh.advertise(encoderPub4);
     nh.advertise(encoderPub5);
+    nh.advertise(robotSpeedPub);
 
     Serial.end(); //if using ROS Serial, can't use USB Serial
 #else
@@ -578,6 +600,9 @@ void loop()
     pushedVal3.data = -1* E3A.PIDvelocity;
     pushedVal4.data = -1* E4A.PIDvelocity;
     pushedVal5.data = -1* E5A.PIDvelocity;
+    
+    
+    pushedVal6 = getSpeedsTwist(-1*E3A.PIDvelocity, E0A.PIDvelocity);
 
     encoderPub0.publish(&pushedVal0);
     encoderPub1.publish(&pushedVal1);
@@ -585,6 +610,7 @@ void loop()
     encoderPub3.publish(&pushedVal3);
     encoderPub4.publish(&pushedVal4);
     encoderPub5.publish(&pushedVal5);
+    robotSpeedPub.publish(&pushedVal6);
     }
    
 

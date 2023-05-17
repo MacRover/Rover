@@ -1,0 +1,71 @@
+# d435_params.yaml
+external_manager: false
+manager: realsense2_camera_manager
+serial_no: 048122071389
+initial_reset: false
+device_type: D435
+output: screen
+
+enable_color: true
+enable_depth: true
+enable_infra1: true
+enable_infra2: true
+
+color_width: 1280
+color_height: 720
+
+depth_width: 640
+depth_height: 480
+
+infra_width: 640
+infra_height: 480
+
+depth_fps: 30
+infra_fps: 30
+color_fps: 30
+
+enable_sync: true
+align_depth: true
+
+base_frame_id: d435_link
+depth_frame_id: d435_depth_frame
+infra1_frame_id: d435_infra1_frame
+infra2_frame_id: d435_infra2_frame
+color_frame_id: d435_color_frame
+
+depth_optical_frame_id: d435_depth_optical_frame
+infra1_optical_frame_id: d435_infra1_optical_frame
+infra2_optical_frame_id: d435_infra2_optical_frame
+color_optical_frame_id: d435_color_optical_frame
+
+aligned_depth_to_color_frame_id: d435_aligned_depth_to_color_frame
+aligned_depth_to_infra1_frame_id: d435_aligned_depth_to_infra1_frame
+aligned_depth_to_infra2_frame_id: d435_aligned_depth_to_infra2_frame
+
+publish_tf: true
+tf_publish_rate: 0
+
+stereo_module/exposure/1: 7500
+stereo_module/gain/1: 16
+stereo_module/exposure/2: 1
+stereo_module/gain/2: 16
+
+filters: ""
+clip_distance: -1
+linear_accel_cov: 0.01
+reconnect_timeout: 5.0
+wait_for_device_timeout: -1.0
+
+
+# Disable 
+enable_fisheye: false
+enable_fisheye1: false
+enable_fisheye2: false
+enable_confidence: false
+enable_gyro: false
+enable_accel: false
+enable_pose: false
+enable_pointcloud: false
+infra_rgb: false
+publish_odom_tf: false
+enable_infra: false

@@ -1,0 +1,112 @@
+# This file is only made as an example template.
+# see d435_params.yaml for a functional example
+
+# realsense_config.yaml
+external_manager: false
+manager: realsense2_camera_manager
+serial_no: ""
+usb_port_id: ""
+device_type: ""
+tf_prefix: ""
+json_file_path: ""
+rosbag_filename: ""
+required: false
+output: screen
+respawn: false
+
+fisheye_width: 0
+fisheye_height: 0
+enable_fisheye: false
+enable_fisheye1: false
+enable_fisheye2: false
+
+depth_width: 640
+depth_height: 480
+enable_depth: true
+
+confidence_width: 640
+confidence_height: 480
+enable_confidence: true
+confidence_fps: 30
+
+infra_width: 640
+infra_height: 480
+enable_infra: false
+enable_infra1: false
+enable_infra2: false
+infra_rgb: false
+
+color_width: 640
+color_height: 480
+enable_color: true
+
+fisheye_fps: 30
+depth_fps: 30
+infra_fps: 30
+color_fps: 30
+gyro_fps: 0
+accel_fps: 0
+enable_gyro: false
+enable_accel: false
+enable_pose: false
+
+enable_pointcloud: false
+pointcloud_texture_stream: RS2_STREAM_COLOR
+pointcloud_texture_index: 0
+allow_no_texture_points: false
+ordered_pc: false
+
+enable_sync: false
+align_depth: false
+
+base_frame_id: $(arg tf_prefix)_link
+depth_frame_id: $(arg tf_prefix)_depth_frame
+infra1_frame_id: $(arg tf_prefix)_infra1_frame
+infra2_frame_id: $(arg tf_prefix)_infra2_frame
+color_frame_id: $(arg tf_prefix)_color_frame
+fisheye_frame_id: $(arg tf_prefix)_fisheye_frame
+fisheye1_frame_id: $(arg tf_prefix)_fisheye1_frame
+fisheye2_frame_id: $(arg tf_prefix)_fisheye2_frame
+accel_frame_id: $(arg tf_prefix)_accel_frame
+gyro_frame_id: $(arg tf_prefix)_gyro_frame
+pose_frame_id: $(arg tf_prefix)_pose_frame
+
+depth_optical_frame_id: $(arg tf_prefix)_depth_optical_frame
+infra1_optical_frame_id: $(arg tf_prefix)_infra1_optical_frame
+infra2_optical_frame_id: $(arg tf_prefix)_infra2_optical_frame
+color_optical_frame_id: $(arg tf_prefix)_color_optical_frame
+fisheye_optical_frame_id: $(arg tf_prefix)_fisheye_optical_frame
+fisheye1_optical_frame_id: $(arg tf_prefix)_fisheye1_optical_frame
+fisheye2_optical_frame_id: $(arg tf_prefix)_fisheye2_optical_frame
+accel_optical_frame_id: $(arg tf_prefix)_accel_optical_frame
+gyro_optical_frame_id: $(arg tf_prefix)_gyro_optical_frame
+imu_optical_frame_id: $(arg tf_prefix)_imu_optical_frame
+pose_optical_frame_id: $(arg tf_prefix)_pose_optical_frame
+
+aligned_depth_to_color_frame_id: $(arg tf_prefix)_aligned_depth_to_color_frame
+aligned_depth_to_infra1_frame_id: $(arg tf_prefix)_aligned_depth_to_infra1_frame
+aligned_depth_to_infra2_frame_id: $(arg tf_prefix)_aligned_depth_to_infra2_frame
+aligned_depth_to_fisheye_frame_id: $(arg tf_prefix)_aligned_depth_to_fisheye_frame
+aligned_depth_to_fisheye1_frame_id: $(arg tf_prefix)_aligned_depth_to_fisheye1_frame
+aligned_depth_to_fisheye2_frame_id: $(arg tf_prefix)_aligned_depth_to_fisheye2_frame
+
+publish_tf: true
+tf_publish_rate: 0
+
+odom_frame_id: $(arg tf_prefix)_odom_frame
+topic_odom_in: $(arg tf_prefix)/odom_in
+calib_odom_file: ""
+publish_odom_tf: true
+
+stereo_module/exposure/1: 7500
+stereo_module/gain/1: 16
+stereo_module/exposure/2: 1
+stereo_module/gain/2: 16
+
+filters: ""
+clip_distance: -1
+linear_accel_cov: 0.01
+initial_reset: false
+reconnect_timeout: 6.0
+wait_for_device_timeout: -1.0
+unite_imu_method: none

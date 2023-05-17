@@ -1,0 +1,13 @@
+<launch>
+    <arg name="config" default="$(find bringup)/config/t265_params.yaml"/>
+
+    <arg name="external_manager" default="false"/>
+    <arg name="manager" default="realsense2_camera_manager"/>
+
+    <group ns="t265">
+        <node unless="$(arg external_manager)" pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" output="screen" />
+        <node pkg="nodelet" type="nodelet" name="realsense2_camera" args="load realsense2_camera/RealSenseNodeFactory $(arg manager)">
+            <rosparam command="load" file="$(arg config)" />
+        </node>
+    </group>
+</launch>

@@ -1,7 +1,7 @@
 # d435_params.yaml
 external_manager: false
 manager: realsense2_camera_manager
-serial_no: 048122071389
+serial_no: "048122071389"
 initial_reset: false
 device_type: D435
 output: screen

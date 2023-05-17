@@ -13,7 +13,7 @@ def callback(rs_odom):
         print("===========================================")
         
         # since respawn:=true it will try to restart by itself
-        os.system('rosnode kill NAME_OF_T265_NODE') # TODO
+        os.system('rosnode kill /t265/realsense2_camera')
         return
 
     global lx, ly, lz, ax, ay, az
@@ -31,13 +31,13 @@ if __name__ == '__main__':
     print("=== Starting tf_to_odom ===")
         
     listener = tf.TransformListener()
-    odom_sub = rospy.Subscriber("/t265_camera/odom/sample", Odometry, callback)
+    odom_sub = rospy.Subscriber("/t265/odom/sample", Odometry, callback)
     odom_pub = rospy.Publisher("/rs_t265_odom", Odometry , queue_size=10)
         
     odom_msg = Odometry()
     
     odom_msg.header.frame_id = "ekf_odom"
-    odom_msg.child_frame_id = "rs_base_link"
+    odom_msg.child_frame_id = "base_link"
     
     odom_msg.pose.covariance = [0.01, 0.0, 0.0, 0.0, 0.0, 0.0,
                                 0.0, 0.01, 0.0, 0.0, 0.0, 0.0,
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     try:
         while not rospy.is_shutdown():
             try:
-                (trans,rot) = listener.lookupTransform('/t265_camera_odom_frame', '/fake_base_footprint', rospy.Time(0))
+                (trans,rot) = listener.lookupTransform('/t265_odom_frame', '/fake_base_footprint', rospy.Time(0))
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 continue
                 

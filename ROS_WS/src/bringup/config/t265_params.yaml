@@ -27,6 +27,7 @@ fisheye2_frame_id: t265_fisheye2_frame
 accel_frame_id: t265_accel_frame
 gyro_frame_id: t265_gyro_frame
 pose_frame_id: t265_pose_frame
+odom_frame_id: t265_odom_frame
 
 fisheye_optical_frame_id: t265_fisheye_optical_frame
 fisheye1_optical_frame_id: t265_fisheye1_optical_frame

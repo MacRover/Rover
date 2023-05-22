@@ -460,19 +460,24 @@ void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
     controlMotors(left_speed, right_speed);
 }
 
-geometry_msgs::Twist getSpeedsTwist(double left_speed, double right_speed)
+geometry_msgs::Twist getSpeedsTwist(double lts, double lms, double lbs, double rts, double rms, double rbs)
 {
     geometry_msgs::Twist cmd_vel;
     double b = 0.60;
     double r = 0.1;
-  
-    double speeds = (left_speed + right_speed) / 2.0;
-    double left_angular = left_speed / r;
-    double right_angular = right_speed / r;
+    double left_min_speed;
+    double right_min_speed;
+
+    left_min_speed = (lts < lms) ? lts : lms;
+    left_min_speed = (left_min_speed < lbs) ? left_min_speed : lbs;
+    right_min_speed = (rts < rms) ? rts : rms;
+    right_min_speed = (right_min_speed < rbs) ? right_min_speed : rbs;
+
+    double speeds = (left_min_speed + right_min_speed) / 2.0;
     
     cmd_vel.linear.x = speeds;
-    double a_r = (r * right_angular - speeds) * 2 / b;
-    double a_l = (-r * left_angular + speeds) * 2 / b;
+    double a_r = (right_min_speed - speeds) * 2 / b;
+    double a_l = (-left_min_speed + speeds) * 2 / b;
     cmd_vel.angular.z = (a_l + a_r) / 2.0;
     return cmd_vel;
 }
@@ -602,7 +607,9 @@ void loop()
     pushedVal5.data = -1* E5A.PIDvelocity;
     
     
-    pushedVal6 = getSpeedsTwist(-1*E3A.PIDvelocity, E0A.PIDvelocity);
+    pushedVal6 = getSpeedsTwist(
+        -1* E5A.PIDvelocity, -1* E4A.PIDvelocity,-1* E3A.PIDvelocity,
+        E2A.PIDvelocity, E1A.PIDvelocity, E0A.PIDvelocity);
 
     encoderPub0.publish(&pushedVal0);
     encoderPub1.publish(&pushedVal1);

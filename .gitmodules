@@ -1,0 +1,3 @@
+[submodule "realsense-ros"]
+	path = ROS_WS/src/realsense-ros
+	url = https://github.com/MacRover/realsense-ros.git

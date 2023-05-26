@@ -238,7 +238,8 @@ uint16_t velocityToPulse(const double vel, const bool reverse = false)
 // use calibration graphs to convert meters per second to desired PWM pulse for specific encoder
 uint16_t metersPerSecondToPulse(const double vel, const int encoderIndex)
 {
-    return (uint16_t)(vel * factor[encoderIndex] + offset[encoderIndex]);
+    // invert velocity to flip wheel direction
+    return (uint16_t)(-vel * factor[encoderIndex] + offset[encoderIndex]);
 }
 
 /*
@@ -460,6 +461,7 @@ void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
     controlMotors(left_speed, right_speed);
 }
 
+// take min speed of left and right wheels and convert to twist message
 geometry_msgs::Twist getSpeedsTwist(double lts, double lms, double lbs, double rts, double rms, double rbs)
 {
     geometry_msgs::Twist cmd_vel;
@@ -468,10 +470,10 @@ geometry_msgs::Twist getSpeedsTwist(double lts, double lms, double lbs, double r
     double left_min_speed;
     double right_min_speed;
 
-    left_min_speed = (lts < lms) ? lts : lms;
-    left_min_speed = (left_min_speed < lbs) ? left_min_speed : lbs;
-    right_min_speed = (rts < rms) ? rts : rms;
-    right_min_speed = (right_min_speed < rbs) ? right_min_speed : rbs;
+    left_min_speed = ( abs(lts) < abs(lms) ) ? lts : lms;
+    left_min_speed = ( abs(left_min_speed) < abs(lbs) ) ? left_min_speed : lbs;
+    right_min_speed = ( abs(rts) < abs(rms) ) ? rts : rms;
+    right_min_speed = ( abs(right_min_speed) < abs(rbs) ) ? right_min_speed : rbs;
 
     double speeds = (left_min_speed + right_min_speed) / 2.0;
     
@@ -487,22 +489,22 @@ void controlMotors(double left_speed, double right_speed)
 {
 
     setMotorSpeed(&P0, metersPerSecondToPulse(right_speed, 3), 0);
-    setSetpoint(&P0, -1*right_speed);
+    setSetpoint(&P0, right_speed);
 
     setMotorSpeed(&P1, metersPerSecondToPulse(right_speed, 4), 1);
-    setSetpoint(&P1, -1*right_speed);
+    setSetpoint(&P1, right_speed);
 
     setMotorSpeed(&P2, metersPerSecondToPulse(right_speed, 5), 2);
-    setSetpoint(&P2, -1*right_speed);
+    setSetpoint(&P2, right_speed);
 
     setMotorSpeed(&P3, metersPerSecondToPulse(left_speed, 2), 3);
-    setSetpoint(&P3, left_speed);
+    setSetpoint(&P3, -1*left_speed);
 
     setMotorSpeed(&P4, metersPerSecondToPulse(left_speed, 1), 4);
-    setSetpoint(&P4, left_speed);
+    setSetpoint(&P4, -1*left_speed);
 
     setMotorSpeed(&P5, metersPerSecondToPulse(left_speed, 0), 5);
-    setSetpoint(&P5, left_speed);
+    setSetpoint(&P5, -1*left_speed);
 
     // Update PID with new setpoint
     feedback0.UpdateOutput();

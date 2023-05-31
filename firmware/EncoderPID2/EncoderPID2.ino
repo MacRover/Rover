@@ -133,12 +133,12 @@ Encoder encoders[] = {E0A, E1A, E2A, E3A, E4A, E5A};
 Motor *motors[] = {&P0, &P1, &P2, &P3, &P4, &P5};
 
 //PID struct with input variable, output variable, and desired variable
-PID feedback0(&(E0A.PIDvelocity), &(P0.pulseDuration), &(P0.setpoint), 0, 0, 0, P_ON_E, DIRECT);
-PID feedback1(&(E1A.PIDvelocity), &(P1.pulseDuration), &(P1.setpoint), 0, 0, 0, P_ON_E, DIRECT);
-PID feedback2(&(E2A.PIDvelocity), &(P2.pulseDuration), &(P2.setpoint), 0, 0, 0, P_ON_E, DIRECT);
-PID feedback3(&(E3A.PIDvelocity), &(P3.pulseDuration), &(P3.setpoint), 0, 0, 0, P_ON_E, DIRECT);
-PID feedback4(&(E4A.PIDvelocity), &(P4.pulseDuration), &(P4.setpoint), 0, 0, 0, P_ON_E, DIRECT);
-PID feedback5(&(E5A.PIDvelocity), &(P5.pulseDuration), &(P5.setpoint), 0, 0, 0, P_ON_E, DIRECT);
+PID feedback0(&(E0A.PIDvelocity), &(P0.pulseDuration), &(P0.setpoint), 270, 0.25, 0.0625, P_ON_E, DIRECT);
+PID feedback1(&(E1A.PIDvelocity), &(P1.pulseDuration), &(P1.setpoint), 255, 0.2, 0.0625, P_ON_E, DIRECT);
+PID feedback2(&(E2A.PIDvelocity), &(P2.pulseDuration), &(P2.setpoint), 246, 0.26, 0.065, P_ON_E, DIRECT);
+PID feedback3(&(E3A.PIDvelocity), &(P3.pulseDuration), &(P3.setpoint), 240, 0.25, 0.0625, P_ON_E, DIRECT);
+PID feedback4(&(E4A.PIDvelocity), &(P4.pulseDuration), &(P4.setpoint), 252, 0.3, 0.075, P_ON_E, DIRECT);
+PID feedback5(&(E5A.PIDvelocity), &(P5.pulseDuration), &(P5.setpoint), 249, 0.275, 0.06875, P_ON_E, DIRECT);
 
 void initializeTimer(HardwareTimer **tim, PinName pin, uint32_t overflow, void (*interrupt)(void))
 {

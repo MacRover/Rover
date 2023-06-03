@@ -1,0 +1,7 @@
+# command can be set to the following:
+# 0 - rotate anti-clockwise
+# 1 - rotate clockwise
+# 2 - stop
+uint8 command
+---
+bool success

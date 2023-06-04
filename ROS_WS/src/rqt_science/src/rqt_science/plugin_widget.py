@@ -5,6 +5,7 @@ import rospkg
 
 import rospy
 import science.srv
+from std_msgs.msg import UInt8
 from python_qt_binding import loadUi
 from python_qt_binding.QtCore import Signal, Slot
 from python_qt_binding.QtWidgets import QWidget, QInputDialog
@@ -19,21 +20,39 @@ class ScienceWidget(QWidget):
         loadUi(ui_file, self)
 
         self.move_drill = rospy.ServiceProxy("/science/drill", science.srv.Drill)
-        # self.remove_site = rospy.ServiceProxy("/science/sci/delete_site", rover_science.srv.DeleteSite)
-        # self.take_measurement = rospy.ServiceProxy("/science/sci/take_measurement", rover_science.srv.TakeMeasurement)
-        # self.retake_measurement = rospy.ServiceProxy("/science/sci/update_measurement", rover_science.srv.UpdateMeasurement)
-        # self.change_site_name = rospy.ServiceProxy("/science/sci/change_site_name", rover_science.srv.SiteNameChange)
+        self.move_carousel = rospy.ServiceProxy("/science/carousel", science.srv.Carousel)
+        self.auger_publisher = rospy.Publisher("/science/auger", UInt8, queue_size=10)
+
         self.drillLeftPushButton.clicked.connect(self.move_drill_left)
-        # self.removeSitePushButton.clicked.connect(self.remove_site_click)
-        # self.listWidget.currentRowChanged.connect(self.selected_change)
-        # self.takeMeasurementPushButton.clicked.connect(self.new_measurement_clicked)
-        # self.renamePushButton.clicked.connect(self.rename_clicked)
-        # self.last_site_data = None
+        self.drillRightPushButton.clicked.connect(self.move_drill_right)
+        self.drillStopPushButton.clicked.connect(self.move_drill_stop)
+        self.augerDownPushButton.clicked.connect(self.move_auger_up)
+        self.augerUpPushButton.clicked.connect(self.move_auger_down)
+        self.carouselRightPushButton.clicked.connect(self.move_carousel_right)
+        self.carouselLeftPushButton.clicked.connect(self.move_carousel_left)
 
         context.add_widget(self)
 
     def move_drill_left(self):
+        self.move_drill(0)
+
+    def move_drill_right(self):
         self.move_drill(1)
+
+    def move_drill_stop(self):
+        self.move_drill(2)
+
+    def move_auger_up(self):
+        self.auger_publisher.publish(0)
+
+    def move_auger_down(self):
+        self.auger_publisher.publish(1)
+
+    def move_carousel_left(self):
+        self.move_carousel(0)
+
+    def move_carousel_right(self):
+        self.move_carousel(1)
 
 
     def shutdown(self):

@@ -77,6 +77,8 @@ class NewHardware : public ArduinoHardware
 public:
     NewHardware() : ArduinoHardware(&hserial, BAUD_RATE){};
 };
+
+// buffer size increased to 1024 bytes to publish covariance matrices
 ros::NodeHandle_<NewHardware, 25, 25, 1024, 1024> nh;
 
 // subscribe to cmd_vel Twist topic
@@ -478,6 +480,8 @@ void updateOdometry(nav_msgs::Odometry* robot_odom, double lts, double lms, doub
     time_cur = (double)millis();
 
     dt = (time_cur - time_prev) * 0.001;
+
+    if (dt < 0) dt = 0.0;
 
     left_min_speed = ( abs(lts) < abs(lms) ) ? lts : lms;
     left_min_speed = ( abs(left_min_speed) < abs(lbs) ) ? left_min_speed : lbs;

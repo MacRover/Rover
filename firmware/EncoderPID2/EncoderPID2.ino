@@ -62,6 +62,8 @@ double offset[6] = {1488.6, 1502.7, 1497.1, 1499.2, 1501.5, 1502.3};
 // covariance matrix diagonals
 // x, y, z, rot x, rot y, rot z
 double mat[6] = {0.01, 0.01, 1000, 1000, 1000, 0.01};
+double x_pos = 0, y_pos = 0, heading = 0;
+double time_prev = 0, time_cur = 0, dt;
 
 #define USING_ROS
 #define VELOCITY_DEBUG
@@ -75,7 +77,7 @@ class NewHardware : public ArduinoHardware
 public:
     NewHardware() : ArduinoHardware(&hserial, BAUD_RATE){};
 };
-ros::NodeHandle_<NewHardware> nh;
+ros::NodeHandle_<NewHardware, 25, 25, 1024, 1024> nh;
 
 // subscribe to cmd_vel Twist topic
 void controlMotorsRos(const geometry_msgs::Twist &cmd_vel);
@@ -88,21 +90,21 @@ ros::Subscriber<std_msgs::Float64MultiArray> pid_params("cmd_pid", &setParamsRos
 // std_msgs::String pushedVal;
 
 //variables for publishing encoder values over ros for debugging
-std_msgs::Float64 pushedVal0;
-std_msgs::Float64 pushedVal1;
-std_msgs::Float64 pushedVal2;
-std_msgs::Float64 pushedVal3;
-std_msgs::Float64 pushedVal4;
-std_msgs::Float64 pushedVal5;
+std_msgs::Float64 encoderVal0;
+std_msgs::Float64 encoderVal1;
+std_msgs::Float64 encoderVal2;
+std_msgs::Float64 encoderVal3;
+std_msgs::Float64 encoderVal4;
+std_msgs::Float64 encoderVal5;
 nav_msgs::Odometry odom;
 
 // std_msgs::UInt16 pushedVal;
-ros::Publisher encoderPub0("enc_pub0", &pushedVal0);
-ros::Publisher encoderPub1("enc_pub1", &pushedVal1);
-ros::Publisher encoderPub2("enc_pub2", &pushedVal2);
-ros::Publisher encoderPub3("enc_pub3", &pushedVal3);
-ros::Publisher encoderPub4("enc_pub4", &pushedVal4);
-ros::Publisher encoderPub5("enc_pub5", &pushedVal5);
+ros::Publisher encoderPub0("enc_pub0", &encoderVal0);
+ros::Publisher encoderPub1("enc_pub1", &encoderVal1);
+ros::Publisher encoderPub2("enc_pub2", &encoderVal2);
+ros::Publisher encoderPub3("enc_pub3", &encoderVal3);
+ros::Publisher encoderPub4("enc_pub4", &encoderVal4);
+ros::Publisher encoderPub5("enc_pub5", &encoderVal5);
 
 ros::Publisher robotPub("robot_odom",&odom);
 
@@ -473,17 +475,25 @@ void updateOdometry(nav_msgs::Odometry* robot_odom, double lts, double lms, doub
     double left_min_speed;
     double right_min_speed;
 
+    time_cur = (double)millis();
+
+    dt = (time_cur - time_prev) * 0.001;
+
     left_min_speed = ( abs(lts) < abs(lms) ) ? lts : lms;
     left_min_speed = ( abs(left_min_speed) < abs(lbs) ) ? left_min_speed : lbs;
     right_min_speed = ( abs(rts) < abs(rms) ) ? rts : rms;
     right_min_speed = ( abs(right_min_speed) < abs(rbs) ) ? right_min_speed : rbs;
-
-    double speeds = (left_min_speed + right_min_speed) / 2.0;
-    double a_r = (right_min_speed - speeds) * 2 / b;
-    double a_l = (-left_min_speed + speeds) * 2 / b;
     
-    (robot_odom->twist).twist.linear.x = speeds;
-    (robot_odom->twist).twist.angular.z = (a_r + a_l) / 2.0;
+    double a_z = (right_min_speed - left_min_speed) / b;
+    double l_x = (left_min_speed + right_min_speed) / 2.0;
+    (robot_odom->twist).twist.linear.x = l_x;
+    (robot_odom->twist).twist.angular.z = a_z;
+    
+    heading += a_z * dt;
+    x_pos += l_x * cos(heading) * dt;
+    y_pos += l_x * sin(heading) * dt;
+    (robot_odom->pose).pose.position.x = x_pos;
+    (robot_odom->pose).pose.position.y = y_pos;
 
     for (uint8_t i = 0; i < 36; i += 7)
     {
@@ -491,6 +501,8 @@ void updateOdometry(nav_msgs::Odometry* robot_odom, double lts, double lms, doub
         (robot_odom->pose).covariance[i] = mat[i % 6];
         (robot_odom->twist).covariance[i] = mat[i % 6];
     }
+
+    time_prev = time_cur;
 }
 
 // set motors to target velocity and update motor setpoint
@@ -608,26 +620,26 @@ void loop()
     // encoderPub.publish(&pushedVals);
 
     updateOdometry(&odom,
-    -1* E5A.PIDvelocity, -1* E4A.PIDvelocity,-1* E3A.PIDvelocity,
-        E2A.PIDvelocity, E1A.PIDvelocity, E0A.PIDvelocity);
+        -1* E5A.PIDvelocity, -1* E4A.PIDvelocity,-1* E3A.PIDvelocity,
+            E2A.PIDvelocity, E1A.PIDvelocity, E0A.PIDvelocity);
 
     // Send values over RosSerial every 1000 iterations
     if (ctr % 1000 == 0)
     {
-    pushedVal0.data = E0A.PIDvelocity;
-    pushedVal1.data = E1A.PIDvelocity;
-    pushedVal2.data = E2A.PIDvelocity;
-    pushedVal3.data = -1* E3A.PIDvelocity;
-    pushedVal4.data = -1* E4A.PIDvelocity;
-    pushedVal5.data = -1* E5A.PIDvelocity;
+    encoderVal0.data = E0A.PIDvelocity;
+    encoderVal1.data = E1A.PIDvelocity;
+    encoderVal2.data = E2A.PIDvelocity;
+    encoderVal3.data = -1* E3A.PIDvelocity;
+    encoderVal4.data = -1* E4A.PIDvelocity;
+    encoderVal5.data = -1* E5A.PIDvelocity;
 
 
-    encoderPub0.publish(&pushedVal0);
-    encoderPub1.publish(&pushedVal1);
-    encoderPub2.publish(&pushedVal2);
-    encoderPub3.publish(&pushedVal3);
-    encoderPub4.publish(&pushedVal4);
-    encoderPub5.publish(&pushedVal5);
+    encoderPub0.publish(&encoderVal0);
+    encoderPub1.publish(&encoderVal1);
+    encoderPub2.publish(&encoderVal2);
+    encoderPub3.publish(&encoderVal3);
+    encoderPub4.publish(&encoderVal4);
+    encoderPub5.publish(&encoderVal5);
     robotPub.publish(&odom);
     }
    

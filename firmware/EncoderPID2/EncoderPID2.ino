@@ -10,7 +10,7 @@
 #include "PID_v1.h"
 
 #define USE_STM32_HW_SERIAL
-#define BAUD_RATE 57600
+#define BAUD_RATE 128000
 #define SERIAL_RX PB11 //pins being used for ROSSerial 
 #define SERIAL_TX PB10
 
@@ -492,6 +492,8 @@ void updateOdometry(nav_msgs::Odometry* robot_odom, double lts, double lms, doub
     double l_x = (left_min_speed + right_min_speed) / 2.0;
     (robot_odom->twist).twist.linear.x = l_x;
     (robot_odom->twist).twist.angular.z = a_z;
+    (robot_odom->header).stamp = nh.now();
+    (robot_odom->header).frame_id = "base_footprint";
     
     heading += a_z * dt;
     x_pos += l_x * cos(heading) * dt;
@@ -627,8 +629,8 @@ void loop()
         -1* E5A.PIDvelocity, -1* E4A.PIDvelocity,-1* E3A.PIDvelocity,
             E2A.PIDvelocity, E1A.PIDvelocity, E0A.PIDvelocity);
 
-    // Send values over RosSerial every 1000 iterations
-    if (ctr % 1000 == 0)
+    // Send values over RosSerial every 100 iterations
+    if (ctr % 100 == 0)
     {
     encoderVal0.data = E0A.PIDvelocity;
     encoderVal1.data = E1A.PIDvelocity;
@@ -638,12 +640,12 @@ void loop()
     encoderVal5.data = -1* E5A.PIDvelocity;
 
 
-    encoderPub0.publish(&encoderVal0);
-    encoderPub1.publish(&encoderVal1);
-    encoderPub2.publish(&encoderVal2);
-    encoderPub3.publish(&encoderVal3);
-    encoderPub4.publish(&encoderVal4);
-    encoderPub5.publish(&encoderVal5);
+    // encoderPub0.publish(&encoderVal0);
+    // encoderPub1.publish(&encoderVal1);
+    // encoderPub2.publish(&encoderVal2);
+    // encoderPub3.publish(&encoderVal3);
+    // encoderPub4.publish(&encoderVal4);
+    // encoderPub5.publish(&encoderVal5);
     robotPub.publish(&odom);
     }
    

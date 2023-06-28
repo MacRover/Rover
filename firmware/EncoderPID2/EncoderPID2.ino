@@ -40,6 +40,8 @@
 #define TIM_3_CH_1 E0A_
 #define TIM_4_CH_1 E3A_
 
+#define CMD_VEL_RATE_MS 40
+
 #define MIN_PULSE (uint16_t)1000 // PWM Pulse Duration (microseconds)
 #define MAX_PULSE (uint16_t)2000
 
@@ -61,7 +63,8 @@ double offset[6] = {1499.2, 1501.5, 1502.3, 1497.1, 1502.7, 1488.6};
 // x, y, z, rot x, rot y, rot z
 double mat[6] = {0.01, 0.01, 1000, 1000, 1000, 0.01};
 double x_pos = 0, y_pos = 0, heading = 0;
-double time_prev = 0, time_cur = 0, dt;
+double vel_timer = 0.0;
+double time_prev = 0, time_cur = 0, loop_delta_time;
 
 #define USING_ROS
 // #define VELOCITY_DEBUG
@@ -453,29 +456,22 @@ void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
     double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
     double right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
 
+    vel_timer = 0.0;
     controlMotors(left_speed, right_speed);
 }
 
 // take min speed of left and right wheels and update odometry
-void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, double lbs, double rts, double rms, double rbs)
+void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, double lbs, double rts, double rms, double rbs, double dt)
 {
-    double b = 0.60;
     double left_min_speed;
     double right_min_speed;
-
-    time_cur = (double)millis();
-
-    dt = (time_cur - time_prev) * 0.001;
-
-    if (dt < 0)
-        dt = 0.0;
 
     left_min_speed = (abs(lts) < abs(lms)) ? lts : lms;
     left_min_speed = (abs(left_min_speed) < abs(lbs)) ? left_min_speed : lbs;
     right_min_speed = (abs(rts) < abs(rms)) ? rts : rms;
     right_min_speed = (abs(right_min_speed) < abs(rbs)) ? right_min_speed : rbs;
 
-    double a_z = (right_min_speed - left_min_speed) / b;
+    double a_z = (right_min_speed - left_min_speed) / TRACK_WIDTH;
     double l_x = (left_min_speed + right_min_speed) / 2.0;
     (robot_odom->twist).twist.linear.x = l_x;
     (robot_odom->twist).twist.angular.z = a_z;
@@ -494,8 +490,6 @@ void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, doub
         (robot_odom->pose).covariance[i] = mat[i % 6];
         (robot_odom->twist).covariance[i] = mat[i % 6];
     }
-
-    time_prev = time_cur;
 }
 
 // set motors to target velocity and update motor setpoint
@@ -599,9 +593,16 @@ void loop()
 #ifdef USING_ROS
     nh.spinOnce();
 
+    time_cur = (double)millis();
+
+    loop_delta_time = (time_cur - time_prev) * 0.001;
+    if (loop_delta_time < 0)
+        loop_delta_time = 0.0;
+    time_prev = time_cur;
+
     updateOdometry(&odom,
                    -1 * E5A.PIDvelocity, -1 * E4A.PIDvelocity, -1 * E3A.PIDvelocity,
-                   E2A.PIDvelocity, E1A.PIDvelocity, E0A.PIDvelocity);
+                   E2A.PIDvelocity, E1A.PIDvelocity, E0A.PIDvelocity, loop_delta_time);
 
     // Send values over RosSerial every 100 iterations
     if (ctr % 100 == 0)
@@ -620,6 +621,17 @@ void loop()
         // encoderPub4.publish(&encoderVal4);
         // encoderPub5.publish(&encoderVal5);
         robotPub.publish(&odom);
+    }
+
+    // increase vel_timer by time  (converted to ms)
+    vel_timer += loop_delta_time * 1000;
+    // stop motors if timer exceeds timeout callback rate
+    if (vel_timer > (CMD_VEL_RATE_MS * 3))
+    {
+        if (ctr % 1000 == 0)
+        {
+            controlMotors(0, 0);
+        }
     }
 
     double computed[4];

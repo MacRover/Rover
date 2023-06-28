@@ -50,8 +50,6 @@
 
 #define TRACK_WIDTH 0.6
 
-double vel_timer = 0.0;
-double time_prev = 0.0, time_cur = 0.0, dt;
 
 /*
  * Chart used from linear calibration of motor power - pulse curve
@@ -66,6 +64,7 @@ double offset[6] = {1499.2, 1501.5, 1502.3, 1497.1, 1502.7, 1488.6};
 // x, y, z, rot x, rot y, rot z
 double mat[6] = {0.01, 0.01, 1000, 1000, 1000, 0.01};
 double x_pos = 0, y_pos = 0, heading = 0;
+double vel_timer = 0.0;
 double time_prev = 0, time_cur = 0, dt;
 
 #define USING_ROS
@@ -627,11 +626,6 @@ void loop()
         // encoderPub5.publish(&encoderVal5);
         robotPub.publish(&odom);
     }
-    // to be removed -----
-    time_cur = (double)millis();
-    dt = time_cur - time_prev;
-    time_prev = time_cur;
-    // --------------------
 
     vel_timer += dt;
     // stop motors if timer exceeds timeout callback rate

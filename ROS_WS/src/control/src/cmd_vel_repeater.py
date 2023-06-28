@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 import rospy
 import sys, termios, tty, os, time
 from geometry_msgs.msg import Twist
@@ -24,7 +24,6 @@ def start():
     while not rospy.is_shutdown():
         move()
         publish_rate.sleep()
-        # rospy.spin()
 
 
 if __name__ == "__main__":

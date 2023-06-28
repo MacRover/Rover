@@ -599,8 +599,8 @@ void loop()
     // --------------------
 
     vel_timer += dt;
-    // stop motors if time exceeds callback rate
-    if (vel_timer > (CMD_VEL_RATE_MS + 5))
+    // stop motors if timer exceeds timeout callback rate
+    if (vel_timer > (CMD_VEL_RATE_MS * 3))
     {
         if (ctr % 1000 == 0)
         {

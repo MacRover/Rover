@@ -21,7 +21,7 @@ button_delay = 0.2
 
 def move():
     rospy.init_node("car_controller", anonymous=False)
-    publisher = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+    publisher = rospy.Publisher("/vel_state", Twist, queue_size=10)
     vel_msg = Twist()
 
     print(

@@ -43,11 +43,16 @@
 #define TIM_3_CH_1 E0A_
 #define TIM_4_CH_1 E3A_
 
+#define CMD_VEL_RATE_MS 40
+
 int16_t MIN_PULSE = 1000; // PWM Pulse Duration (microseconds)
 int16_t MAX_PULSE = 2000;
 
 int32_t REFRESH_RATE = 50000; //Value (microseconds) at which encoder timers overflow, defines how often encoder velocity is calculated
 int32_t TIMERS_RATE = 3000; //Value (microseconds) at which motor timers overflow
+
+double vel_timer = 0.0;
+double time_prev = 0.0, time_cur = 0.0, dt;
 
 /*
 * Chart used from linear calibration of motor power - pulse curve
@@ -453,6 +458,7 @@ void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
     double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
     double right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
 
+    vel_timer = 0.0;
     controlMotors(left_speed, right_speed);
 }
 
@@ -586,7 +592,21 @@ void loop()
     encoderPub4.publish(&pushedVal4);
     encoderPub5.publish(&pushedVal5);
     }
-   
+    // to be removed -----
+    time_cur = (double)millis();
+    dt = time_cur - time_prev;
+    time_prev = time_cur;
+    // --------------------
+
+    vel_timer += dt;
+    // stop motors if time exceeds callback rate
+    if (vel_timer > (CMD_VEL_RATE_MS + 5))
+    {
+        if (ctr % 1000 == 0)
+        {
+            controlMotors(0, 0);
+        }
+    }
 
     double computed[4];
 

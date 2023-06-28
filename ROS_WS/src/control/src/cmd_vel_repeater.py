@@ -12,6 +12,7 @@ def move():
 
 
 def callback(data):
+    global vel_msg
     vel_msg = data
 
 

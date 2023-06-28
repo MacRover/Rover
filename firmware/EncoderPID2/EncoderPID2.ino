@@ -502,22 +502,22 @@ void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, doub
 void controlMotors(double left_speed, double right_speed)
 {
 
-    setMotorSpeed(&P0, velocityToPulse(right_speed, 0, true), 0);
+    setMotorSpeed(&P0, velocityToPulse(right_speed, 0, false), 0);
     setSetpoint(&P0, right_speed);
 
-    setMotorSpeed(&P1, velocityToPulse(right_speed, 1, true), 1);
+    setMotorSpeed(&P1, velocityToPulse(right_speed, 1, false), 1);
     setSetpoint(&P1, right_speed);
 
-    setMotorSpeed(&P2, velocityToPulse(right_speed, 2, true), 2);
+    setMotorSpeed(&P2, velocityToPulse(right_speed, 2, false), 2);
     setSetpoint(&P2, right_speed);
 
-    setMotorSpeed(&P3, velocityToPulse(left_speed, 3, false), 3);
+    setMotorSpeed(&P3, velocityToPulse(left_speed, 3, true), 3);
     setSetpoint(&P3, -1 * left_speed);
 
-    setMotorSpeed(&P4, velocityToPulse(left_speed, 4, false), 4);
+    setMotorSpeed(&P4, velocityToPulse(left_speed, 4, true), 4);
     setSetpoint(&P4, -1 * left_speed);
 
-    setMotorSpeed(&P5, velocityToPulse(left_speed, 5, false), 5);
+    setMotorSpeed(&P5, velocityToPulse(left_speed, 5, true), 5);
     setSetpoint(&P5, -1 * left_speed);
 
     // Update PID with new setpoint

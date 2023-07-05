@@ -474,7 +474,7 @@ void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, doub
     (robot_odom->twist).twist.linear.x = l_x;
     (robot_odom->twist).twist.angular.z = a_z;
     (robot_odom->header).stamp = nh.now();
-    (robot_odom->header).frame_id = "base_footprint";
+    (robot_odom->header).frame_id = "ekf_odom";
 
     heading += a_z * dt;
     x_pos += l_x * cos(heading) * dt;

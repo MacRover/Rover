@@ -1,11 +1,11 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="imu" params="x_pos y_pos z_pos">
+  <xacro:macro name="imu" params="x_pos y_pos z_pos yaw_pos">
     <link name="imu_link"/>
     
     <joint name="imu_to_base_link" type="fixed">
       <parent link="base_link"/>
       <child link="imu_link"/>
-      <origin xyz="${x_pos} ${y_pos} ${z_pos}" rpy="0 0 0"/>
+      <origin xyz="${x_pos} ${y_pos} ${z_pos}" rpy="0 0 ${yaw_pos}"/>
     </joint>
   </xacro:macro>
 </robot>

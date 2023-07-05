@@ -19,22 +19,22 @@ ekf_filter_odom:
     publish_acceleration: false
     reset_on_time_jump: false
 
-    map_frame: map
-    odom_frame: ekf_odom
-    base_link_frame: base_footprint
-    world_frame: ekf_odom
+    map_frame: /map
+    odom_frame: /ekf_odom
+    base_link_frame: /base_footprint
+    world_frame: /ekf_odom
 
-    pose0: rs_t265_odom
-    pose0_config: [true, true, false,     #  x   y   z
+    odom0: /rs_t265_odom
+    odom0_config: [true, true, false,     #  x   y   z
                     false, false, true,    #  R   P   Y
                     false, false,  false,  #  vx  vy  vz
                     false, false, false,   #  vR  vP  vY
                     false, false, false]   #  ax  ay  az
 
-    pose0_queue_size: 10
-    pose0_nodelay: false
-    pose0_differential: false
-    pose0_relative: true
+    odom0_queue_size: 10
+    odom0_nodelay: false
+    odom0_differential: false
+    odom0_relative: true
 
   # imu0: imu/data
   # imu0_config: [false, false, false,

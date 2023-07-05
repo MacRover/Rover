@@ -3,7 +3,7 @@ import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 
-pub = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+pub = rospy.Publisher("/vel_state", Twist, queue_size=10)
 dead_zone = 0.05
 TOP_SPEED=0.7
 

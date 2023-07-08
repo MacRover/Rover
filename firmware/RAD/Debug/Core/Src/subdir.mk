@@ -12,14 +12,6 @@ C_SRCS += \
 ../Core/Src/sysmem.c \
 ../Core/Src/system_stm32f0xx.c 
 
-C_DEPS += \
-./Core/Src/main.d \
-./Core/Src/stm32f0xx_hal_msp.d \
-./Core/Src/stm32f0xx_it.d \
-./Core/Src/syscalls.d \
-./Core/Src/sysmem.d \
-./Core/Src/system_stm32f0xx.d 
-
 OBJS += \
 ./Core/Src/main.o \
 ./Core/Src/stm32f0xx_hal_msp.o \
@@ -27,6 +19,14 @@ OBJS += \
 ./Core/Src/syscalls.o \
 ./Core/Src/sysmem.o \
 ./Core/Src/system_stm32f0xx.o 
+
+C_DEPS += \
+./Core/Src/main.d \
+./Core/Src/stm32f0xx_hal_msp.d \
+./Core/Src/stm32f0xx_it.d \
+./Core/Src/syscalls.d \
+./Core/Src/sysmem.d \
+./Core/Src/system_stm32f0xx.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

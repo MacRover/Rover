@@ -1,0 +1,6 @@
+[submodule "realsense-ros"]
+	path = ROS_WS/src/realsense-ros
+	url = https://github.com/MacRover/realsense-ros.git
+[submodule "ROS_WS/src/odometry_transformer"]
+	path = ROS_WS/src/odometry_transformer
+	url = https://github.com/MacRover/odometry_transformer

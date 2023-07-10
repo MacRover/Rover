@@ -61,7 +61,7 @@
   <exec_depend>tf</exec_depend>
   <exec_depend>urdf</exec_depend>
   <exec_depend>xacro</exec_depend>
-
+  <exec_depend>rgbd_launch</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

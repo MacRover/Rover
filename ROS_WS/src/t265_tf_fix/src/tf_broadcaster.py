@@ -15,7 +15,7 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         try:
             static_tf_0.header.stamp = rospy.Time.now()
-            static_tf_0.header.frame_id = "t265_camera_pose_frame"
+            static_tf_0.header.frame_id = "t265_pose_frame"
             static_tf_0.child_frame_id = "fake_base_footprint"
         
             static_tf_0.transform.translation.x = float('-0.32')

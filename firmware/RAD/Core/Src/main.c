@@ -111,19 +111,21 @@ int main(void)
   HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
 
   // Initialize TxHeader
-  TxHeader.DLC = sizeof(TxData[0]);      // Number of bytes to send
-  TxHeader.ExtId = 0;                    // Extended ID (set to 0 because we're using standard)
-  TxHeader.IDE = CAN_ID_STD;             // Using standard CAN ID
+  TxHeader.DLC = sizeof(TxData);         // Number of bytes to send
+  TxHeader.ExtId = 0x8000000;            // Extended ID (set to 0 because we're using standard)
+  TxHeader.IDE = CAN_ID_EXT;             // Using standard CAN ID
   TxHeader.RTR = CAN_RTR_DATA;           // We are sending data
-  TxHeader.StdId = 0x111;                // ID of RAD board. This should be stored in EEPROM
+  TxHeader.StdId = 0;                    // ID of RAD board. This should be stored in EEPROM
   TxHeader.TransmitGlobalTime = DISABLE; // Keep disabled
 
-  TxData[0] = 0xf1;
-
-  if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
-  {
-    Error_Handler();
-  }
+  TxData[0] = 0xf0;
+  TxData[1] = 0xf1;
+  TxData[2] = 0xf2;
+  TxData[3] = 0xf3;
+  TxData[4] = 0xf4;
+  TxData[5] = 0xf5;
+  TxData[6] = 0xf6;
+  TxData[7] = 0xf7;
 
   /* USER CODE END 2 */
 
@@ -131,7 +133,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    HAL_Delay(20);
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -208,7 +216,7 @@ static void MX_CAN_Init(void)
   canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
   canfilterconfig.FilterBank = 10;
   canfilterconfig.FilterFIFOAssignment = CAN_RX_FIFO0;
-  canfilterconfig.FilterIdHigh = 0x103 << 5;
+  canfilterconfig.FilterIdHigh = 0x000 << 5;
   canfilterconfig.FilterIdLow = 0x0000;
   canfilterconfig.FilterMaskIdHigh = 0x1 << 13;
   canfilterconfig.FilterMaskIdLow = 0x0000;

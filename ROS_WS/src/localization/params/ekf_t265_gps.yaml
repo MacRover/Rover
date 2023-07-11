@@ -25,7 +25,7 @@ ekf_filter_odom:
     world_frame: /ekf_odom
 
     odom0: /rs_t265_odom
-    odom0_config: [true, true, false,     #  x   y   z
+    odom0_config: [false, false, false,     #  x   y   z
                     false, false, true,    #  R   P   Y
                     false, false,  false,  #  vx  vy  vz
                     false, false, false,   #  vR  vP  vY
@@ -36,28 +36,28 @@ ekf_filter_odom:
     odom0_differential: false
     odom0_relative: true
 
-  # imu0: imu/data
-  # imu0_config: [false, false, false,
-  #                 false,  false, true,
-  #                 false, false, false,
-  #                 false,  false,  false,
-  #                 false,  false,  false]
-  # imu0_nodelay: false
-  # imu0_differential: true
-  # imu0_relative: false
-  # imu0_remove_gravitational_acceleration: true
+    # imu0: imu/data
+    # imu0_config: [false, false, false,
+    #                 false,  false, true,
+    #                 false, false, false,
+    #                 false,  false,  false,
+    #                 false,  false,  false]
+    # imu0_nodelay: false
+    # imu0_differential: true
+    # imu0_relative: false
+    # imu0_remove_gravitational_acceleration: true
 
-  # odom0: robot_odom
-  # odom0_config: [false, false, false,     #  x   y   z
-  #                 false, false, false,    #  R   P   Y
-  #                 true, false,  false,  #  vx  vy  vz
-  #                 false, false, true,   #  vR  vP  vY
-  #                 false, false, false]   #  ax  ay  az
+    odom1: /robot_odom
+    odom1_config: [false, false, false,     #  x   y   z
+                    false, false, false,    #  R   P   Y
+                    true, false,  false,  #  vx  vy  vz
+                    false, false, true,   #  vR  vP  vY
+                    false, false, false]   #  ax  ay  az
 
-  # odom0_queue_size: 5
-  # odom0_nodelay: true
-  # odom0_differential: false
-  # odom0_relative: false
+    odom1_queue_size: 5
+    odom1_nodelay: true
+    odom1_differential: false
+    odom1_relative: false
         
 
     process_noise_covariance: [0.05,   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
@@ -92,9 +92,11 @@ ekf_filter_odom:
                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    1e-9,   0.0,
                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    0.0,    1e-9]
 
+# -------------------------------------------------- #
+
 ekf_filter_map:
   use_sim_time: false
-  frequency: 20.0
+  frequency: 30.0
   sensor_timeout: 0.1
   two_d_mode: true
   transform_time_offset: 0.0
@@ -108,39 +110,51 @@ ekf_filter_map:
   base_link_frame: base_footprint
   world_frame: map
 
-  pose0: rs_t265_odom
-  pose0_config: [true, true, false,      #  x   y   z
+  odom0: rs_t265_odom
+  odom0_config: [false, false, false,      #  x   y   z
                   false, false, true,    #  R   P   Y
                   false, false, false,   #  vx  vy  vz
                   false, false, false,   #  vR  vP  vY
                   false, false, false]   #  ax  ay  az
 
-  pose0_queue_size: 10
-  pose0_nodelay: false
-  pose0_differential: false
-  pose0_relative: true
+  odom0_queue_size: 10
+  odom0_nodelay: false
+  odom0_differential: false
+  odom0_relative: true
 
-  imu0: imu/data
-  imu0_config: [false, false, false,
-                false,  false, true,
-                false, false, false,
-                false,  false,  false,
-                false,  false,  false]
-  imu0_nodelay: false
-  imu0_differential: true
-  imu0_relative: false
-  imu0_remove_gravitational_acceleration: true
+  odom1: /robot_odom
+  odom1_config: [false, false, false,     #  x   y   z
+                  false, false, false,    #  R   P   Y
+                  true, false,  false,  #  vx  vy  vz
+                  false, false, true,   #  vR  vP  vY
+                  false, false, false]   #  ax  ay  az
 
-  odom0: odometry/gps
-  odom0_config: [true,  true,  false,
+  odom1_queue_size: 5
+  odom1_nodelay: true
+  odom1_differential: false
+  odom1_relative: false
+
+  # imu0: imu/data
+  # imu0_config: [false, false, false,
+  #               false,  false, true,
+  #               false, false, false,
+  #               false,  false,  false,
+  #               false,  false,  false]
+  # imu0_nodelay: false
+  # imu0_differential: true
+  # imu0_relative: false
+  # imu0_remove_gravitational_acceleration: true
+
+  odom2: odometry/gps
+  odom2_config: [true,  true,  false,
                   false, false, false,
                   false, false, false,
                   false, false, false,
                   false, false, false]
-  odom0_queue_size: 10
-  odom0_nodelay: false
-  odom0_differential: false
-  odom0_relative: false
+  odom2_queue_size: 10
+  odom2_nodelay: false
+  odom2_differential: false
+  odom2_relative: false
 
 
   use_control: false
@@ -177,16 +191,33 @@ ekf_filter_map:
                                 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    1e-9,   0.0,
                                 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    0.0,    1e-9]
 
+  # Published Topics
+  #     odometry/filtered (nav_msgs/Odometry)
+
+# -------------------------------------------------- #
+
 navsat_transform:
   use_sim_time: false
-  frequency: 10.0
+  frequency: 30.0
   delay: 3.0
   magnetic_declination_radians: 0.17162403729 # For lat/long of McMaster University
   yaw_offset: 0.0  # if IMU reads 0 when facing magnetic north instead of east then set parameter to pi/2
   zero_altitude: true
-  broadcast_utm_transform: true
-  broadcast_utm_transform_as_parent_frame: false
-  publish_filtered_gps: true
+  broadcast_utm_transform: true # broadcast the transform between the UTM grid and the frame of the input odometry data
+  publish_filtered_gps: true # publish transform of map frame position back to GPS coordinates
   use_odometry_yaw: false
   wait_for_datum: false
       
+  # Published Topics
+  #     odometry/gps A nav_msgs/Odometry message containing the GPS coordinates of your robot, transformed into its world coordinate frame. This message can be directly fused into robot_localization‘s state estimation nodes.
+  #     gps/filtered (optional) A sensor_msgs/NavSatFix message containing your robot’s world frame position, transformed into GPS coordinates
+
+  # Subscribed Topics
+  #     imu/data A sensor_msgs/Imu message with orientation data
+  #     odometry/filtered A nav_msgs/Odometry message of your robot’s current position. This is needed in the event that your first GPS reading comes after your robot has attained some non-zero pose.
+  #     gps/fix A sensor_msgs/NavSatFix message containing your robot’s GPS coordinates
+
+  # Published Transforms
+  #     world_frame->utm (optional) - If the broadcast_utm_transform parameter is set to true, navsat_transform_node calculates a transform from the utm frame to the frame_id of the input odometry data. However, to avoid re-parenting the odometry frame (and avoid making assumptions about the user’s setup), we instead define the inverse transform so that the utm frame is a child of the odometry frame.
+
+

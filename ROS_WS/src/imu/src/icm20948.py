@@ -40,6 +40,7 @@ def icm20948_node():
             IMU.getAgmt()
             raw_msg = Imu()
             raw_msg.header.stamp = rospy.Time.now()
+            raw_msg.header.frame_id = "imu_link"
 
             raw_msg.orientation.w = 0
             raw_msg.orientation.x = 0
@@ -62,6 +63,7 @@ def icm20948_node():
 
             mag_msg = MagneticField()
             mag_msg.header.stamp = rospy.Time.now()
+            mag_msg.header.frame_id = "imu_link"
 
             # switch X/Y and invert Z to convert from NED to ENU
             mag_msg.magnetic_field.x = RawToTesla(IMU.myRaw)

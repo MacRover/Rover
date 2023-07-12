@@ -469,12 +469,13 @@ void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, doub
     right_min_speed = (abs(rts) < abs(rms)) ? rts : rms;
     right_min_speed = (abs(right_min_speed) < abs(rbs)) ? right_min_speed : rbs;
 
-    double a_z = (right_min_speed - left_min_speed) / TRACK_WIDTH;
+    double a_z = (-right_min_speed + left_min_speed) / TRACK_WIDTH;
     double l_x = (left_min_speed + right_min_speed) / 2.0;
     (robot_odom->twist).twist.linear.x = l_x;
     (robot_odom->twist).twist.angular.z = a_z;
     (robot_odom->header).stamp = nh.now();
     (robot_odom->header).frame_id = "ekf_odom";
+    robot_odom->child_frame_id = "base_footprint";
 
     heading += a_z * dt;
     x_pos += l_x * cos(heading) * dt;

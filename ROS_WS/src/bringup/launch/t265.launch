@@ -10,4 +10,7 @@
             <rosparam command="load" file="$(arg config)" />
         </node>
     </group>
+
+    <include file="$(find odometry_transformer)/launch/t265_transformer.launch"/>
+
 </launch>

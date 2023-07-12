@@ -13,8 +13,6 @@
     <include if="$(arg imu)" file="$(find imu)/launch/imu.launch"/>
     <include if="$(arg gps)" file="$(find gps)/launch/gps_publisher.launch"/>
     <include if="$(arg t265)" file="$(find bringup)/launch/t265.launch"/>
-    <include if="$(arg t265)" file="$(find odometry_transformer)/launch/t265_transformer.launch"/>
     <include if="$(arg d435)" file="$(find bringup)/launch/d435.launch"/>
-
 
 </launch>

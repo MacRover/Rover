@@ -451,8 +451,8 @@ void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
 
 void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
 {
-    double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
-    double right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
+    double left_speed = cmd_vel.linear.x - cmd_vel.angular.z;
+    double right_speed = cmd_vel.linear.x + cmd_vel.angular.z;
 
     vel_timer = 0.0;
     controlMotors(left_speed, right_speed);
@@ -469,7 +469,7 @@ void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, doub
     right_min_speed = (abs(rts) < abs(rms)) ? rts : rms;
     right_min_speed = (abs(right_min_speed) < abs(rbs)) ? right_min_speed : rbs;
 
-    double a_z = (-right_min_speed + left_min_speed) / TRACK_WIDTH;
+    double a_z = (right_min_speed - left_min_speed) / TRACK_WIDTH;
     double l_x = (left_min_speed + right_min_speed) / 2.0;
     (robot_odom->twist).twist.linear.x = l_x;
     (robot_odom->twist).twist.angular.z = a_z;

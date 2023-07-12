@@ -10,7 +10,7 @@
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
 
     <remap from="odom" to="/odometry/filtered_map" />
-    <remap from="cmd_vel" to="/cmd_vel" />
+    <remap from="cmd_vel" to="/vel_state" />
 
   </node>
 </launch>

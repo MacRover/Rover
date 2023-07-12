@@ -3,7 +3,7 @@
 file1_path="/opt/ros/melodic/share/cv_bridge/cmake/cv_bridgeConfig.cmake"
 file2_path="/opt/ros/melodic/share/aruco_detect/cmake/aruco_detectConfig.cmake"
 search_line='set(_include_dirs "include;/usr/include;/usr/include/opencv")'
-replace_line='set(_include_dirs "include;/usr/include;/usr/include/opencv4")'
+replace_line='set(_include_dirs "include;/usr/local/include;/usr/local/include/opencv4")'
 
 # Function to replace line in a file
 replace_line_in_file() {

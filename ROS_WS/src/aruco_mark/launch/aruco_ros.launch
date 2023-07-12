@@ -1,6 +1,6 @@
 <!-- Run the aruco_detect node -->
 <launch>
-    <arg name="image" default="/camera/color/image_raw"/>
+    <arg name="image" default="/d435/color/image_raw"/>
     <arg name="transport" default="compressed"/>
     <arg name="dictionary" default="0"/> <!--DICT_4X4_50-->
 
@@ -14,6 +14,6 @@
         <param name="dictionary" value="$(arg dictionary)"/>
         <param name="do_pose_estimation" value="$(arg do_pose_estimation)"/>
         <remap from="/camera/compressed" to="$(arg image)/$(arg transport)"/>
-        <remap from="/camera_info" to="/camera/color/camera_info"/>
+        <remap from="/camera_info" to="/d435/color/camera_info"/>
     </node>
 </launch>

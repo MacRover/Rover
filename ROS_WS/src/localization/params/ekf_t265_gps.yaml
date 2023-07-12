@@ -32,7 +32,7 @@ ekf_filter_odom:
                     false, false, false]   #  ax  ay  az
 
     odom0_queue_size: 10
-    odom0_nodelay: false
+    odom0_nodelay: true
     odom0_differential: false
     odom0_relative: true
 
@@ -118,7 +118,7 @@ ekf_filter_map:
                   false, false, false]   #  ax  ay  az
 
   odom0_queue_size: 10
-  odom0_nodelay: false
+  odom0_nodelay: true
   odom0_differential: false
   odom0_relative: true
 
@@ -152,10 +152,9 @@ ekf_filter_map:
                   false, false, false,
                   false, false, false]
   odom2_queue_size: 10
-  odom2_nodelay: false
+  odom2_nodelay: true
   odom2_differential: false
   odom2_relative: false
-
 
   use_control: false
 
@@ -200,14 +199,15 @@ navsat_transform:
   use_sim_time: false
   frequency: 30.0
   delay: 3.0
-  magnetic_declination_radians: 0.17162403729 # For lat/long of McMaster University
-  yaw_offset: 0.0  # if IMU reads 0 when facing magnetic north instead of east then set parameter to pi/2
+  magnetic_declination_radians: 0.0
+  yaw_offset: 0.0
   zero_altitude: true
   broadcast_utm_transform: true # broadcast the transform between the UTM grid and the frame of the input odometry data
   publish_filtered_gps: true # publish transform of map frame position back to GPS coordinates
   use_odometry_yaw: false
-  wait_for_datum: false
-      
+  wait_for_datum: true # specify datum of lat, long, yaw
+  datum: [43.260403, -79.919635, 0.0]
+
   # Published Topics
   #     odometry/gps A nav_msgs/Odometry message containing the GPS coordinates of your robot, transformed into its world coordinate frame. This message can be directly fused into robot_localization‘s state estimation nodes.
   #     gps/filtered (optional) A sensor_msgs/NavSatFix message containing your robot’s world frame position, transformed into GPS coordinates

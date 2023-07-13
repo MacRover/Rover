@@ -7,6 +7,7 @@ Panels:
         - /Global Options1
         - /TF1/Frames1
         - /TF1/Tree1
+        - /Odometry1/Shape1
       Splitter Ratio: 0.5
     Tree Height: 407
   - Class: rviz/Selection
@@ -55,6 +56,8 @@ Visualization Manager:
       Value: true
     - Class: rviz/TF
       Enabled: true
+      Filter (blacklist): ""
+      Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: true
@@ -64,9 +67,41 @@ Visualization Manager:
           Value: true
         d435_link:
           Value: true
+        ekf_odom:
+          Value: true
         gps_link:
           Value: true
         imu_link:
+          Value: true
+        map:
+          Value: true
+        map__identity:
+          Value: true
+        odom:
+          Value: true
+        t265_accel_frame:
+          Value: true
+        t265_accel_optical_frame:
+          Value: true
+        t265_fisheye1_frame:
+          Value: true
+        t265_fisheye1_optical_frame:
+          Value: true
+        t265_fisheye2_frame:
+          Value: true
+        t265_fisheye2_optical_frame:
+          Value: true
+        t265_gyro_frame:
+          Value: true
+        t265_gyro_optical_frame:
+          Value: true
+        t265_link:
+          Value: true
+        t265_odom_frame:
+          Value: true
+        t265_pose_frame:
+          Value: true
+        utm:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -74,14 +109,37 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_footprint:
-          base_link:
-            d435_link:
-              {}
-            gps_link:
-              {}
-            imu_link:
-              {}
+        map:
+          ekf_odom:
+            base_footprint:
+              base_link:
+                d435_link:
+                  {}
+                gps_link:
+                  {}
+                imu_link:
+                  {}
+            t265_odom_frame:
+              t265_pose_frame:
+                t265_link:
+                  t265_accel_frame:
+                    t265_accel_optical_frame:
+                      {}
+                  t265_fisheye1_frame:
+                    t265_fisheye1_optical_frame:
+                      {}
+                  t265_fisheye2_frame:
+                    t265_fisheye2_optical_frame:
+                      {}
+                  t265_gyro_frame:
+                    t265_gyro_optical_frame:
+                      {}
+          map__identity:
+            {}
+          utm:
+            {}
+        odom:
+          {}
       Update Interval: 0
       Value: true
     - Alpha: 0.6000000238418579
@@ -121,11 +179,173 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
+    - Angle Tolerance: 0.10000000149011612
+      Class: rviz/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: false
+      Enabled: true
+      Keep: 100
+      Name: Odometry
+      Position Tolerance: 0.10000000149011612
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.10000000149011612
+        Color: 237; 212; 0
+        Head Length: 0.30000001192092896
+        Head Radius: 0.10000000149011612
+        Shaft Length: 1
+        Shaft Radius: 0.05000000074505806
+        Value: Arrow
+      Topic: /odometry/filtered_map
+      Unreliable: false
+      Value: true
+    - Angle Tolerance: 0.10000000149011612
+      Class: rviz/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: false
+      Enabled: true
+      Keep: 100
+      Name: Odometry
+      Position Tolerance: 0.10000000149011612
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.10000000149011612
+        Color: 255; 25; 0
+        Head Length: 0.30000001192092896
+        Head Radius: 0.10000000149011612
+        Shaft Length: 1
+        Shaft Radius: 0.05000000074505806
+        Value: Arrow
+      Topic: /odometry/filtered
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 25; 255; 0
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /move_base/TrajectoryPlannerROS/global_plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 25; 255; 0
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /move_base/TrajectoryPlannerROS/local_plan
+      Unreliable: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic: /move_base/global_costmap/costmap
+      Unreliable: false
+      Use Timestamp: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 25; 255; 0
+      Enabled: false
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /move_base/NavfnROS/plan
+      Unreliable: false
+      Value: false
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz/Pose
+      Color: 52; 101; 164
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Arrow
+      Topic: /move_base/current_goal
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: base_footprint
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:
@@ -149,7 +369,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.107078552246094
+      Distance: 8.576587677001953
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -164,10 +384,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.575398325920105
-      Target Frame: <Fixed Frame>
+      Pitch: 0.9047961235046387
+      Target Frame: base_footprint
       Value: Orbit (rviz)
-      Yaw: 0.7803981900215149
+      Yaw: 4.76359224319458
     Saved: ~
 Window Geometry:
   Displays:

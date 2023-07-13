@@ -202,11 +202,12 @@ navsat_transform:
   magnetic_declination_radians: 0.0
   yaw_offset: 0.0
   zero_altitude: true
-  broadcast_utm_transform: true # broadcast the transform between the UTM grid and the frame of the input odometry data
+  broadcast_cartesian_transform: true
+  # broadcast_utm_transform: true # broadcast the transform between the UTM grid and the frame of the input odometry data
   publish_filtered_gps: true # publish transform of map frame position back to GPS coordinates
   use_odometry_yaw: false
   wait_for_datum: true # specify datum of lat, long, yaw
-  datum: [43.260403, -79.919635, 0.0]
+  datum: [43.2605983, -79.9195644, 0.0]
 
   # Published Topics
   #     odometry/gps A nav_msgs/Odometry message containing the GPS coordinates of your robot, transformed into its world coordinate frame. This message can be directly fused into robot_localization‘s state estimation nodes.

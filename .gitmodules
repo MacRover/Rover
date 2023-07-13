@@ -4,6 +4,3 @@
 [submodule "ROS_WS/src/odometry_transformer"]
 	path = ROS_WS/src/odometry_transformer
 	url = https://github.com/MacRover/odometry_transformer
-[submodule "ROS_WS/src/gps_goal"]
-	path = ROS_WS/src/gps_goal
-	url = https://github.com/MacRover/gps_goal

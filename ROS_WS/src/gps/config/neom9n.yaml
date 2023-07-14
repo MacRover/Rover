@@ -2,19 +2,37 @@
  
 debug: 1                    # Range 0-4 (0 means no debug statements will print)
  
+# save:
+#   mask: 3103                # Save I/O, Message, INF Message, Nav, Receiver
+#                             # Manager, Antenna, and Logging Configuration
+#   device: 4                 # Save to EEPROM
+
 device: /dev/ttyACMUbloxGPS
 frame_id: gps_link
-rate: 4                     # in Hz
-nav_rate: 1                 # [# of measurement cycles], recommended 1 Hz, may
-                            # be either 5 Hz (Dual constellation) or
-                            # 8 Hz (GPS only)
+rate: 35.0                  # in Hz
+nav_rate: 8                 # [# of measurement cycles], recommended 1 Hz
  
 config_on_startup: true
  
+dynamic_model: pedestrian # portable
+fix_mode: auto
+
+gnss:
+  gps: true
+  sbas: true
+  galileo: true
+  glonass: true
+  beidou: true
+  qzss: true
+  qzss_sig_cfg: 65536
+
+sbas:
+  usage: 1
+
 raw_data: true
  
 uart1:
-  baudrate: 9600
+  baudrate: 57600
  
 inf:
   all: false                   # Whether to display all INF messages in console

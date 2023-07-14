@@ -96,8 +96,8 @@ ekf_filter_odom:
 
 ekf_filter_map:
   use_sim_time: false
-  frequency: 30.0
-  sensor_timeout: 0.1
+  frequency: 10.0
+  sensor_timeout: 0.5
   two_d_mode: true
   transform_time_offset: 0.0
   transform_timeout: 0.0
@@ -197,7 +197,7 @@ ekf_filter_map:
 
 navsat_transform:
   use_sim_time: false
-  frequency: 30.0
+  frequency: 10.0
   delay: 3.0
   magnetic_declination_radians: 0.0
   yaw_offset: 0.0

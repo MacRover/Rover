@@ -56,6 +56,7 @@ def get_port():
             
 
 port = get_port()
+print(port)
 
 rospy.init_node("npk_publisher", anonymous=True)
 npk_publisher = rospy.Publisher('/npk', NPK, queue_size=10)
@@ -78,7 +79,7 @@ while not rospy.is_shutdown():
 
 
     npk_msg.ph = instrument.read_register(6, 1)
-    npk_msg.temp = instrument.read_register(19, 1)
+    npk_msg.temperature = instrument.read_register(19, 1)
     npk_msg.conductivity = instrument.read_register(21, 1)
     npk_msg.nitrogen = instrument.read_register(30, 1)
     npk_msg.phosphorus = instrument.read_register(31, 1)
@@ -95,3 +96,17 @@ while not rospy.is_shutdown():
     # print("potassium: {}".format(potassium))
     #print("baud rate: {}".format(baudrate))
     time.sleep(1)
+
+
+# header: 
+#   seq: 48
+#   stamp: 
+#     secs: 1689537791
+#     nsecs: 302063941
+#   frame_id: "npk"
+# ph: 70.0
+# temperature: 26.1000003815
+# conductivity: 0.0
+# nitrogen: 0.0
+# phosphorus: 0.0
+# potassium: 0.0

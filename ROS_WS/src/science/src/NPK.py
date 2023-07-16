@@ -70,21 +70,28 @@ instrument.mode = minimalmodbus.MODE_RTU
 
 print(instrument)
 
-while True:
+while not rospy.is_shutdown():
 
-    ph = instrument.read_register(6, 1)
-    temp = instrument.read_register(19, 1)
-    conductivity = instrument.read_register(21, 1)
-    nitrogen = instrument.read_register(30, 1)
-    phosphorus = instrument.read_register(31, 1)
-    potassium = instrument.read_register(32, 1)
+    npk_msg = NPK()
+    npk_msg.header.stamp = rospy.Time.now()
+    npk_msg.header.frame_id = "npk"
 
-    print("--------------NEW SAMPLE-----------------")
-    print("ph: {}".format(ph))
-    print("temp: {}".format(temp))
-    print("conductivity: {}".format(conductivity))
-    print("nitrogen: {}".format(nitrogen))
-    print("phosphorus: {}".format(phosphorus))
-    print("potassium: {}".format(potassium))
+
+    npk_msg.ph = instrument.read_register(6, 1)
+    npk_msg.temp = instrument.read_register(19, 1)
+    npk_msg.conductivity = instrument.read_register(21, 1)
+    npk_msg.nitrogen = instrument.read_register(30, 1)
+    npk_msg.phosphorus = instrument.read_register(31, 1)
+    npk_msg.potassium = instrument.read_register(32, 1)
+
+    npk_publisher.publish(npk_msg)
+
+    # print("--------------NEW SAMPLE-----------------")
+    # print("ph: {}".format(ph))
+    # print("temp: {}".format(temp))
+    # print("conductivity: {}".format(conductivity))
+    # print("nitrogen: {}".format(nitrogen))
+    # print("phosphorus: {}".format(phosphorus))
+    # print("potassium: {}".format(potassium))
     #print("baud rate: {}".format(baudrate))
     time.sleep(1)

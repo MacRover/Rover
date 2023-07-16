@@ -28,6 +28,7 @@ class ScienceWidget(QWidget):
         self.drillStopPushButton.clicked.connect(self.move_drill_stop)
         self.augerDownPushButton.clicked.connect(self.move_auger_up)
         self.augerUpPushButton.clicked.connect(self.move_auger_down)
+        self.augerStopPushButton.clicked.connect(self.move_auger_stop)
         self.carouselRightPushButton.clicked.connect(self.move_carousel_right)
         self.carouselLeftPushButton.clicked.connect(self.move_carousel_left)
 
@@ -47,6 +48,9 @@ class ScienceWidget(QWidget):
 
     def move_auger_down(self):
         self.auger_publisher.publish(1)
+
+    def move_auger_down(self):
+        self.auger_publisher.publish(2)
 
     def move_carousel_left(self):
         self.move_carousel(0)

@@ -70,6 +70,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="augerStopPushButton">
+           <property name="text">
+            <string>Stop</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="augerUpPushButton">
            <property name="text">
             <string>Down</string>

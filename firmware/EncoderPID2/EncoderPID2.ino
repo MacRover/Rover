@@ -40,7 +40,7 @@
 #define TIM_3_CH_1 E0A_
 #define TIM_4_CH_1 E3A_
 
-#define CMD_VEL_RATE_MS 40
+#define CMD_VEL_RATE_MS 200
 
 #define MIN_PULSE (uint16_t)1000 // PWM Pulse Duration (microseconds)
 #define MAX_PULSE (uint16_t)2000
@@ -625,11 +625,12 @@ void loop()
     // increase vel_timer by time  (converted to ms)
     vel_timer += loop_delta_time * 1000;
     // stop motors if timer exceeds timeout callback rate
-    if (vel_timer > (CMD_VEL_RATE_MS * 3))
+    if (vel_timer > (CMD_VEL_RATE_MS * 5))
     {
         if (ctr % 1000 == 0)
         {
             controlMotors(0, 0);
+            nh.loginfo("AUTO STOP DRIVE");
         }
     }
 

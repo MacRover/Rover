@@ -1,0 +1,3 @@
+[submodule "ROS_WS/src/usb_cam"]
+	path = ROS_WS/src/usb_cam
+	url = https://github.com/MacRover/usb_cam.git

@@ -9,14 +9,14 @@ micro = serial.Serial(port="/dev/ttyACM1", baudrate=115200)
 def move_drill(req):
   try:
     if(req.command == 0):
-        micro.write('a'.encode())
+        micro.write('f'.encode())
         print("moving drill anti-clockwise")
     elif(req.command == 1):
         print("moving drill clockwise")
-        micro.write('d'.encode())
+        micro.write('g'.encode())
     else:
         print("stopping drill")
-        micro.write('s'.encode())
+        micro.write('h'.encode())
     return science.srv.DrillResponse(success=True)
   except:
     return science.srv.DrillResponse(success=False)

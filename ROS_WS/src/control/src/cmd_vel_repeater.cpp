@@ -13,7 +13,7 @@ int main(int argc, char **argv)
   ros::Publisher cmd_vel_publisher = n.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
   ros::Subscriber vel_state_subscriber = n.subscribe<geometry_msgs::Twist>("/vel_state", 10, callback);
 
-  ros::Rate loop_rate(25);
+  ros::Rate loop_rate(5);
   ROS_INFO("Cmd vel repeater is active.");
 
   while (ros::ok())

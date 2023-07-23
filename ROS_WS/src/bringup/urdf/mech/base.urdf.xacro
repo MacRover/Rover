@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="base" params="length width height base_height">
+    <link name="base_footprint"/>
+    
+    <link name="base_link">
+      <visual>
+        <origin xyz="0 0 ${-height/2}" rpy="0 0 0"/>
+        <geometry>
+          <box size="${length} ${width} ${height}"/>
+        </geometry>
+        <material name="yellow">
+          <color rgba="0.8784 0.6627 0.6627 1.0"/>
+        </material>
+      </visual>
+    </link>
+
+    <joint name="base_to_footprint" type="fixed">
+      <parent link="base_footprint"/>
+      <child link="base_link"/>
+      <origin xyz="0 0 ${base_height}" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+</robot>

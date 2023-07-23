@@ -40,7 +40,7 @@
 #define TIM_3_CH_1 E0A_
 #define TIM_4_CH_1 E3A_
 
-#define CMD_VEL_RATE_MS 40
+#define CMD_VEL_RATE_MS 200
 
 #define MIN_PULSE (uint16_t)1000 // PWM Pulse Duration (microseconds)
 #define MAX_PULSE (uint16_t)2000
@@ -86,7 +86,7 @@ ros::NodeHandle_<NewHardware, 25, 25, 1024, 1024> nh;
 void controlMotorsRos(const geometry_msgs::Twist &cmd_vel);
 void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid);
 void controlMotors(double left_speed, double right_speed);
-void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, double lbs, double rts, double rms, double rbs);
+void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, double lbs, double rts, double rms, double rbs, double dt);
 
 ros::Subscriber<geometry_msgs::Twist> velocity("cmd_vel", &controlMotorsRos);
 ros::Subscriber<std_msgs::Float64MultiArray> pid_params("cmd_pid", &setParamsRos);
@@ -145,22 +145,20 @@ Motor P0, P1, P2, P3, P4, P5;
 Encoder encoders[] = {E0A, E1A, E2A, E3A, E4A, E5A};
 Motor *motors[] = {&P0, &P1, &P2, &P3, &P4, &P5};
 
-PID_Values motor_pid_values[6] = {
-    {270, 0.25, 0.0625},   // Motor 0
-    {255, 0.2, 0.0625},    // Motor 1
-    {246, 0.26, 0.065},    // Motor 2
-    {240, 0.25, 0.0625},   // Motor 3
-    {252, 0.3, 0.075},     // Motor 4
-    {249, 0.275, 0.06875}, // Motor 5
-};
+PID_Values pid0 = {.P=270, .I=0.25, .D=0.0625};
+PID_Values pid1 = {.P=255, .I=0.2, .D=0.0625};
+PID_Values pid2 = {.P=246, .I=0.26, .D=0.065};   
+PID_Values pid3 = {.P=240, .I=0.25, .D=0.0625};
+PID_Values pid4 = {.P=252, .I=0.3, .D=0.075};
+PID_Values pid5 = {.P=249, .I=0.275, .D=0.06875};
 
 // PID struct with input variable, output variable, and desired variabe
-PID feedback0(&(E0A.PIDvelocity), &(P0.pulseDuration), &(P0.setpoint), motor_pid_values[0].P, motor_pid_values[0].I, motor_pid_values[0].D, P_ON_E, DIRECT);
-PID feedback1(&(E1A.PIDvelocity), &(P1.pulseDuration), &(P1.setpoint), motor_pid_values[1].P, motor_pid_values[1].I, motor_pid_values[1].D, P_ON_E, DIRECT);
-PID feedback2(&(E2A.PIDvelocity), &(P2.pulseDuration), &(P2.setpoint), motor_pid_values[2].P, motor_pid_values[2].I, motor_pid_values[2].D, P_ON_E, DIRECT);
-PID feedback3(&(E3A.PIDvelocity), &(P3.pulseDuration), &(P3.setpoint), motor_pid_values[3].P, motor_pid_values[3].I, motor_pid_values[3].D, P_ON_E, DIRECT);
-PID feedback4(&(E4A.PIDvelocity), &(P4.pulseDuration), &(P4.setpoint), motor_pid_values[4].P, motor_pid_values[4].I, motor_pid_values[4].D, P_ON_E, DIRECT);
-PID feedback5(&(E5A.PIDvelocity), &(P5.pulseDuration), &(P5.setpoint), motor_pid_values[5].P, motor_pid_values[5].I, motor_pid_values[5].D, P_ON_E, DIRECT);
+PID feedback0(&(E0A.PIDvelocity), &(P0.pulseDuration), &(P0.setpoint), pid0.P, pid0.I, pid0.D, P_ON_E, DIRECT);
+PID feedback1(&(E1A.PIDvelocity), &(P1.pulseDuration), &(P1.setpoint), pid1.P, pid1.I, pid1.D, P_ON_E, DIRECT);
+PID feedback2(&(E2A.PIDvelocity), &(P2.pulseDuration), &(P2.setpoint), pid2.P, pid2.I, pid2.D, P_ON_E, DIRECT);
+PID feedback3(&(E3A.PIDvelocity), &(P3.pulseDuration), &(P3.setpoint), pid3.P, pid3.I, pid3.D, P_ON_E, DIRECT);
+PID feedback4(&(E4A.PIDvelocity), &(P4.pulseDuration), &(P4.setpoint), pid4.P, pid4.I, pid4.D, P_ON_E, DIRECT);
+PID feedback5(&(E5A.PIDvelocity), &(P5.pulseDuration), &(P5.setpoint), pid5.P, pid5.I, pid5.D, P_ON_E, DIRECT);
 
 void initializeTimer(HardwareTimer **tim, PinName pin, uint32_t overflow, void (*interrupt)(void))
 {
@@ -453,8 +451,8 @@ void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
 
 void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
 {
-    double left_speed = cmd_vel.linear.x + cmd_vel.angular.z;
-    double right_speed = cmd_vel.linear.x - cmd_vel.angular.z;
+    double left_speed = cmd_vel.linear.x - cmd_vel.angular.z;
+    double right_speed = cmd_vel.linear.x + cmd_vel.angular.z;
 
     vel_timer = 0.0;
     controlMotors(left_speed, right_speed);
@@ -476,7 +474,8 @@ void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, doub
     (robot_odom->twist).twist.linear.x = l_x;
     (robot_odom->twist).twist.angular.z = a_z;
     (robot_odom->header).stamp = nh.now();
-    (robot_odom->header).frame_id = "base_footprint";
+    (robot_odom->header).frame_id = "ekf_odom";
+    robot_odom->child_frame_id = "base_footprint";
 
     heading += a_z * dt;
     x_pos += l_x * cos(heading) * dt;
@@ -626,11 +625,12 @@ void loop()
     // increase vel_timer by time  (converted to ms)
     vel_timer += loop_delta_time * 1000;
     // stop motors if timer exceeds timeout callback rate
-    if (vel_timer > (CMD_VEL_RATE_MS * 3))
+    if (vel_timer > (CMD_VEL_RATE_MS * 5))
     {
         if (ctr % 1000 == 0)
         {
             controlMotors(0, 0);
+            nh.loginfo("AUTO STOP DRIVE");
         }
     }
 

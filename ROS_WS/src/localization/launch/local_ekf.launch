@@ -1,0 +1,14 @@
+<!--
+     This launch file runs one nodes:
+       (1) An EKF instance that fuses odometry and IMU data and outputs an odom-frame state estimate
+
+       The EKF instance produces the ekf_odom->base_footprint transform
+-->
+
+<launch>
+
+  <rosparam command="load" file="$(find localization)/params/ekf_t265_gps.yaml" />
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_filter_odom" clear_params="true"/>
+
+</launch>

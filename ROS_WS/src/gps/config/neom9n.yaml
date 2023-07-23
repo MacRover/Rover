@@ -2,8 +2,8 @@
  
 debug: 1                    # Range 0-4 (0 means no debug statements will print)
  
-device: /dev/ttyACM0
-frame_id: neom9nraw
+device: /dev/ttyACMUbloxGPS
+frame_id: gps_link
 rate: 4                     # in Hz
 nav_rate: 1                 # [# of measurement cycles], recommended 1 Hz, may
                             # be either 5 Hz (Dual constellation) or

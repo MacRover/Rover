@@ -1,0 +1,8 @@
+<launch>
+    <node name="ros_icm20948" pkg="imu" type="icm20948.py" respawn="true" respawn_delay="2"></node>
+
+    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_madgwick" output="screen">
+        <rosparam file="$(find imu)/config/imu_filter.yaml" command="load" />
+    </node>
+
+</launch>

@@ -1,0 +1,19 @@
+<!-- Run the aruco_detect node -->
+<launch>
+    <arg name="image" default="/d435/color/image_raw"/>
+    <arg name="transport" default="compressed"/>
+    <arg name="dictionary" default="0"/> <!--DICT_4X4_50-->
+
+    <arg name="do_pose_estimation" default="false"/>
+    <arg name="fiducial_len" default="0.10"/> <!--Side length in m-->
+    
+    <node pkg="aruco_detect" name="aruco_detect" type="aruco_detect" output="screen" respawn="false">
+        <param name="image_transport" value="$(arg transport)"/>
+        <param name="publish_images" value="true" />
+        <param name="fiducial_len" value="$(arg fiducial_len)"/>
+        <param name="dictionary" value="$(arg dictionary)"/>
+        <param name="do_pose_estimation" value="$(arg do_pose_estimation)"/>
+        <remap from="/camera/compressed" to="$(arg image)/$(arg transport)"/>
+        <remap from="/camera_info" to="/d435/color/camera_info"/>
+    </node>
+</launch>

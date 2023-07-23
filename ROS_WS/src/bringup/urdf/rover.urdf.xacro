@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot name="rover"
+  xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find bringup)/urdf/mech/base.urdf.xacro" />
+  <xacro:include filename="$(find bringup)/urdf/sensors/imu.urdf.xacro" />
+  <xacro:include filename="$(find bringup)/urdf/sensors/gps.urdf.xacro" />
+  <xacro:include filename="$(find bringup)/urdf/sensors/d435.urdf.xacro" />
+  <xacro:include filename="$(find bringup)/urdf/rover_properties.urdf.xacro" />
+
+  <xacro:base length="${base_length}" width="${base_width}" height="${base_height}" base_height= "${base_top}" />
+
+  <xacro:imu x_pos="${imu_pos_x}" y_pos="${imu_pos_y}" z_pos="${imu_pos_z}" yaw_pos="${imu_pos_yaw}"/>
+
+  <xacro:d435 x_pos="${d435_pos_x}" y_pos="${d435_pos_y}" z_pos="${d435_pos_z}" />
+
+  <xacro:gps x_pos="${gps_pos_x}" y_pos="${gps_pos_y}" z_pos="${gps_pos_z}" />
+
+</robot>

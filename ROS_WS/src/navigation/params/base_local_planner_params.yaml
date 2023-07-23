@@ -1,0 +1,51 @@
+TrajectoryPlannerROS:
+  holonomic_robot: false
+
+  max_vel_x: 1.0
+  min_vel_x: 0.3
+  max_vel_theta: 0.5
+  min_vel_theta: -0.5
+  min_in_place_vel_theta: 0.4
+
+  acc_lim_theta: 15.0
+  acc_lim_x: 15.0
+  acc_lim_y: 0.0
+
+  # Goal Tolerance Parameters
+  yaw_goal_tolerance: 1.0  # in rads
+  xy_goal_tolerance: 0.5  # in meters
+  latch_xy_goal_tolerance: true
+
+  # Forward Simulation Parameters
+    # these parameters change how the planner simulates trajectories at each update and therefore changes the optimal trajectory that is chosen
+    # These should be adjusted based on your computer performance
+  sim_time: 1.0   # setting time of each simulation that it must evaluate. Higher will create longer curves but too low can limit performance (<2)
+  sim_granularity: 0.1 # the step size to take between points on a trajectory, or how frequent should the points on this trajectory should be examined
+  angular_sim_granularity: 0.02
+  vx_samples: 10  # how many samples of x velocity are taken for simulated trajectories
+  vtheta_samples: 30 # how many samples of theta velocity are taken for simulated trajectories
+  controller_frequency: 10.0  # how often the planning algorithm is performed (hz)
+
+  # Trajectory scoring parameters
+  meter_scoring: true # Whether the gdist_scale and pdist_scale parameters should assume that goal_distance and path_distance are expressed in units of meters or cells. Cells are assumed by default (false).
+  occdist_scale:  0.1 #The weighting for how much the controller should attempt to avoid obstacles. default 0.01
+  pdist_scale: 0.5  #     The weighting for how much the controller should stay close to the path it was given . default 0.6
+  gdist_scale: 1.0 #     The weighting for how much the controller should attempt to reach its local goal, also controls speed  default 0.8
+
+  heading_lookahead: 0.4  # How far to look ahead in meters when scoring different in-place-rotation trajectories
+  heading_scoring: false  # Whether to score based on the robot's heading to the path or its distance from the path. default false
+  heading_scoring_timestep: 0.8   # How far to look ahead in time in seconds along the simulated trajectory when using heading scoring (double, default: 0.8)
+  dwa: false # Whether to use the Dynamic Window Approach (DWA)_ or whether to use Trajectory Rollout
+  simple_attractor: false
+  publish_cost_grid_pc: true  
+  global_frame_id: ekf_odom
+
+  # Oscillation Prevention Parameters
+  oscillation_reset_dist: 0.05 # How far the robot must travel in meters before oscillation flags are reset (double, default: 0.05)
+  escape_reset_dist: 0.1
+  escape_reset_theta: 0.1
+
+  escape_vel: -0.2 # backup velocity for obstacle avoidance
+  prune_plan: true
+
+  # http://wiki.ros.org/base_local_planner

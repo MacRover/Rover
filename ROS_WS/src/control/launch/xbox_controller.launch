@@ -3,5 +3,6 @@
 
    <node name="xbox_controller" pkg="joy" type="joy_node" respawn="true"/>
    <node name="controller_driver" pkg="control" type="controller_drive_control.py" respawn="true"/>
+   <node name="heart_beat" pkg="control" type="cmd_vel_repeater" respawn="true"/>
 
 </launch>

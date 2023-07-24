@@ -1,7 +1,7 @@
 # t265_params.yaml
 external_manager: false
 manager: realsense2_camera_manager
-serial_no: ""
+serial_no: "048122071389"
 initial_reset: false
 device_type: T265
 output: screen

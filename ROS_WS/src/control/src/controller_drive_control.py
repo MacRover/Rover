@@ -24,7 +24,7 @@ def callback(data):
     if right_stick_direction < dead_zone and right_stick_direction > -1.0 * dead_zone:
         vel_msg.angular.z = 0
     else:
-        vel_msg.angular.z = map_(right_stick_direction, -1.0, 1.0, TOP_SPEED, -TOP_SPEED)
+        vel_msg.angular.z = -map_(right_stick_direction, -1.0, 1.0, TOP_SPEED, -TOP_SPEED)
     global pub
 
     # press A to stop

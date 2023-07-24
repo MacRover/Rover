@@ -1,0 +1,18 @@
+{
+		"name": "PCA9557",
+		"frameworks": "ARM",
+		"keywords": "PCA9557, GPIO, I2C, 8-BIT",
+		"description": "PCA9557 Driver (8-Channel GPIO I2C Expander)",
+		"url": "https://github.com/wagnerosss/PCA9557",
+		"downloadUrl": "https://github.com/wagnerosss/PCA9557/archive/master.zip",
+		"authors":
+		{
+		        "name": "Patryk Wagner",
+		        "maintainer": true
+		},
+		"repository":
+		{
+		    "type": "git",
+		    "url": "https://github.com/wagnerosss/PCA9557"
+		}
+}

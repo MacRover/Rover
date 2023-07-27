@@ -1,9 +1,9 @@
-// Serial arm control firmware
-// Used serial python program as input
+// Serial science control firmware
+// Use serial python program as input
 
 #include "CytronMotorDriver.h"
 
-#define stepDelay 100
+// #define stepDelay 100
 
 
 // Map SM pins to stm32 pins
@@ -28,12 +28,15 @@
 #define AUGER_DIR 6 // J17
 #define AUGER_PUL 7
 
-#define CAROUSEL_DIR 2 //J24 // //elbow
-#define CAROUSEL_PUL 2
+#define CAROUSEL_DIR 4 //J24 // //elbow
+#define CAROUSEL_PUL 5
 
-uint8_t PUL_PIN = 13;
+uint8_t PUL_PIN = 13; //default set to random unused pin
 uint8_t DIR_PIN = 13;
 uint8_t DIR;
+
+int step_delay = 100;
+unsigned long start_time;
 
 CytronMD motor(PWM_DIR, 9, 8);
 
@@ -70,15 +73,23 @@ void loop()
         PUL_PIN =  13;
         DIR_PIN =  13;
         break;
-      case 'q': //carousel clockwise
-        PUL_PIN =  CAROUSEL_PUL;
-        DIR_PIN =  CAROUSEL_DIR;
-        DIR = LOW;
+      case 'q':  //carousel clockwise
+        for(int i=0;i<800;i++){
+          digitalWrite(CAROUSEL_DIR, HIGH);
+          digitalWrite(CAROUSEL_PUL, HIGH);
+          delayMicroseconds(5000);
+          digitalWrite(CAROUSEL_PUL, LOW);
+          delayMicroseconds(5000);
+        }
         break;
       case 'e': // carousel counterclockwise
-        PUL_PIN =  CAROUSEL_PUL;
-        DIR_PIN =  CAROUSEL_DIR;
-        DIR = HIGH;
+        for(int i=0;i<800;i++){
+          digitalWrite(CAROUSEL_DIR, LOW);
+          digitalWrite(CAROUSEL_PUL, HIGH);
+          delayMicroseconds(5000);
+          digitalWrite(CAROUSEL_PUL, LOW);
+          delayMicroseconds(5000);
+        }
         break;                 
       case 'f': // drill clockwise
         motor.setSpeed(600);
@@ -95,12 +106,12 @@ void loop()
     while (Serial.available() > 0){Serial.read();}//clear buffer
   }
   stepMotor(PUL_PIN, DIR_PIN, DIR);
-  delayMicroseconds(stepDelay);
+  delayMicroseconds(step_delay);
 }
 
 void stepMotor(uint8_t pulPin, uint8_t dirPin, uint8_t dir){
     digitalWrite(dirPin, dir);
     digitalWrite(pulPin, HIGH);
-    delayMicroseconds(stepDelay);
+    delayMicroseconds(step_delay);
     digitalWrite(pulPin, LOW);
 }

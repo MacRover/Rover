@@ -7,7 +7,7 @@ ssid_name = "Isaac_Asimov"
 ip_addr = "10.10.11.1"
 
 def what_wifi():
-    process = subprocess.run(['nmcli', '-t', '-f', 'ACTIVE,SSID', 'dev', 'wifi'], stdout=subprocess.PIPE)
+    process = subprocess.run(['nmcli', '-t', '-f', 'ACTIVE,SSID', 'device', 'wifi'], stdout=subprocess.PIPE)
     if process.returncode == 0:
         return process.stdout.decode('utf-8').strip().split(':')[1]
     else:
@@ -17,7 +17,7 @@ def is_connected_to(ssid: str):
     return what_wifi() == ssid
 
 def scan_wifi():
-    process = subprocess.run(['nmcli', '-t', '-f', 'SSID,SECURITY,SIGNAL', 'dev', 'wifi'], stdout=subprocess.PIPE)
+    process = subprocess.run(['nmcli', '-t', '-f', 'SSID,SECURITY,SIGNAL', 'device', 'wifi'], stdout=subprocess.PIPE)
     if process.returncode == 0:
         return process.stdout.decode('utf-8').strip().split('\n')
     else:
@@ -29,14 +29,21 @@ def is_wifi_available(ssid: str):
 def connect_to(ssid: str):
     if not is_wifi_available(ssid):
         return False
-    subprocess.call(['nmcli', 'dev', 'wifi', 'connect', ssid])
+    subprocess.call(['nmcli', 'device', 'wifi', 'connect', ssid])
     return is_connected_to(ssid)
 
 
+def rescan_networks():
+    subprocess.call(['nmcli', 'device', 'wifi', 'rescan'])
+
+
 if __name__ == "__main__":
-    print("Attempting to connect to ", ssid_name)
-    while not connect_to(ssid_name):
-        time.sleep(1.0)
+    rescan_networks()
+    print("Attempting to connect to", ssid_name)
+    connection = connect_to(ssid_name)
+    if not connection:
+        print("Connection failed")
+        exit(0)
 
     print("Success!")
 

@@ -1,7 +1,8 @@
 // Serial arm control firmware
 // Used serial python program as input
+#include "CytronMotorDriver.h"
 
-#define defaultStepDelay 100
+#define defaultStepDelay 1000
 #define carouselStepDelay 5000
 
 // define pins for stm32 UART2
@@ -86,10 +87,10 @@ void loop()
     switch (command)
     {
     // base up/down & carousel up/down
-    case 's':
+    case 'w':
       stepDualMotors(smc0, LOW, smc5, HIGH, defaultStepDelay);
       break;
-    case 'w':
+    case 's':
       stepDualMotors(smc0, HIGH, smc5, LOW, defaultStepDelay);
       break;
 

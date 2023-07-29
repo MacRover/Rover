@@ -29,7 +29,7 @@ public:
                                 //   calculation frequency can be set using SetMode
                                 //   SetSampleTime respectively
 
-  void SetOutputLimits(uint16_t, uint16_t); // * clamps the output to a specific range. 0-255 by default, but
+  void SetOutputLimits(double, double); // * clamps the output to a specific range. 0-255 by default, but
                                         //   it's likely the user will want to change this depending on
                                         //   the application
 
@@ -80,7 +80,7 @@ private:
   double outputSum, lastInput;
 
   unsigned long SampleTime;
-  uint16_t outMin, outMax;
+  double outMin, outMax;
   bool inAuto, pOnE;
 };
 #endif

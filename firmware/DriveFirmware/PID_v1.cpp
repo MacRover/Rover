@@ -25,9 +25,6 @@ PID::PID(volatile double *Input, volatile double *Output, volatile double *Setpo
    mySetpoint = Setpoint;
    inAuto = false;
 
-   PID::SetOutputLimits(1000, 2000); // default output limit corresponds to
-                                     // the arduino pwm limits
-
    SampleTime = 20; // default Controller Sample Time is 0.02 seconds
 
    PID::SetControllerDirection(ControllerDirection);
@@ -173,7 +170,7 @@ void PID::SetSampleTime(int NewSampleTime)
  *  want to clamp it from 0-125.  who knows.  at any rate, that can all be done
  *  here.
  **************************************************************************/
-void PID::SetOutputLimits(uint16_t Min, uint16_t Max)
+void PID::SetOutputLimits(double Min, double Max)
 {
    if (Min >= Max)
       return;

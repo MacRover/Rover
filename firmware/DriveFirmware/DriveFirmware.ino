@@ -1,4 +1,4 @@
-// TODO: 
+// TODO:
 // FIX ENCODER DIRECTIONS                                       - DONE
 // CONVERT SETPOINT TO RAD/S                                    - DONE
 // FIX TWIST TO REQUIRED SPEED                                  - DONE
@@ -24,12 +24,12 @@
 double factor[6] = {35.5, 35.5, 35.5, 35.5, 35.5, 35.5};
 double offset[6] = {33, 33, 33, 33, 33, 33};
 
-PID_Values pid0 = {.P = 0.8, .I = 0.5, .D = 0.0};
-PID_Values pid1 = {.P = 0.8, .I = 0.5, .D = 0.0};
-PID_Values pid2 = {.P = 0.8, .I = 0.5, .D = 0.0};
-PID_Values pid3 = {.P = 0.8, .I = 0.5, .D = 0.0};
-PID_Values pid4 = {.P = 0.8, .I = 0.5, .D = 0.0};
-PID_Values pid5 = {.P = 0.8, .I = 0.5, .D = 0.0};
+PID_Values pid0 = {.P = 1.2, .I = 0.03, .D = 0.002};
+PID_Values pid1 = {.P = 1.2, .I = 0.03, .D = 0.002};
+PID_Values pid2 = {.P = 1.2, .I = 0.03, .D = 0.002};
+PID_Values pid3 = {.P = 1.2, .I = 0.03, .D = 0.002};
+PID_Values pid4 = {.P = 1.2, .I = 0.03, .D = 0.002};
+PID_Values pid5 = {.P = 1.2, .I = 0.03, .D = 0.002};
 
 // covariance matrix diagonals
 double mat[6] = {0.01, 0.01, 1000, 1000, 1000, 0.01};
@@ -38,6 +38,8 @@ double vel_timer = 0.0;
 unsigned long time_prev = 0, time_prev2 = 0;
 double loop_delta_time;
 uint8_t PIDDebugMotor = 0;
+// Auto drive stop flag
+bool drive_auto_stopped = false;
 
 HardwareSerial hserial(SERIAL_RX, SERIAL_TX);
 
@@ -56,7 +58,7 @@ void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid);
 void controlMotors(double left_ang_vel, double right_ang_vel);
 void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms, double lbs, double rts, double rms, double rbs, double dt);
 uint16_t velToCmd(const double vel, const int encoderIndex);
-void updatePIDDebug(geometry_msgs::Quaternion *msg);
+void updatePIDDebug(geometry_msgs::Quaternion *msg, double left_ang_vel, double right_ang_vel);
 
 ros::Subscriber<geometry_msgs::Twist> velocity("cmd_vel", &controlMotorsRos);
 ros::Subscriber<std_msgs::Float64MultiArray> pid_params("cmd_pid", &setParamsRos);
@@ -80,10 +82,6 @@ HardwareTimer *tim1, *tim2, *tim3, *tim4;
 Encoder E0A, E0B, E1A, E2A, E2B, E3A, E3B, E4A, E5A, E5B;
 Motor P0, P1, P2, P3, P4, P5;
 
-// A encoders are initialized with timers - B encoders are merely used to identify leading/lagging
-Encoder *encoders[] = {&E0A, &E1A, &E2A, &E3A, &E4A, &E5A};
-Motor *motors[] = {&P0, &P1, &P2, &P3, &P4, &P5};
-
 // PID struct with input variable, output variable, and desired variabe
 PID feedback0(&(E0A.angularVelocity), &(P0.velCommand), &(P0.setpoint), pid0.P, pid0.I, pid0.D, P_ON_E, DIRECT);
 PID feedback1(&(E1A.angularVelocity), &(P1.velCommand), &(P1.setpoint), pid1.P, pid1.I, pid1.D, P_ON_E, DIRECT);
@@ -91,6 +89,11 @@ PID feedback2(&(E2A.angularVelocity), &(P2.velCommand), &(P2.setpoint), pid2.P, 
 PID feedback3(&(E3A.angularVelocity), &(P3.velCommand), &(P3.setpoint), pid3.P, pid3.I, pid3.D, P_ON_E, DIRECT);
 PID feedback4(&(E4A.angularVelocity), &(P4.velCommand), &(P4.setpoint), pid4.P, pid4.I, pid4.D, P_ON_E, DIRECT);
 PID feedback5(&(E5A.angularVelocity), &(P5.velCommand), &(P5.setpoint), pid5.P, pid5.I, pid5.D, P_ON_E, DIRECT);
+
+// A encoders are initialized with timers - B encoders are merely used to identify leading/lagging
+Encoder *encoders[] = {&E0A, &E1A, &E2A, &E3A, &E4A, &E5A};
+Motor *motors[] = {&P0, &P1, &P2, &P3, &P4, &P5};
+PID *PID_controllers[] = {&feedback0, &feedback1, &feedback2, &feedback3, &feedback4, &feedback5};
 
 void initializeTimer(HardwareTimer **tim, PinName pin, uint32_t overflow, void (*interrupt)(void))
 {
@@ -134,13 +137,12 @@ void initializeMotor(Motor *motor, HardwareTimer **tim, PinName pin)
 void updateMotorSpeed(Motor *motor, uint16_t CmdPulse)
 {
 
-    if (motor->id != 0) // disable all but one motor
-        return;
+    // if (motor->id != 0) // disable all but one motor
+    //     return;
 
     if (motor->id >= 3) // flip direction of right 3 motors
     {
-        if (CmdPulse > 1500)
-            CmdPulse = 1500 - (CmdPulse - 1500);
+        CmdPulse = 1500 - (CmdPulse - 1500);
     }
 
     if (CmdPulse > 2000) // set limits
@@ -201,7 +203,7 @@ void encoder3Callback(void)
 {
     // Flipped ++ and -- for encoders on the right side
     if ((GPIOB->IDR & GPIO_IDR_IDR6) && (GPIOB->IDR & GPIO_IDR_IDR7))
-        (E3A.pulseCount)++; 
+        (E3A.pulseCount)++;
     else
         (E3A.pulseCount)--;
 }
@@ -294,25 +296,6 @@ void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
         return;
     }
 
-    nh.loginfo("\n");
-    nh.loginfo("--ISR--");
-    char log_msg[13];
-    char result[8]; // Buffer big enough for 7-character float
-
-    // P
-    dtostrf(kP, 6, 2, result); // Leave room for too large numbers!
-    sprintf(log_msg, "kP=%s", result);
-    nh.loginfo(log_msg);
-    // I
-    dtostrf(kI, 6, 2, result); // Leave room for too large numbers!
-    sprintf(log_msg, "kI=%s", result);
-    nh.loginfo(log_msg);
-    // D
-    dtostrf(kD, 6, 2, result); // Leave room for too large numbers!
-    sprintf(log_msg, "kD=%s", result);
-    nh.loginfo(log_msg);
-    nh.loginfo("-------\n");
-
     if (feedback_to_change == 0)
         feedback0.SetTunings(kP, kI, kD);
     else if (feedback_to_change == 1)
@@ -334,10 +317,37 @@ void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
         feedback4.SetTunings(kP, kI, kD);
         feedback5.SetTunings(kP, kI, kD);
     }
+
+    nh.loginfo("\n");
+    nh.loginfo("--ISR--");
+    char log_msg[13];
+    char result[10]; // Buffer big enough for 7-character float
+
+    // P
+    // dtostrf(feedback0.GetKp(), 6, 3, result); // Leave room for too large numbers!
+    dtostrf(PID_controllers[feedback_to_change].GetKd(), 6, 3, result); // Leave room for too large numbers!
+    sprintf(log_msg, "kP=%s", result);
+    nh.loginfo(log_msg);
+    // I
+    // dtostrf(feedback0.GetKi(), 6, 3, result); // Leave room for too large numbers!
+    dtostrf(PID_controllers[feedback_to_change].GetKi(), 6, 3, result); // Leave room for too large numbers!
+    sprintf(log_msg, "kI=%s", result);
+    nh.loginfo(log_msg);
+    // D
+    // dtostrf(feedback0.GetKd(), 6, 3, result); // Leave room for too large numbers!
+    dtostrf(PID_controllers[feedback_to_change].GetKd(), 6, 3, result); // Leave room for too large numbers!
+    sprintf(log_msg, "kD=%s", result);
+    nh.loginfo(log_msg);
+    nh.loginfo("-------\n");
 }
 
 void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
 {
+    if (drive_auto_stopped == true)
+    {
+        drive_auto_stopped = false;
+        nh.loginfo("DRIVE RECONNECTED");
+    }
     double left_speed = cmd_vel.linear.x - (cmd_vel.angular.z * TRACK_WIDTH / 2);
     double right_speed = cmd_vel.linear.x + (cmd_vel.angular.z * TRACK_WIDTH / 2);
 
@@ -385,7 +395,7 @@ void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms,
 void updatePIDDebug(geometry_msgs::Quaternion *msg, double left_ang_vel, double right_ang_vel)
 {
     msg->x = (float)PIDDebugMotor;
-    msg->y = encoders[PIDDebugMotor]->angularVelocity; 
+    msg->y = encoders[PIDDebugMotor]->angularVelocity;
 
     // PID Output Command
     msg->z = velToCmd(motors[PIDDebugMotor]->velCommand, PIDDebugMotor);
@@ -484,12 +494,12 @@ void setup()
     feedback4.SetMode(AUTOMATIC);
     feedback5.SetMode(AUTOMATIC);
 
-    feedback0.SetOutputLimits(MIN_PULSE, MAX_PULSE);
-    feedback1.SetOutputLimits(MIN_PULSE, MAX_PULSE);
-    feedback2.SetOutputLimits(MIN_PULSE, MAX_PULSE);
-    feedback3.SetOutputLimits(MIN_PULSE, MAX_PULSE);
-    feedback4.SetOutputLimits(MIN_PULSE, MAX_PULSE);
-    feedback5.SetOutputLimits(MIN_PULSE, MAX_PULSE);
+    feedback0.SetOutputLimits(-13.0, 13.0);
+    feedback1.SetOutputLimits(-13.0, 13.0);
+    feedback2.SetOutputLimits(-13.0, 13.0);
+    feedback3.SetOutputLimits(-13.0, 13.0);
+    feedback4.SetOutputLimits(-13.0, 13.0);
+    feedback5.SetOutputLimits(-13.0, 13.0);
 }
 
 int ctr = 0;
@@ -504,17 +514,14 @@ void loop()
 
     vel_timer += loop_delta_time; // increase vel_timer by time
 
-    if (vel_timer > (CMD_VEL_RATE_MS * 5)) // stop motors if timer exceeds timeout callback rate
+    if (vel_timer > (CMD_VEL_RATE_MS * 5) && drive_auto_stopped == false) // stop motors if timer exceeds timeout callback rate
     {
-        if (ctr % 1000 == 0)
-        {
-            controlMotors(0, 0);
-            if (ctr % 10000 == 0)
-                nh.loginfo("AUTO STOP DRIVE");
-        }
+        controlMotors(0, 0);
+        nh.logerror("AUTO STOP DRIVE");
+        drive_auto_stopped = true;
     }
 
-    // Send values over RosSerial every 100 iterations
+    // Send values over RosSerial every 150 iterations
     if (ctr % 150 == 0)
     {
         encoderVal0.data = E0A.angularVelocity;
@@ -561,4 +568,5 @@ void loop()
 
         time_prev = millis();
     }
+    ctr++;
 }

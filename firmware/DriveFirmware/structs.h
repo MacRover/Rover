@@ -14,8 +14,7 @@ typedef struct Motor
     HardwareTimer *timer;
     uint32_t channel;
     PinName pin;
-    // volatile uint16_t pulseDuration; // PWM pulse duration of motor
-    volatile double velCommand;
+    volatile double velCommand; // angular motor velocity
     volatile double setpoint; // desired motor velocity
 
 } Motor;

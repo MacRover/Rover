@@ -39,7 +39,7 @@ unsigned long time_prev = 0, time_prev2 = 0;
 double loop_delta_time;
 uint8_t PIDDebugMotor = 0;
 // Auto drive stop flag
-bool drive_auto_stopped = false;
+bool drive_auto_stopped = true;
 
 HardwareSerial hserial(SERIAL_RX, SERIAL_TX);
 
@@ -324,18 +324,18 @@ void setParamsRos(const std_msgs::Float64MultiArray &cmd_pid)
     char result[10]; // Buffer big enough for 7-character float
 
     // P
-    // dtostrf(feedback0.GetKp(), 6, 3, result); // Leave room for too large numbers!
-    dtostrf(PID_controllers[feedback_to_change].GetKd(), 6, 3, result); // Leave room for too large numbers!
+    dtostrf(kP, 6, 3, result); // Leave room for too large numbers!
+    // dtostrf(PID_controllers[feedback_to_change]->GetKp(), 6, 3, result); // Leave room for too large numbers!
     sprintf(log_msg, "kP=%s", result);
     nh.loginfo(log_msg);
     // I
-    // dtostrf(feedback0.GetKi(), 6, 3, result); // Leave room for too large numbers!
-    dtostrf(PID_controllers[feedback_to_change].GetKi(), 6, 3, result); // Leave room for too large numbers!
+    dtostrf(kI, 6, 3, result); // Leave room for too large numbers!
+    // dtostrf(PID_controllers[feedback_to_change]->GetKi(), 6, 3, result); // Leave room for too large numbers!
     sprintf(log_msg, "kI=%s", result);
     nh.loginfo(log_msg);
     // D
-    // dtostrf(feedback0.GetKd(), 6, 3, result); // Leave room for too large numbers!
-    dtostrf(PID_controllers[feedback_to_change].GetKd(), 6, 3, result); // Leave room for too large numbers!
+    dtostrf(kD, 6, 3, result); // Leave room for too large numbers!
+    // dtostrf(PID_controllers[feedback_to_change]->GetKd(), 6, 3, result); // Leave room for too large numbers!
     sprintf(log_msg, "kD=%s", result);
     nh.loginfo(log_msg);
     nh.loginfo("-------\n");
@@ -562,7 +562,8 @@ void loop()
         updateMotorSpeed(&P0, velToCmd(P0.velCommand, 0));
         updateMotorSpeed(&P1, velToCmd(P1.velCommand, 1));
         updateMotorSpeed(&P2, velToCmd(P2.velCommand, 2));
-        updateMotorSpeed(&P3, velToCmd(P3.velCommand, 3));
+        // set P3 motor speed to match P4 motor as the P3 encoder is broken
+        updateMotorSpeed(&P3, velToCmd(P4.velCommand, 3));
         updateMotorSpeed(&P4, velToCmd(P4.velCommand, 4));
         updateMotorSpeed(&P5, velToCmd(P5.velCommand, 5));
 

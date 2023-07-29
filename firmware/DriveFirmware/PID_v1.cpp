@@ -97,7 +97,7 @@ bool PID::Compute(double *values)
       output = outMax;
    else if (output < outMin)
       output = outMin;
-   *myOutput = (uint16_t)output;
+   *myOutput = output;
 
    values[0] = input;
    values[1] = error;

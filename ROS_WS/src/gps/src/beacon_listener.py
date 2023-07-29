@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
 import subprocess
 import time
 import urllib.request
 
 ssid_name = "Isaac_Asimov"
+ip_addr = "10.10.11.1"
 
 def what_wifi():
     process = subprocess.run(['nmcli', '-t', '-f', 'ACTIVE,SSID', 'dev', 'wifi'], stdout=subprocess.PIPE)
@@ -38,7 +40,6 @@ if __name__ == "__main__":
 
     print("Success!")
 
-    
-
-    
-
+    with urllib.request.urlopen("http://{}:80".format(ip_addr)) as con:
+        print(con.read())
+        con.close()

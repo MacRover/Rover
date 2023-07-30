@@ -21,7 +21,7 @@ class ScienceWidget(QWidget):
 
         self.move_drill = rospy.ServiceProxy("/science/drill", science.srv.Drill)
         self.move_carousel = rospy.ServiceProxy("/science/carousel", science.srv.Carousel)
-        self.auger_publisher = rospy.Publisher("/science/auger", UInt8, queue_size=10)
+        self.move_auger = rospy.ServiceProxy("/science/auger", science.srv.Auger)
 
         self.drillLeftPushButton.clicked.connect(self.move_drill_left)
         self.drillRightPushButton.clicked.connect(self.move_drill_right)
@@ -44,10 +44,10 @@ class ScienceWidget(QWidget):
         self.move_drill(2)
 
     def move_auger_up(self):
-        self.auger_publisher.publish(0)
+        self.move_auger(0)
 
     def move_auger_down(self):
-        self.auger_publisher.publish(1)
+        self.move_auger(1)
 
     def move_auger_stop(self):
         self.move_carousel(2)

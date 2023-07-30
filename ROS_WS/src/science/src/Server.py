@@ -36,19 +36,24 @@ def move_carousel(req):
   except:
     return science.srv.CarouselResponse(success=False)
 
-def move_auger(msg):
-  if(msg.data == 0):
-    print("moving auger up")
-    micro.write('y'.encode())
-  elif(msg.data == 1):
-    print("moving auger down")
-    micro.write('u'.encode())
+def move_auger(req):
+  try:
+      
+    if(req.command == 0):
+      print("moving auger up")
+      micro.write('y'.encode())
+    elif(req.command == 1):
+      print("moving auger down")
+      micro.write('u'.encode())
+    return science.srv.CarouselResponse(success=True)
+  except:
+     return science.srv.CarouselResponse(success=False)
    
 rospy.init_node("science_server")
 print("Started science server")
 
 drill_service = rospy.Service("science/drill", science.srv.Drill, move_drill)
 carousel_service = rospy.Service("science/carousel", science.srv.Carousel, move_carousel)
-rospy.Subscriber('science/auger', UInt8, move_auger)
+auger_service = rospy.Service("science/auger", science.srv.Auger, move_auger)
 
 rospy.spin()

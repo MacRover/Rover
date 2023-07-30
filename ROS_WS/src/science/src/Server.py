@@ -45,9 +45,9 @@ def move_auger(req):
     elif(req.command == 1):
       print("moving auger down")
       micro.write('u'.encode())
-    return science.srv.CarouselResponse(success=True)
+    return science.srv.AugerResponse(success=True)
   except:
-     return science.srv.CarouselResponse(success=False)
+     return science.srv.AugerResponse(success=False)
    
 rospy.init_node("science_server")
 print("Started science server")

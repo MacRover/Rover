@@ -49,6 +49,7 @@ add_service_files(
   FILES
   Drill.srv
   Carousel.srv
+  Auger.srv
 )
 
 ## Generate actions in the 'action' folder

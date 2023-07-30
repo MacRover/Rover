@@ -4,7 +4,7 @@ import serial
 import science.srv
 from std_msgs.msg import UInt8
 
-micro = serial.Serial(port="/dev/ttyACM1", baudrate=115200)
+micro = serial.Serial(port="/dev/ttyTHS2", baudrate=115200)
 
 def move_drill(req):
   try:
@@ -31,7 +31,7 @@ def move_carousel(req):
         micro.write('e'.encode())
     else:
         print("stopping auger")
-        micro.write('s'.encode())
+        micro.write('x'.encode())
     return science.srv.CarouselResponse(success=True)
   except:
     return science.srv.CarouselResponse(success=False)
@@ -39,10 +39,10 @@ def move_carousel(req):
 def move_auger(msg):
   if(msg.data == 0):
     print("moving auger up")
-    micro.write('a'.encode())
+    micro.write('y'.encode())
   elif(msg.data == 1):
     print("moving auger down")
-    micro.write('d'.encode())
+    micro.write('u'.encode())
    
 rospy.init_node("science_server")
 print("Started science server")

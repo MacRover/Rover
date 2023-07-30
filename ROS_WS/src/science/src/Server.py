@@ -41,10 +41,10 @@ def move_auger(req):
       
     if(req.command == 0):
       print("moving auger up")
-      micro.write('y'.encode())
+      micro.write('u'.encode())
     elif(req.command == 1):
       print("moving auger down")
-      micro.write('u'.encode())
+      micro.write('y'.encode())
     return science.srv.AugerResponse(success=True)
   except:
      return science.srv.AugerResponse(success=False)

@@ -56,6 +56,7 @@ def connect_to(ssid):
     
     # cannot connect if not available
     if not is_wifi_available(ssid):
+        print("Unable to find", ssid)
         return False
     # connect only if its not already connected
     if not is_connected_to(ssid):
@@ -87,6 +88,7 @@ if __name__ == "__main__":
 
     print("Success!")
 
+    # fetch website and print
     full_url = "http://{}:80/{}".format(ip_addr, arg)
     print(full_url)
     with urllib.request.urlopen(full_url) as con:

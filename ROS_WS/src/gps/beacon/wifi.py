@@ -1,10 +1,5 @@
-#!/usr/bin/env python3
 import subprocess
 import urllib.request
-import sys
-
-ssid_name = "Isaac_Asimov"
-ip_addr = "10.10.11.1"
 
 def what_wifi():
     """
@@ -74,23 +69,18 @@ def rescan_networks():
     subprocess.call(['nmcli', 'device', 'wifi', 'rescan'])
 
 
-if __name__ == "__main__":
-    arg = sys.argv[1] if len(sys.argv) > 1 else ""
-    
-    print("Scanning networks...")
-    rescan_networks()
-    print("Attempting to connect to", ssid_name)
+def get_website_html(ip, mode=""):
+    """
+    Fetches website data from ip address
 
-    connection = connect_to(ssid_name)
-    if not connection:
-        print("Connection failed")
-        exit(0)
-
-    print("Success!")
-
-    # fetch website and print
-    full_url = "http://{}:80/{}".format(ip_addr, arg)
+    Args: ip address and mode for LED (on or off)
+    """
+    res = ""
+    full_url = "http://{}:80/{}".format(ip, mode)
     print(full_url)
     with urllib.request.urlopen(full_url) as con:
-        print(con.read())
+        res = con.read()
         con.close()
+    
+    return res
+        

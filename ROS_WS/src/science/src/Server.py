@@ -29,9 +29,6 @@ def move_carousel(req):
     elif(req.command == 1):
         print("moving carousel clockwise")
         micro.write('e'.encode())
-    else:
-        print("stopping auger")
-        micro.write('s'.encode())
     return science.srv.CarouselResponse(success=True)
   except:
     return science.srv.CarouselResponse(success=False)

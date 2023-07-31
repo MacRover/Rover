@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<launch>
-   <node name="keyboard_driver" pkg="control" type="keyboard_drive_control.py"/>
-   <node name="heart_beat" pkg="control" type="cmd_vel_repeater" respawn="true"/>
-</launch>

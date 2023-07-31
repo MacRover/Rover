@@ -50,7 +50,7 @@ class ScienceWidget(QWidget):
         self.move_auger(1)
 
     def move_auger_stop(self):
-        self.move_carousel(2)
+        self.auger_publisher.publish(2)
 
     def move_carousel_left(self):
         self.move_carousel(0)

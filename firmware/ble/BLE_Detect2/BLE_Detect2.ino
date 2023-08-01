@@ -13,20 +13,20 @@
 
 int scanTime = 5; //In seconds
 BLEScan* pBLEScan;
+BLEAddress targetAddress = BLEAddress("24:0a:c4:60:9b:5a");
 
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     void onResult(BLEAdvertisedDevice advertisedDevice) {
-//      Serial.printf("Advertised Device: %s \n", advertisedDevice.toString().c_str());
-      if(advertisedDevice.getAddress() == BLEAddress("24:0a:c4:60:9b:5a")){
+      if(advertisedDevice.getAddress() == targetAddress){
         double distance = pow(10, ((- 67 - advertisedDevice.getRSSI()) / 20.0));
-        Serial.printf("ESP-1 --- Advertised Device: %s, Distance: %f \n", advertisedDevice.toString().c_str(), distance);
+        Serial.printf("ESP-2 --- Advertised Device: %s, Distance: %f \n", advertisedDevice.toString().c_str(), distance);
       }
     }
 };
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("ESP-1 --- Scanning...");
+  Serial.println("ESP-2 --- Scanning...");
 
   BLEDevice::init("");
   pBLEScan = BLEDevice::getScan(); //create new scan
@@ -37,11 +37,13 @@ void setup() {
 }
 
 void loop() {
+  if(Serial.available()){
+    Serial.println(Serial.readString());
+  }
+  
   // put your main code here, to run repeatedly:
   BLEScanResults foundDevices = pBLEScan->start(scanTime, false);
-//  Serial.print("Devices found: ");
-//  Serial.println(foundDevices.getCount());
-//  Serial.println("Scan done!");
   pBLEScan->clearResults();   // delete results fromBLEScan buffer to release memory
+  
   delay(1000);
 }

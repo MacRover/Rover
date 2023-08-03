@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+   <node name="dmc_rosserial" pkg="rosserial_python" type="serial_node.py" respawn="true">
+      <param name="port" type="str" value="/dev/ttyS0" />
+      <param name="baud" type="int" value="128000" />
+   </node>
+
+</launch>

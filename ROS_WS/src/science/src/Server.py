@@ -4,19 +4,19 @@ import serial
 import science.srv
 from std_msgs.msg import UInt8
 
-micro = serial.Serial(port="/dev/ttyACM1", baudrate=115200)
+micro = serial.Serial(port="/dev/ttyTHS2", baudrate=115200)
 
 def move_drill(req):
   try:
     if(req.command == 0):
-        micro.write('f'.encode())
+        micro.write('b'.encode())
         print("moving drill anti-clockwise")
     elif(req.command == 1):
         print("moving drill clockwise")
-        micro.write('g'.encode())
+        micro.write('n'.encode())
     else:
         print("stopping drill")
-        micro.write('h'.encode())
+        micro.write('m'.encode())
     return science.srv.DrillResponse(success=True)
   except:
     return science.srv.DrillResponse(success=False)
@@ -31,24 +31,29 @@ def move_carousel(req):
         micro.write('e'.encode())
     else:
         print("stopping auger")
-        micro.write('s'.encode())
+        micro.write('x'.encode())
     return science.srv.CarouselResponse(success=True)
   except:
     return science.srv.CarouselResponse(success=False)
 
-def move_auger(msg):
-  if(msg.data == 0):
-    print("moving auger up")
-    micro.write('a'.encode())
-  elif(msg.data == 1):
-    print("moving auger down")
-    micro.write('d'.encode())
+def move_auger(req):
+  try:
+      
+    if(req.command == 0):
+      print("moving auger up")
+      micro.write('u'.encode())
+    elif(req.command == 1):
+      print("moving auger down")
+      micro.write('y'.encode())
+    return science.srv.AugerResponse(success=True)
+  except:
+     return science.srv.AugerResponse(success=False)
    
 rospy.init_node("science_server")
 print("Started science server")
 
 drill_service = rospy.Service("science/drill", science.srv.Drill, move_drill)
 carousel_service = rospy.Service("science/carousel", science.srv.Carousel, move_carousel)
-rospy.Subscriber('science/auger', UInt8, move_auger)
+auger_service = rospy.Service("science/auger", science.srv.Auger, move_auger)
 
 rospy.spin()

@@ -5,7 +5,7 @@ import sys
 if __name__ == "__main__":
     if len(sys.argv) <= 2:
         print("Enter name and ip of WiFi.")
-        exit(0)
+        exit(1)
     
     (ssid_name, ip_addr) = sys.argv[1:3]
     led_mode = sys.argv[3] if len(sys.argv) > 3 else ""
@@ -17,7 +17,7 @@ if __name__ == "__main__":
     connection = wifi.connect_to(ssid_name)
     if not connection:
         print("Connection failed")
-        exit(0)
+        exit(1)
 
     print("Success!")
 

@@ -15,7 +15,7 @@ if __name__ == "__main__":
     connection = wifi.connect_to(ssid_name)
     if not connection:
         print("Connection failed")
-        exit(0)
+        exit(1)
 
     print("Success!")
 

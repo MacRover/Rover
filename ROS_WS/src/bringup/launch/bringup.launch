@@ -1,7 +1,7 @@
 <launch>
 
   <arg name="rviz" default="false" />
-  <arg name="imu" default="true" />
+  <arg name="imu" default="false" />
   <arg name="gps" default="true" />
   <arg name="t265" default="true" />
   <arg name="d435" default="true" />

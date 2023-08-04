@@ -1,0 +1,68 @@
+# t265_params.yaml
+external_manager: false
+manager: realsense2_camera_manager
+serial_no: "048122071389"
+initial_reset: false
+device_type: T265
+output: screen
+respawn: true
+
+enable_fisheye1: true
+enable_fisheye2: true
+enable_gyro: true
+enable_accel: true
+enable_pose: true
+
+fisheye_width: 848
+fisheye_height: 800
+fisheye_fps: 30
+
+enable_sync: false
+align_depth: false
+
+base_frame_id: t265_link
+fisheye_frame_id: t265_fisheye_frame
+fisheye1_frame_id: t265_fisheye1_frame
+fisheye2_frame_id: t265_fisheye2_frame
+accel_frame_id: t265_accel_frame
+gyro_frame_id: t265_gyro_frame
+pose_frame_id: t265_pose_frame
+odom_frame_id: t265_odom_frame
+
+fisheye_optical_frame_id: t265_fisheye_optical_frame
+fisheye1_optical_frame_id: t265_fisheye1_optical_frame
+fisheye2_optical_frame_id: t265_fisheye2_optical_frame
+accel_optical_frame_id: t265_accel_optical_frame
+gyro_optical_frame_id: t265_gyro_optical_frame
+imu_optical_frame_id: t265_imu_optical_frame
+pose_optical_frame_id: t265_pose_optical_frame
+
+aligned_depth_to_fisheye_frame_id: t265_aligned_depth_to_fisheye_frame
+aligned_depth_to_fisheye1_frame_id: t265_aligned_depth_to_fisheye1_frame
+aligned_depth_to_fisheye2_frame_id: t265_aligned_depth_to_fisheye2_frame
+
+publish_tf: true
+publish_odom_tf: true
+tf_publish_rate: 0
+
+/t265/tracking_module/frames_queue_size: 16
+
+filters: ""
+clip_distance: -1
+linear_accel_cov: 0.01
+reconnect_timeout: 5.0
+wait_for_device_timeout: -1.0
+
+
+# Disable 
+enable_color: false
+enable_depth: false
+enable_infra: false
+enable_infra1: false
+enable_infra2: false
+enable_fisheye: false
+enable_confidence: false
+enable_pointcloud: false
+infra_rgb: false
+
+

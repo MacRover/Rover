@@ -49,13 +49,6 @@ HardwareSerial hserial(SERIAL_RX, SERIAL_TX);
 CytronMD motor(PWM_DIR, PA6, PA7);
 
 char command;
-bool ledState = false;
-
-void toggleLed()
-{
-  digitalWrite(LED_BUILTIN, ledState);
-  ledState = !ledState;
-}
 
 void setup()
 {
@@ -80,10 +73,6 @@ void setup()
   pinMode(smc5.pul_pin, OUTPUT);
 
   pinMode(LED_BUILTIN, OUTPUT);
-
-  toggleLed();
-  delay(20);
-  toggleLed();
 }
 
 void loop()
@@ -102,71 +91,57 @@ void loop()
   // base up/down & carousel up/down
   case 'w':
     stepDualMotors(smc0, LOW, smc5, HIGH, defaultStepDelay);
-    toggleLed();
     break;
   case 's':
     stepDualMotors(smc0, HIGH, smc5, LOW, defaultStepDelay);
-    toggleLed();
     break;
 
   // base rotate
   case 'd':
     stepDualMotors(smc0, HIGH, smc5, HIGH, defaultStepDelay);
-    toggleLed();
     break;
   case 'a':
     stepDualMotors(smc0, LOW, smc5, LOW, defaultStepDelay);
-    toggleLed();
     break;
 
   // elbow
   case 'g':
     stepMotor(smc2, LOW, defaultStepDelay);
-    toggleLed();
     break;
   case 't':
     stepMotor(smc2, HIGH, defaultStepDelay);
-    toggleLed();
     break;
 
   // wrist
   case 'h':
     stepDualMotors(smc1, LOW, smc4, HIGH, defaultStepDelay);
-    toggleLed();
     break;
   case 'f':
     stepDualMotors(smc1, HIGH, smc4, LOW, defaultStepDelay);
-    toggleLed();
     break;
 
   // wrist
   case 'k':
     stepDualMotors(smc1, HIGH, smc4, HIGH, defaultStepDelay);
-    toggleLed();
     break;
   case 'i':
     stepDualMotors(smc1, LOW, smc4, LOW, defaultStepDelay);
-    toggleLed();
     break;
 
   // claw
   case 'l':
     stepMotor(smc3, LOW, defaultStepDelay);
-    toggleLed();
     break;
   case 'j':
     stepMotor(smc3, HIGH, defaultStepDelay);
-    toggleLed();
     break;
 
   case 'y':
     stepDualMotors(smc2, HIGH, smc4, HIGH, augerStepDelay);
-    toggleLed();
     break;
 
   case 'u':
     stepDualMotors(smc2, LOW, smc4, LOW, augerStepDelay);
-    toggleLed();
     break;
 
   // carousel clockwise
@@ -175,7 +150,6 @@ void loop()
     {
       stepMotor(smc1, HIGH, carouselStepDelay);
     }
-    toggleLed();
     command = 'x';
     break;
   // carousel counterclockwise
@@ -184,24 +158,20 @@ void loop()
     {
       stepMotor(smc1, LOW, carouselStepDelay);
     }
-    toggleLed();
     command = 'x';
     break;
 
   // motor clockwise
   case 'b':
     motor.setSpeed(600);
-    toggleLed();
     break;
   // motor counter-clockwise
   case 'n':
     motor.setSpeed(-600);
-    toggleLed();
     break;
   // motor stop
   case 'm':
     motor.setSpeed(0);
-    toggleLed();
     break;
 
   default:

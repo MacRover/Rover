@@ -70,17 +70,21 @@ private:
   int controllerDirection;
   int pOn;
 
-  volatile double *myInput;    // * Pointers to the Input, Output, and Setpoint variables
-  //volatile double *myOutput;   //   This creates a hard link between the variables and the
+  double lastInput;
+
+  volatile double *myInput; // * Pointers to the Input, Output, and Setpoint variables
+  // volatile double *myOutput;   //   This creates a hard link between the variables and the
   volatile double *myOutput;
   volatile double *mySetpoint; //   PID, freeing the user from having to constantly tell us
                                //   what these values are.  with pointers we'll just know.
 
   unsigned long lastTime;
-  double outputSum, lastInput;
 
   unsigned long SampleTime;
   double outMin, outMax;
   bool inAuto, pOnE;
+
+public:
+  double outputSum;
 };
 #endif

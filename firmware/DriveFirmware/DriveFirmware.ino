@@ -7,8 +7,11 @@
 // PUBLISH CMD, SETPOINT, MEASURED AS Quaternion                - DONE
 // USE TOPIC TO SWITCH BETWEEN MOTORS TO VISUALIZE IN RQT PLOT  - DONE
 // FIX MOTOR DIRECTIONS                                         - DONE
-// WHEEL 3 EXCEPTION - NO ENCODER                               - NOT DONE
-// TUNE PID                                                     - NOT DONE
+// WHEEL 3 EXCEPTION - NO ENCODER                               - DONE
+// TUNE PID                                                     - DONE
+// WHEEL 5 EXCEPTION - NO ENCODER DIRECTION                     - DONE
+// - UPDATE WHEEL 5 PID INPUT (ENCODER DIRECTION) NO ENCODER    - DONE
+// - IGNORE WHEEL 5 ODOMETRY                                    - DONE
 
 #include <ros.h>
 #include <nav_msgs/Odometry.h>
@@ -22,7 +25,7 @@
 
 // linear calibration of PWM pulse to angular velocity curve
 double factor[6] = {35.5, 35.5, 35.5, 35.5, 35.5, 35.5};
-double offset[6] = {33, 33, 33, 33, 33, 33};
+double offset[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 PID_Values pid0 = {.P = 1.2, .I = 0.03, .D = 0.002};
 PID_Values pid1 = {.P = 1.2, .I = 0.03, .D = 0.002};
@@ -62,6 +65,8 @@ void updatePIDDebug(geometry_msgs::Quaternion *msg, double left_ang_vel, double 
 
 ros::Subscriber<geometry_msgs::Twist> velocity("cmd_vel", &controlMotorsRos);
 ros::Subscriber<std_msgs::Float64MultiArray> pid_params("cmd_pid", &setParamsRos);
+
+boolean cmd_vel_stopped = true;
 
 // variables for publishing encoder values over ros for debugging
 std_msgs::Float64 encoderVal0, encoderVal1, encoderVal2, encoderVal3, encoderVal4, encoderVal5;
@@ -351,6 +356,11 @@ void controlMotorsRos(const geometry_msgs::Twist &cmd_vel)
     double left_speed = cmd_vel.linear.x - (cmd_vel.angular.z * TRACK_WIDTH / 2);
     double right_speed = cmd_vel.linear.x + (cmd_vel.angular.z * TRACK_WIDTH / 2);
 
+    if (cmd_vel.linear.x == 0.0 && cmd_vel.angular.z == 0.0)
+        cmd_vel_stopped = true;
+    else
+        cmd_vel_stopped = false;
+
     vel_timer = 0.0;
 
     // convert linear speed to rad/s
@@ -365,7 +375,9 @@ void updateOdometry(nav_msgs::Odometry *robot_odom, double lts, double lms,
     double left_min_speed;
     double right_min_speed;
 
-    left_min_speed = (abs(lts) < abs(lms)) ? lts : lms;
+    // left_min_speed = (abs(lts) < abs(lms)) ? lts : lms;
+    left_min_speed = lms;
+
     // bottom left encoder not working
     // left_min_speed = (abs(left_min_speed) < abs(lbs)) ? left_min_speed : lbs;
     right_min_speed = (abs(rts) < abs(rms)) ? rts : rms;
@@ -559,14 +571,43 @@ void loop()
         feedback4.Compute(computed);
         feedback5.Compute(computed);
 
-        // Update Motor Speed with PID output
-        updateMotorSpeed(&P0, velToCmd(P0.velCommand, 0));
-        updateMotorSpeed(&P1, velToCmd(P1.velCommand, 1));
-        updateMotorSpeed(&P2, velToCmd(P2.velCommand, 2));
-        // set P3 motor speed to match P4 motor as the P3 encoder is broken
-        updateMotorSpeed(&P3, velToCmd(P4.velCommand, 3));
-        updateMotorSpeed(&P4, velToCmd(P4.velCommand, 4));
-        updateMotorSpeed(&P5, velToCmd(P5.velCommand, 5));
+        if (!cmd_vel_stopped)
+        {
+            // Update Motor Speed with PID output
+            updateMotorSpeed(&P0, velToCmd(P0.velCommand, 0));
+            updateMotorSpeed(&P1, velToCmd(P1.velCommand, 1));
+            updateMotorSpeed(&P2, velToCmd(P2.velCommand, 2));
+            // set P3 motor speed to match P4 motor as the P3 encoder is broken
+            updateMotorSpeed(&P3, velToCmd(P4.velCommand, 3));
+            updateMotorSpeed(&P4, velToCmd(P4.velCommand, 4));
+            // set P5 motor speed to match P4 motor as the P5 encoder is broken
+            updateMotorSpeed(&P5, velToCmd(P4.velCommand, 5));
+        }
+        else
+        {
+            updateMotorSpeed(&P0, 1500);
+            updateMotorSpeed(&P1, 1500);
+            updateMotorSpeed(&P2, 1500);
+            updateMotorSpeed(&P3, 1500);
+            updateMotorSpeed(&P4, 1500);
+            updateMotorSpeed(&P5, 1500);
+
+            feedback0.outputSum = 0.0;
+            feedback1.outputSum = 0.0;
+            feedback2.outputSum = 0.0;
+            feedback3.outputSum = 0.0;
+            feedback4.outputSum = 0.0;
+            feedback5.outputSum = 0.0;
+
+            P0.velCommand = 0.0;
+            P1.velCommand = 0.0;
+            P2.velCommand = 0.0;
+            P3.velCommand = 0.0;
+            P4.velCommand = 0.0;
+            P5.velCommand = 0.0;
+
+            controlMotors(0.0, 0.0);
+        }
 
         time_prev = millis();
     }

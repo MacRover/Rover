@@ -12,6 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  visualization_msgs
+  geometry_msgs
 )
 
 ################################################
@@ -49,7 +51,6 @@ add_service_files(
   FILES
   Drill.srv
   Carousel.srv
-  Auger.srv
 )
 
 ## Generate actions in the 'action' folder

@@ -55,7 +55,7 @@ def get_port():
             exit()
             
 
-port = get_port()
+port = "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0"
 print(port)
 
 rospy.init_node("npk_publisher", anonymous=True)

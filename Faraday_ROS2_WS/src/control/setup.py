@@ -21,7 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
 		'keyboard_drive = control.ros2_keyboard_drive_control:main',
-		'cmd_repeater = control.cmd_repeater:main'
+		'cmd_repeater = control.cmd_repeater:main',
+		'controller_drive = control.ros2_controller_drive:main'
         ],
     },
 )

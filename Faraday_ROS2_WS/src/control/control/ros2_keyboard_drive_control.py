@@ -28,7 +28,7 @@ def main():
 		char = getch()
 		if ord(char) == 27:
 			print("Exiting")
-			exit(0)
+			break
 		elif char == "w":
 			print("Accelerated")
 			vel_msg.linear.x += 0.008

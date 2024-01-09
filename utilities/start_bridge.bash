@@ -11,6 +11,9 @@ echo "Waiting to start rosserial ..."
 sleep 5
 echo "Starting rosserial ..."
 screen -d -m -S "rosserial" rosrun rosserial_python serial_node.py _port:=/dev/ttyS0 _baud:=128000
+
+# source ROS 2
+source /home/mmrt/ros2_foxy/install/setup.bash
 echo "Starting ros bridge"
 screen -d -m -S "ros1_bridge" ros2 run ros1_bridge dynamic_bridge
 echo "----DEBUG----"

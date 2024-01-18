@@ -1,0 +1,18 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/koener/Downloads/MMRT_ws/build/rover_heading",
+        "/home/koener/Downloads/MMRT_ws/install/rover_heading/lib/python3.10/site-packages",
+        "/home/koener/Downloads/MMRT_ws/install/nav2_sms_behavior/lib/python3.10/site-packages",
+        "/home/koener/Downloads/MMRT_ws/build/nav2_gps_waypoint_follower_demo",
+        "/home/koener/Downloads/MMRT_ws/install/nav2_gps_waypoint_follower_demo/lib/python3.10/site-packages",
+        "/opt/ros/iron/lib/python3.10/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/koener/Downloads/MMRT_ws/build/rover_heading",
+        "/home/koener/Downloads/MMRT_ws/install/rover_heading/lib/python3.10/site-packages",
+        "/home/koener/Downloads/MMRT_ws/install/nav2_sms_behavior/lib/python3.10/site-packages",
+        "/home/koener/Downloads/MMRT_ws/build/nav2_gps_waypoint_follower_demo",
+        "/home/koener/Downloads/MMRT_ws/install/nav2_gps_waypoint_follower_demo/lib/python3.10/site-packages",
+        "/opt/ros/iron/lib/python3.10/site-packages"
+    ]
+}

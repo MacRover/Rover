@@ -1,3 +1,9 @@
 {
-    "python.pythonPath": "C:\\Users\\veere\\Anaconda3\\python.exe"
+    "python.pythonPath": "C:\\Users\\veere\\Anaconda3\\python.exe",
+    "python.autoComplete.extraPaths": [
+        "/opt/ros/iron/lib/python3.10/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/opt/ros/iron/lib/python3.10/site-packages"
+    ]
 }

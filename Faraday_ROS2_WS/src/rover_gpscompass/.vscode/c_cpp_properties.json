@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/koener/Downloads/MMRT_ws/install/nav2_straightline_planner/include/**",
+        "/home/koener/Downloads/MMRT_ws/install/nav2_sms_behavior/include/**",
+        "/opt/ros/iron/include/**",
+        "/home/koener/Downloads/MMRT_ws/src/navigation2_tutorials/nav2_gradient_costmap_plugin/include/**",
+        "/home/koener/Downloads/MMRT_ws/src/navigation2_tutorials/nav2_sms_behavior/include/**",
+        "/home/koener/Downloads/MMRT_ws/src/navigation2_tutorials/nav2_straightline_planner/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

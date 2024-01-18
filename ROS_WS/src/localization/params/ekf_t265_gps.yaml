@@ -199,6 +199,7 @@ navsat_transform:
   use_sim_time: false
   frequency: 60.0
   delay: 0.0
+  #This is being written upon determining the datum from the gps heading node
   magnetic_declination_radians: 0.0
   yaw_offset: 0.0
   zero_altitude: true

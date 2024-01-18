@@ -1,0 +1,10 @@
+../Core/Src/can.c:40:6:_isQueueEmpty	16	static
+../Core/Src/can.c:45:6:_isQueueFull	16	static
+../Core/Src/can.c:50:6:_getFirstMessageFromQueue	16	static
+../Core/Src/can.c:55:6:_addMessageToQueue	16	static
+../Core/Src/can.c:62:6:_addHeaderAndDataToQueue	24	static
+../Core/Src/can.c:72:6:_removeFirstMessageFromQueue	16	static
+../Core/Src/can.c:80:11:CAN_init	4	static
+../Core/Src/can.c:88:11:CAN_addMessage	16	static
+../Core/Src/can.c:100:11:CAN_getMessage	16	static
+../Core/Src/can.c:115:11:CAN_sendMessage	16	static

@@ -6,8 +6,7 @@ ekf_filter_odom:
     two_d_mode: true
     transform_time_offset: 0.0
     transform_timeout: 0.0
-    publish_acceleration: false
-
+    
     print_diagnostics: true
     debug: false
 

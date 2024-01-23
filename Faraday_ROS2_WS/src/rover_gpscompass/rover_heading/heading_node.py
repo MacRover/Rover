@@ -40,13 +40,22 @@ import time
 #* 5. start navstack
 
 
+
+# roscore
+# rover_prestart
+# rosrun control cmd_vel_repeater
+# rosrun control xbox_control
+# roslaunch bringup bringup.launch
+# roslaunch navigation navigation.launch
+
+
 class HeadingCalculatorNode:
     def __init__(self):
         self.node = rclpy.create_node('heading_calculator_node')
 
         self.subscription_odom = self.node.create_subscription(
             Odometry,
-            '/odometry/global',
+            '/odometry/filtered_map',
             self.odom_callback,
             10  # QoS profile
         )
@@ -61,32 +70,43 @@ class HeadingCalculatorNode:
         self.yaml = YAML()
 
         # Path to the YAML file
-        self.yaml_file_path = 'ROS_WS/src/localization/params/ekf_t265_gps.yaml'
+        self.yaml_file_path = '/home/mmrt/Rover/ROS_WS/src/localization/params/ekf_t265_gps.yaml'
 
         self.taken_headingoff = False
         self.timer = None
         self.timer_callback_count = 0
         self.x_pos = 0
         self.y_pos = 0
+        self.error1=1.2
+
         
     def odom_callback(self, msg):
         self.x_pos = msg.pose.pose.position.x
         self.y_pos = msg.pose.pose.position.y
+        self.error1 = math.atan2(self.y_pos, self.x_pos)
+        print(5)
+#        print(math.atan2(self.y_pos, self.x_pos))
     
     def calibrate_heading(self):
-        error = math.atan2(self.y_pos, self.x_pos)
-        print(f'Rover heading error: {error} radians')
-        self.write_to_yaml(error)
+       # error = math.atan2(self.y_pos, self.x_pos)
+        print(self.error1)
+        print(f'Rover heading error: {self.error1} radians')
+        self.write_to_yaml(self.error1)
 
     def send_cmd_vel(self, linear_x, duration, rate):
         rate = self.node.create_rate(rate)  # Hz
         start_time = time.time()
+        print(f'start_time {start_time} sec')
 
-        while (time.time() - start_time) < duration:
+        while True:
+           
+            print(time.time())
             twist_msg = Twist()
             twist_msg.linear.x = linear_x
             self.publisher_cmd_vel.publish(twist_msg)
             rate.sleep()
+            rclpy.spin_once(self)
+            
 
     def write_to_yaml(self, heading_error):
         try:
@@ -109,13 +129,14 @@ def main():
     node = HeadingCalculatorNode()
 
     # Drive forward for 10 seconds at 0.5m/s
-    node.send_cmd_vel(linear_x=0.5, duration=10.0, rate=10)
+    #node.send_cmd_vel(linear_x=0.5, duration=10.0, rate=10)
 
-    node.send_cmd_vel(linear_x=0.0, duration=5.0, rate=10)
+    node.send_cmd_vel(linear_x=0.0, duration=400.0, rate=10)
+
     
     node.calibrate_heading()
 
-    node.send_cmd_vel(linear_x=-0.5, duration=10.0, rate=10)
+    #node.send_cmd_vel(linear_x=-0.5, duration=10.0, rate=10)
 
     rclpy.spin(node.node)
     rclpy.shutdown()

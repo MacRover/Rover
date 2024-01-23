@@ -15,7 +15,7 @@ screen -d -m -S "rosserial" rosrun rosserial_python serial_node.py _port:=/dev/t
 # source ROS 2
 source /home/mmrt/ros2_foxy/install/setup.bash
 echo "Starting ros bridge"
-screen -d -m -S "ros1_bridge" ros2 run ros1_bridge dynamic_bridge
+screen -d -m -S "ros1_bridge" ros2 run ros1_bridge dynamic_bridge --bridge-all-topics
 echo "----DEBUG----"
 screen -ls
 echo "-------------"

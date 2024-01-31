@@ -7,6 +7,9 @@ import time  # Import the time module
 from nav_msgs.msg import Odometry
 from ruamel.yaml import YAML
 import threading #needed to run drive fxn once 
+import tf2_ros
+from tf_transformations import euler_from_quaternion
+#need sudo apt install ros-iron-tf-transformations
 
 
 #for possible mathematic reference in code ref: https://www.movable-type.co.uk/scripts/latlong.html 
@@ -19,10 +22,17 @@ class HeadingCalculatorNode:
         self.subscription_odom = self.node.create_subscription(
             Odometry,
             '/odometry/global',
-            # '/odometry/gps', odom gps is a subscriber to the ekf_filter_node_map and publishes odom global
             self.odom_callback,
             10  # QoS profile
         )
+
+        # local odom subscription for quanternion transforms for post-start heading updates
+        # self.subscription_odom = self.node.create_subscription(
+        #     Odometry,
+        #     '/odometry/local',
+        #     self.odom_local_callback,
+        #     10  # QoS profile
+        # )
 
         self.publisher_cmd_vel = self.node.create_publisher(
             Twist,
@@ -30,35 +40,46 @@ class HeadingCalculatorNode:
             10
         )
 
+
         # Initialize ruamel.yaml
         self.yaml = YAML()
 
+        # Initialize x and y position
+        self.x_pos = 0
+        self.y_pos = 0
+
+        #start x_pose and y_pose for multiple runs 
+        rclpy.spin_once(self.node)
+        self.x_init = self.x_pos
+        self.y_init = self.y_pos
+
+
         # Start a separate thread for driving forward
-        self.drive_thread = threading.Thread(target=self.send_cmd_vel(0.5, 7.0, 10))
+        self.drive_thread = threading.Thread(target=self.send_cmd_vel(0.5, 10.0, 10))
         self.drive_thread.start()
 
         # Path to the YAML file
         self.yaml_file_path = '/home/koener/Downloads/MMRT_ws/src/rover_heading/ekf_t265_gps.yaml'
 
         self.taken_headingoff = False
-        # self.timer = None
-        # self.timer_callback_count = 0
-        self.x_pos = 0
-        self.y_pos = 0
-        # self.error1=1.2
+
 
     def odom_callback(self, msg):
         self.x_pos = msg.pose.pose.position.x
         self.y_pos = msg.pose.pose.position.y
-        self.error1 = math.atan2(self.y_pos, self.x_pos)
-        # print(5)
-        # print(math.atan2(self.y_pos, self.x_pos))
+
+    # def odom_local_callback(self, msg):
+    #     orientation_list = [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z, msg.pose.pose.orientation.w]
+
+    #     (roll, pitch, yaw) = euler_from_quaternion(orientation_list)
+
+    #     self.pose_yaw = yaw
+    
     
     def calibrate_heading(self):
-        error = math.atan2(self.y_pos, self.x_pos)
-        print(f'Rover heading error: {error} radians, from y_pos of {self.y_pos} and x_pos of {self.x_pos}')
-        # print(self.error1)
-        print(f'Rover heading error: {error} radians')
+        rclpy.spin_once(self.node)
+        error = math.atan2(self.y_pos - self.y_init, self.x_pos - self.x_init)
+        print(f'Rover heading error: {error*180/math.pi} deg from y_pos of {self.y_pos } and x_pos of {self.x_pos }')
         self.write_to_yaml(error)
 
     def send_cmd_vel(self, linear_x, duration, rate):
@@ -66,14 +87,11 @@ class HeadingCalculatorNode:
         print(f'start_time {start_time} sec')
 
         while time.time() - start_time < duration and rclpy.ok():
-            # print("here")
             twist_msg = Twist()
             twist_msg.linear.x = linear_x
             self.publisher_cmd_vel.publish(twist_msg)
             time.sleep(0.1) #slow down the loop
-            
-            # rate.sleep()
-            # rclpy.spin_once(self.node)
+
         
         #NEED TO STOP THE ROVER
         print("before rover stop")
@@ -81,9 +99,6 @@ class HeadingCalculatorNode:
         twist_msg.linear.x = 0.0
         self.publisher_cmd_vel.publish(twist_msg)
         print("after rover stop")
-            
-
-
             
 
     def write_to_yaml(self, heading_error):

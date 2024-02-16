@@ -59,7 +59,7 @@ class HeadingCalculatorNode:
         self.drive_thread.start()
 
         # Path to the YAML file
-        self.yaml_file_path = '/home/koener/Downloads/MMRT_ws/src/rover_heading/ekf_t265_gps.yaml'
+        self.yaml_file_path = '/home/mmrt/Rover/ROS_WS/src/localization/params/ekf_t265_gps.yaml'
 
         self.taken_headingoff = False
 

@@ -1,0 +1,6 @@
+<launch>
+  <group ns="t265_tf_fix" >
+    <node pkg="t265_tf_fix" type="tf_to_odom.py" name="tf_to_odom" />
+    <node pkg="t265_tf_fix" type="tf_broadcaster.py" name="tf_broadcaster" />
+  </group>
+</launch>

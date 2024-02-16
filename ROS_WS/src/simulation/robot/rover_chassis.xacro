@@ -2,6 +2,7 @@
 
 <robot name="rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <xacro:include filename="$(find simulation)/robot/rover.gazebo" />
   <!-- <xacro:include filename="$(find simulation)/robot/rover_drive.gazebo" /> -->
   <!-- <xacro:include filename="$(find simulation)/robot/arm.xacro" /> -->
   <!-- <origin rpy="0 0 1.5707" xyz="0 0 0"/> -->

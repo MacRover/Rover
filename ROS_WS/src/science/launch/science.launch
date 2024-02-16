@@ -1,0 +1,4 @@
+<launch>
+  <node name="rqt_science" pkg="rqt_science" type="rqt_science" respawn="true"/>
+  <node name="science_server" pkg="science" type="Server.py" respawn="true"/>
+</launch>

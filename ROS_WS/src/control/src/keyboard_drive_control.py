@@ -40,10 +40,10 @@ def move():
             vel_msg.linear.x -= 0.008
         elif char == "d":
             print("Turning right")
-            vel_msg.angular.z += 0.008
+            vel_msg.angular.z -= 0.008
         elif char == "a":
             print("Turning left")
-            vel_msg.angular.z -= 0.008
+            vel_msg.angular.z += 0.008
         elif ord(char) == 32:
             print("Stopping")
             vel_msg.linear.x = 0

@@ -1,0 +1,11 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="d435" params="x_pos y_pos z_pos">
+    <link name="d435_link"/>
+    
+    <joint name="d435_to_base_link" type="fixed">
+      <parent link="base_link"/>
+      <child link="d435_link"/>
+      <origin xyz="${x_pos} ${y_pos} ${z_pos}" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+</robot>

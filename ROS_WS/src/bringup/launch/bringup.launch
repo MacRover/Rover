@@ -1,0 +1,18 @@
+<launch>
+
+  <arg name="rviz" default="false" />
+  <arg name="imu" default="false" />
+  <arg name="gps" default="true" />
+  <arg name="t265" default="true" />
+  <arg name="d435" default="true" />
+
+    <include file="$(find bringup)/launch/display.launch">
+        <arg name="rviz" value="$(arg rviz)"/>
+    </include>
+
+    <include if="$(arg imu)" file="$(find imu)/launch/imu.launch"/>
+    <include if="$(arg gps)" file="$(find gps)/launch/gps_publisher.launch"/>
+    <include if="$(arg t265)" file="$(find bringup)/launch/t265.launch"/>
+    <include if="$(arg d435)" file="$(find bringup)/launch/d435.launch"/>
+
+</launch>

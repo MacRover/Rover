@@ -57,12 +57,24 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define DRIVER_CS_Pin GPIO_PIN_4
+#define DRIVER_CS_GPIO_Port GPIOA
+#define DRIVER_SPI1_SCK_Pin GPIO_PIN_5
+#define DRIVER_SPI1_SCK_GPIO_Port GPIOA
+#define DRIVER_SPI1_MISO_Pin GPIO_PIN_6
+#define DRIVER_SPI1_MISO_GPIO_Port GPIOA
+#define DRIVER_SPI1_MOSI_Pin GPIO_PIN_7
+#define DRIVER_SPI1_MOSI_GPIO_Port GPIOA
 #define LED_RED_Pin GPIO_PIN_2
 #define LED_RED_GPIO_Port GPIOB
 #define DRIVER_SG_TEST_Pin GPIO_PIN_9
 #define DRIVER_SG_TEST_GPIO_Port GPIOA
 #define DRIVER_ENN_Pin GPIO_PIN_10
 #define DRIVER_ENN_GPIO_Port GPIOA
+#define J7_SWDIO_Pin GPIO_PIN_13
+#define J7_SWDIO_GPIO_Port GPIOA
+#define J7_SWCLK_Pin GPIO_PIN_14
+#define J7_SWCLK_GPIO_Port GPIOA
 #define DRIVER_ST_ALONE_Pin GPIO_PIN_15
 #define DRIVER_ST_ALONE_GPIO_Port GPIOA
 #define DRIVER_STEP_Pin GPIO_PIN_3

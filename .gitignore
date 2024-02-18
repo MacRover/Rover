@@ -35,6 +35,8 @@
 devel/
 logs/
 build/
+install/
+log/
 bin/
 lib/
 msg_gen/
@@ -97,4 +99,15 @@ CATKIN_IGNORE
 
 # Packages copied into docker containers
 *.deb
+
 ROS_WS/.catkin_tools/
+
+# stmcubeide gitignore
+firmware/**/.settings/
+firmware/**/Debug/
+firmware/**/Release/
+
+firmware/**/*.launch
+
+!firmware/**/.cproject
+!firmware/**/.project

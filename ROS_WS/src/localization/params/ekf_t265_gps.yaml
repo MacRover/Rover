@@ -207,7 +207,8 @@ navsat_transform:
   publish_filtered_gps: true # publish transform of map frame position back to GPS coordinates
   use_odometry_yaw: false
   wait_for_datum: true # specify datum of lat, long, yaw
-  datum: [43.2605983, -79.9195644, 0.0]
+#  datum: [43.2605983, -79.9195644, 0.0]
+  datum: [51.453865051, -112.716560364, 0.0]
 
   # Published Topics
   #     odometry/gps A nav_msgs/Odometry message containing the GPS coordinates of your robot, transformed into its world coordinate frame. This message can be directly fused into robot_localization‘s state estimation nodes.
